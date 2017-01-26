@@ -121,9 +121,9 @@ public class HIEquilibrium extends LabFrame {
 		I2Slider.getLabel().setOffsetY(-5);
 		HISlider.getLabel().setOffsetY(-5);
 		
-		H2SetButton.setOffsetX(45);
-		I2SetButton.setOffsetX(45);
-		HISetButton.setOffsetX(45);
+		H2SetButton.setOffsetX(55);
+		I2SetButton.setOffsetX(55);
+		HISetButton.setOffsetX(55);
 		
 		
 		addComponent(new EmptyComponent(80, 0), new LabelComponent(20, 30, "H2"), H2Slider, H2SetButton, new EmptyComponent(400, 0));
