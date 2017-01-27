@@ -35,8 +35,8 @@ public class GasEquilibrium extends LabFrame {
 	private final LabelComponent KcLabel;
 	private final LabelComponent KpLabel;
 	
-	public GasEquilibrium(String substance, String reaction, double Kp, double Kc, double temp) {
-		super("Equilibrium Constant Lab", 660, 725);
+	public GasEquilibrium(String name, double mass, String substance, String reaction, double Kp, double Kc, double temp) {
+		super(name, 660, 725);
 		
 		this.Kp = Kp;
 		this.temp = temp;
@@ -46,11 +46,37 @@ public class GasEquilibrium extends LabFrame {
 		manometer.setGraduation(new VerticalGraduation(0, 760, 20, 5));
 		manometer.setValue(760.0);
 		
+		EmptyComponent middleContentArea = new EmptyComponent(300, 600);
+		
 		bulb = new Bulb(300);
-		bulb.setOffsetY(230);
+		//bulb.setOffsetY(230);
 		bulb.setOffsetX(35);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
+		
+		EmptyComponent infoComponent = new EmptyComponent(270, 100);
+		infoComponent.setShowBorder(true);
+		infoComponent.setOffsetX(50);
+		infoComponent.setOffsetY(30);
+		
+		LabelComponent massLabel = new LabelComponent(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
+		massLabel.setFontSize(20);
+		massLabel.setOffsetX(10);
+		massLabel.setOffsetY(0);
+		
+		LabelComponent atmPressureLabel = new LabelComponent(300, 30, "Atmosphere: 1.0 atm");
+		atmPressureLabel.setFontSize(20);
+		atmPressureLabel.setOffsetX(10);
+		atmPressureLabel.setOffsetY(0);
+		
+		LabelComponent tempLabel = new LabelComponent(300, 30, "Initial Temp: 20C");
+		tempLabel.setFontSize(20);
+		tempLabel.setOffsetX(10);
+		tempLabel.setOffsetY(0);
+		
+		infoComponent.addChild(massLabel, tempLabel, atmPressureLabel);
+		
+		middleContentArea.addChild(infoComponent, bulb);
 		
 		
 		thermometer = new Thermometer(500);
@@ -61,7 +87,7 @@ public class GasEquilibrium extends LabFrame {
 		thermometer.getGraduation().setSuffix("C");
 		
 		
-		addComponent(manometer, bulb, thermometer);
+		addComponent(manometer, middleContentArea, thermometer);
 		
 		
 		
