@@ -55,7 +55,7 @@ public class GasEquilibrium extends LabFrame {
 		bulb.setContentState(ContentState.SOLID);
 		
 		EmptyComponent infoComponent = new EmptyComponent(270, 100);
-		infoComponent.setShowBorder(true);
+		infoComponent.setShowBounds(true);
 		infoComponent.setOffsetX(50);
 		infoComponent.setOffsetY(30);
 		
