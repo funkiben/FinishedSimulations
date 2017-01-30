@@ -17,8 +17,6 @@ import lab.component.sensor.Thermometer;
 public class GasEquilibrium extends LabFrame {
 
 	private static final long serialVersionUID = 1L;
-
-	//test change
 	
 	private final double Kp;
 	private final double temp;
