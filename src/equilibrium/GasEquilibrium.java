@@ -61,7 +61,7 @@ public class GasEquilibrium extends LabFrame {
 		bulb.setContentState(ContentState.SOLID);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
-		gasParticles.setLifetime(10000);
+		gasParticles.setLifetime(Integer.MAX_VALUE);
 		gasParticles.setParticleSpawnRate(0.0001);
 		gasParticles.setSpawnArea(new Vector2(150, 150));
 		gasParticles.setColor(Color.black);
@@ -71,9 +71,7 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.setParticleHeight(10);
 		gasParticles.setParticleWidthChange(0);
 		gasParticles.setParticleHeightChange(0);
-		RandomVector2Generator rand = new RandomVector2Generator(-1, -1, 1, 1, RandomVector2Generator.ELLIPSE);
-		rand.setRandomDirectionOnly(true);
-		gasParticles.setVelocity(rand);
+		gasParticles.setVelocity(new RandomVector2Generator(1));
 		gasParticles.start();
 		
 		
