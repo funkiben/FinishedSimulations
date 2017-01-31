@@ -238,13 +238,26 @@ public class GasEquilibrium extends LabFrame {
 		KcLabel.setVisible(!KcLabel.isVisible());
 	}
 	
+	
+	private boolean addedGasParticleBounds = false;
+	
 	@Override
 	public void update() {
-		gasParticles.clearCollidableEdges();
 		
-		for (Point[] edge : bulb.getInnerEdges()) {
-			gasParticles.addCollidableEdge(edge[0].x - bulb.getLastDrawX(), edge[0].y - bulb.getLastDrawY(), edge[1].x - bulb.getLastDrawX(), edge[1].y  - bulb.getLastDrawY());
+		if (bulb.getInnerEdges().size() > 0 && !addedGasParticleBounds) {
+		
+			for (Point[] edge : bulb.getInnerEdges()) {
+				gasParticles.addCollidableEdge(edge[0].x - bulb.getLastDrawX(), edge[0].y - bulb.getLastDrawY(), edge[1].x - bulb.getLastDrawX(), edge[1].y  - bulb.getLastDrawY());
+			
+			}
+			addedGasParticleBounds = true;
 		}
+		
+		gasParticles.setWidth(Math.min(gasParticles.getWidth(), gasParticles.getHeight()));
+		gasParticles.setHeight(gasParticles.getWidth());
+		
+		
+		
 	}
 
 	
