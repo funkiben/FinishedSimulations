@@ -79,7 +79,7 @@ public class HIEquilibrium extends LabFrame {
 	public HIEquilibrium() {
 		super("H2 + I2 -> 2HI", 820, 630);
 
-		bulb = new Bulb(300);
+		bulb = new Bulb(300, 300);
 		bulb.setContentState(ContentState.GAS);
 		bulb.setContentColor(new Color(115, 37, 119));
 		bulb.setColor(new Color(250, 250, 250));
@@ -225,6 +225,7 @@ public class HIEquilibrium extends LabFrame {
 		
 		graph.getvGraduation().setSubLineIntervals(m);
 		graph.getvGraduation().setLineIntervals(m < 1 ? 1 : 2);
+		
 		
 		bulb.setLabel("H2: " + SigFig.sigfigalize(H2Concentration, SIGFIGS) + "M\n"
 					+ "I2: " + SigFig.sigfigalize(I2Concentration, SIGFIGS) + "M\n"

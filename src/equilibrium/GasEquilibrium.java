@@ -1,7 +1,6 @@
 package equilibrium;
 
 import java.awt.Color;
-import java.awt.Point;
 
 import draw.animation.DoubleLerpAnimation;
 import lab.LabFrame;
@@ -23,7 +22,6 @@ public class GasEquilibrium extends LabFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	
 	private final double Kp;
 	private final double temp;
 	
@@ -54,13 +52,13 @@ public class GasEquilibrium extends LabFrame {
 		
 		EmptyComponent middleContentArea = new EmptyComponent(300, 600);
 		
-		bulb = new Bulb(300);
+		bulb = new Bulb(300, 300);
 		//bulb.setOffsetY(230);
 		bulb.setOffsetX(35);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
 		
-		gasParticles = new ParticleSystem(300, 300, 50);
+		gasParticles = new ParticleSystem(300, 300, 150);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
 		gasParticles.setParticleSpawnRate(0.0001);
 		gasParticles.setSpawnArea(new Vector2(150, 150));
@@ -72,6 +70,15 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.setParticleWidthChange(0);
 		gasParticles.setParticleHeightChange(0);
 		gasParticles.setVelocity(new RandomVector2Generator(1));
+		
+		for (int i = 1; i < Bulb.POLY1_X.length - 3; i++) {
+			gasParticles.addCollidableEdge(Bulb.POLY1_X[i - 1] * bulb.getWidth(), Bulb.POLY1_Y[i - 1] * bulb.getHeight(), Bulb.POLY1_X[i] * bulb.getWidth(), Bulb.POLY1_Y[i] * bulb.getHeight());
+			gasParticles.addCollidableEdge(Bulb.POLY2_X[i - 1] * bulb.getWidth(), Bulb.POLY2_Y[i - 1] * bulb.getHeight(), Bulb.POLY2_X[i] * bulb.getWidth(), Bulb.POLY2_Y[i] * bulb.getHeight());
+		}
+		
+		int n = Bulb.POLY1_X.length - 1;
+		gasParticles.addCollidableEdge(Bulb.POLY2_X[n] * bulb.getWidth(), Bulb.POLY2_Y[n] * bulb.getHeight(), Bulb.POLY1_X[n] * bulb.getWidth(), Bulb.POLY1_Y[n] * bulb.getHeight());
+		
 		gasParticles.start();
 		
 		
@@ -239,22 +246,9 @@ public class GasEquilibrium extends LabFrame {
 	}
 	
 	
-	private boolean addedGasParticleBounds = false;
-	
 	@Override
 	public void update() {
-		
-		if (bulb.getInnerEdges().size() > 0 && !addedGasParticleBounds) {
-		
-			for (Point[] edge : bulb.getInnerEdges()) {
-				gasParticles.addCollidableEdge(edge[0].x - bulb.getLastDrawX(), edge[0].y - bulb.getLastDrawY(), edge[1].x - bulb.getLastDrawX(), edge[1].y  - bulb.getLastDrawY());
-			
-			}
-			addedGasParticleBounds = true;
-		}
-		
-		gasParticles.setWidth(Math.min(gasParticles.getWidth(), gasParticles.getHeight()));
-		gasParticles.setHeight(gasParticles.getWidth());
+	
 		
 		
 		
