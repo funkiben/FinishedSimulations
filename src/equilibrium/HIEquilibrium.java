@@ -8,8 +8,8 @@ import lab.component.HorizontalGraduation;
 import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
-import lab.component.graph.DataSet;
-import lab.component.graph.Graph;
+import lab.component.data.GraphDataSet;
+import lab.component.data.Graph;
 import lab.component.input.LabelComponent;
 import lab.component.input.LabelSliderComponent;
 import lab.component.input.SliderComponent;
@@ -31,9 +31,9 @@ public class HIEquilibrium extends LabFrame {
 	private final Bulb bulb;
 	
 	private final Graph graph;
-	private final DataSet H2DataSet;
-	private final DataSet I2DataSet;
-	private final DataSet HIDataSet;
+	private final GraphDataSet H2DataSet;
+	private final GraphDataSet I2DataSet;
+	private final GraphDataSet HIDataSet;
 	
 	// Kc = (HI)^2 / (H2)(I2)
 	// Kc = (HI + 2x)^2 / (H2 - x)(I2 - x)
@@ -98,11 +98,11 @@ public class HIEquilibrium extends LabFrame {
 		graph.setOffsetX(70);
 		graph.setOffsetY(50);
 
-		I2DataSet = new DataSet("I2", true, true);
+		I2DataSet = new GraphDataSet("I2", true, true);
 		I2DataSet.setColor(new Color(255, 0, 127));
-		H2DataSet = new DataSet("H2", true, true);
+		H2DataSet = new GraphDataSet("H2", true, true);
 		H2DataSet.setColor(Color.red);
-		HIDataSet = new DataSet("HI", true, true);
+		HIDataSet = new GraphDataSet("HI", true, true);
 		HIDataSet.setColor(Color.black);
 
 		graph.addDataSet(I2DataSet);
