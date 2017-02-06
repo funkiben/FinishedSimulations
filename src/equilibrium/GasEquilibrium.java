@@ -1,7 +1,6 @@
 package equilibrium;
 
 import java.awt.Color;
-import java.awt.Point;
 
 import draw.animation.DoubleLerpAnimation;
 import lab.LabFrame;
@@ -22,8 +21,13 @@ import lab.component.sensor.Thermometer;
 public class GasEquilibrium extends LabFrame {
 
 	private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	private final double Kp;
+	private final double initialTemp;
 	private final double temp;
 	
 	private final Manometer manometer;
@@ -40,10 +44,13 @@ public class GasEquilibrium extends LabFrame {
 	private final LabelComponent KcLabel;
 	private final LabelComponent KpLabel;
 	
-	public GasEquilibrium(String name, double mass, String substance, String reaction, double Kp, double Kc, double temp) {
+	private boolean reactionOccuring = false;
+	
+	public GasEquilibrium(String name, double mass, String substance, String reaction, double Kp, double Kc, double initialTemp, double temp) {
 		super(name, 660, 725);
 		
 		this.Kp = Kp;
+		this.initialTemp = initialTemp;
 		this.temp = temp;
 		
 		manometer = new Manometer(150, 600);
@@ -52,33 +59,42 @@ public class GasEquilibrium extends LabFrame {
 		manometer.setValue(760.0);
 		
 		EmptyComponent middleContentArea = new EmptyComponent(300, 600);
+		middleContentArea.setOffsetX(20);
 		
-		bulb = new Bulb(300);
-		//bulb.setOffsetY(230);
+		bulb = new Bulb(300, 300);
 		bulb.setOffsetX(35);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
-		gasParticles.setParticleSpawnRate(0.0001);
-		gasParticles.setSpawnArea(new Vector2(150, 150));
+		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
+		gasParticles.setSpawnArea(new Vector2(150, 295));
 		gasParticles.setColor(Color.black);
 		gasParticles.setColorFade(0);
 		gasParticles.setShape(Particle.ELLIPSE);
-		gasParticles.setParticleWidth(10);
-		gasParticles.setParticleHeight(10);
+		gasParticles.setParticleWidth(6);
+		gasParticles.setParticleHeight(6);
 		gasParticles.setParticleWidthChange(0);
 		gasParticles.setParticleHeightChange(0);
-		gasParticles.setVelocity(new RandomVector2Generator(1));
+		gasParticles.setVelocity(new RandomVector2Generator(6));
+		gasParticles.setColor(new Color(0, 0, 255));
+
+		for (int i = 1; i < Bulb.POLY1_X.length - 3; i++) {
+			gasParticles.addCollidableEdge(Bulb.POLY1_X[i - 1] * bulb.getWidth(), Bulb.POLY1_Y[i - 1] * bulb.getHeight(), Bulb.POLY1_X[i] * bulb.getWidth(), Bulb.POLY1_Y[i] * bulb.getHeight());
+			gasParticles.addCollidableEdge(Bulb.POLY2_X[i - 1] * bulb.getWidth(), Bulb.POLY2_Y[i - 1] * bulb.getHeight(), Bulb.POLY2_X[i] * bulb.getWidth(), Bulb.POLY2_Y[i] * bulb.getHeight());
+		}
+		
+		gasParticles.addCollidableEdge(Bulb.POLY2_X[0] * bulb.getWidth(), Bulb.POLY2_Y[0] * bulb.getHeight(), Bulb.POLY1_X[0] * bulb.getWidth(), Bulb.POLY1_Y[0] * bulb.getHeight());
+		
 		gasParticles.start();
 		
 		
 		bulb.addChild(gasParticles);
 		
-		EmptyComponent infoComponent = new EmptyComponent(270, 100);
+		EmptyComponent infoComponent = new EmptyComponent(300, 100);
 		infoComponent.setShowBounds(true);
-		infoComponent.setOffsetX(50);
+		infoComponent.setOffsetX(30);
 		infoComponent.setOffsetY(30);
 		
 		LabelComponent massLabel = new LabelComponent(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
@@ -91,7 +107,7 @@ public class GasEquilibrium extends LabFrame {
 		atmPressureLabel.setOffsetX(10);
 		atmPressureLabel.setOffsetY(0);
 		
-		LabelComponent tempLabel = new LabelComponent(300, 30, "Initial Temp: 20C");
+		LabelComponent tempLabel = new LabelComponent(300, 30, "Initial Temp: " + initialTemp + "C");
 		tempLabel.setFontSize(20);
 		tempLabel.setOffsetX(10);
 		tempLabel.setOffsetY(0);
@@ -102,10 +118,10 @@ public class GasEquilibrium extends LabFrame {
 		
 		
 		thermometer = new Thermometer(500);
-		thermometer.setOffsetX(40);
+		thermometer.setOffsetX(80);
 		thermometer.setOffsetY(20);
 		thermometer.setGraduation(new VerticalGraduation(0, 1000, 100, 20));
-		thermometer.setValue(20);
+		thermometer.setValue(initialTemp);
 		thermometer.getGraduation().setSuffix("C");
 		
 		
@@ -199,33 +215,45 @@ public class GasEquilibrium extends LabFrame {
 	
 	public void resetExperiment() {
 		animateMeasurable(760, manometer); 
-		animateMeasurable(20, thermometer);
+		animateMeasurable(initialTemp, thermometer);
 		
 		bulb.setValue(0.0);
 		addSubstanceButton.setEnabled(true);
 		evacuateButton.setEnabled(false);
 		heatButton.setEnabled(false);
+		reactionOccuring = false;
+		gasParticles.stop();
+		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
 	}
 	
 	public void addSubstance() {
 		bulb.setValue(20.0);
 		evacuateButton.setEnabled(true);
 		addSubstanceButton.setEnabled(false);
-		
+		gasParticles.start();
+		gasParticles.spawnParticle();
 	}
 	
 	public void evacuate() {
 		animateMeasurable(0, manometer);
-	
+		
+		gasParticles.stop();
+		gasParticles.start();
+		gasParticles.spawnParticle();
+		
 		evacuateButton.setEnabled(false);
 		heatButton.setEnabled(true);
 	}
 
 	public void heat() {
-		animateMeasurable(Kp * 760, manometer);
+		//animateMeasurable(Kp * 760, manometer);
 		animateMeasurable(temp, thermometer);
 		
 		heatButton.setEnabled(false);
+		
+		gasParticles.spawnParticle();
+		
+		reactionOccuring = true;
 		
 	}
 	
@@ -237,13 +265,21 @@ public class GasEquilibrium extends LabFrame {
 		KcLabel.setVisible(!KcLabel.isVisible());
 	}
 	
+	
 	@Override
 	public void update() {
-		gasParticles.clearCollidableEdges();
 		
-		for (Point[] edge : bulb.getInnerEdges()) {
-			gasParticles.addCollidableEdge(edge[0].x - bulb.getLastDrawX(), edge[0].y - bulb.getLastDrawY(), edge[1].x - bulb.getLastDrawX(), edge[1].y  - bulb.getLastDrawY());
+		if (reactionOccuring) {
+			gasParticles.setParticleSpawnRate(105 - thermometer.getValue() / temp * 100.0);
+			
+			double p = ((double) gasParticles.getActiveParticles() / gasParticles.getTotalParticles()) * Kp * 760.0;
+			
+			animateMeasurable(p, manometer);
 		}
+		
+		
+		
+		
 	}
 
 	
