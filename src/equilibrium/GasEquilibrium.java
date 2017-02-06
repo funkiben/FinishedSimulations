@@ -1,14 +1,19 @@
 package equilibrium;
 
 import java.awt.Color;
+import java.awt.Point;
 
 import draw.animation.DoubleLerpAnimation;
 import lab.LabFrame;
+import lab.Vector2;
 import lab.component.EmptyComponent;
 import lab.component.VerticalGraduation;
 import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
+import lab.component.fx.Particle;
+import lab.component.fx.ParticleSystem;
+import lab.component.fx.RandomVector2Generator;
 import lab.component.input.ButtonComponent;
 import lab.component.input.LabelComponent;
 import lab.component.sensor.Manometer;
@@ -24,6 +29,7 @@ public class GasEquilibrium extends LabFrame {
 	private final Manometer manometer;
 	private final Bulb bulb;
 	private final Thermometer thermometer;
+	private final ParticleSystem gasParticles;
 	
 	private final ButtonComponent resetButton;
 	private final ButtonComponent addSubstanceButton;
@@ -52,6 +58,23 @@ public class GasEquilibrium extends LabFrame {
 		bulb.setOffsetX(35);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
+		
+		gasParticles = new ParticleSystem(300, 300, 50);
+		gasParticles.setLifetime(Integer.MAX_VALUE);
+		gasParticles.setParticleSpawnRate(0.0001);
+		gasParticles.setSpawnArea(new Vector2(150, 150));
+		gasParticles.setColor(Color.black);
+		gasParticles.setColorFade(0);
+		gasParticles.setShape(Particle.ELLIPSE);
+		gasParticles.setParticleWidth(10);
+		gasParticles.setParticleHeight(10);
+		gasParticles.setParticleWidthChange(0);
+		gasParticles.setParticleHeightChange(0);
+		gasParticles.setVelocity(new RandomVector2Generator(1));
+		gasParticles.start();
+		
+		
+		bulb.addChild(gasParticles);
 		
 		EmptyComponent infoComponent = new EmptyComponent(270, 100);
 		infoComponent.setShowBounds(true);
@@ -216,7 +239,11 @@ public class GasEquilibrium extends LabFrame {
 	
 	@Override
 	public void update() {
+		gasParticles.clearCollidableEdges();
 		
+		for (Point[] edge : bulb.getInnerEdges()) {
+			gasParticles.addCollidableEdge(edge[0].x - bulb.getLastDrawX(), edge[0].y - bulb.getLastDrawY(), edge[1].x - bulb.getLastDrawX(), edge[1].y  - bulb.getLastDrawY());
+		}
 	}
 
 	
