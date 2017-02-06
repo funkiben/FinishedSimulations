@@ -13,10 +13,10 @@ import lab.component.container.ContentState;
 import lab.component.fx.Particle;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
-import lab.component.input.ButtonComponent;
-import lab.component.input.LabelComponent;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
+import lab.component.swing.LabelComponent;
+import lab.component.swing.input.ButtonComponent;
 
 public class GasEquilibrium extends LabFrame {
 

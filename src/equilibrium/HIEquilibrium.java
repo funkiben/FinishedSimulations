@@ -9,11 +9,11 @@ import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.data.GraphDataSet;
+import lab.component.swing.LabelComponent;
+import lab.component.swing.input.ButtonComponent;
+import lab.component.swing.input.LabelSliderComponent;
+import lab.component.swing.input.SliderComponent;
 import lab.component.data.Graph;
-import lab.component.input.LabelComponent;
-import lab.component.input.LabelSliderComponent;
-import lab.component.input.SliderComponent;
-import lab.component.input.ButtonComponent;
 
 public class HIEquilibrium extends LabFrame {
 
@@ -57,21 +57,21 @@ public class HIEquilibrium extends LabFrame {
 	private final ButtonComponent H2SetButton = new ButtonComponent(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			H2Concentration = H2Slider.getValue();
+			H2Concentration = H2Slider.getFloatValue();
 		}
 	};
 	
 	private final ButtonComponent I2SetButton = new ButtonComponent(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			I2Concentration = I2Slider.getValue();
+			I2Concentration = I2Slider.getFloatValue();
 		}
 	};
 	
 	private final ButtonComponent HISetButton = new ButtonComponent(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			HIConcentration = HISlider.getValue();
+			HIConcentration = HISlider.getFloatValue();
 		}
 	};
 	
