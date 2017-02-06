@@ -58,7 +58,6 @@ public class GasEquilibrium extends LabFrame {
 		middleContentArea.setOffsetX(20);
 		
 		bulb = new Bulb(300, 300);
-		//bulb.setOffsetY(230);
 		bulb.setOffsetX(35);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
@@ -229,7 +228,6 @@ public class GasEquilibrium extends LabFrame {
 		addSubstanceButton.setEnabled(false);
 		gasParticles.start();
 		gasParticles.spawnParticle();
-		gasParticles.spawnParticle();
 	}
 	
 	public void evacuate() {
@@ -238,8 +236,7 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.stop();
 		gasParticles.start();
 		gasParticles.spawnParticle();
-		gasParticles.spawnParticle();
-	
+		
 		evacuateButton.setEnabled(false);
 		heatButton.setEnabled(true);
 	}
@@ -269,7 +266,7 @@ public class GasEquilibrium extends LabFrame {
 	public void update() {
 		
 		if (reactionOccuring) {
-			gasParticles.setParticleSpawnRate(102 - thermometer.getValue() / temp * 100.0);
+			gasParticles.setParticleSpawnRate(105 - thermometer.getValue() / temp * 100.0);
 			
 			double p = ((double) gasParticles.getActiveParticles() / gasParticles.getTotalParticles()) * Kp * 760.0;
 			
