@@ -11,7 +11,7 @@ import lab.component.container.ContentState;
 import lab.component.data.GraphDataSet;
 import lab.component.swing.LabelComponent;
 import lab.component.swing.input.ButtonComponent;
-import lab.component.swing.input.LabelSliderComponent;
+import lab.component.swing.input.LabeledSliderComponent;
 import lab.component.swing.input.SliderComponent;
 import lab.component.data.Graph;
 
@@ -50,9 +50,9 @@ public class HIEquilibrium extends LabFrame {
 
 	
 	
-	private final LabelSliderComponent H2Slider = new LabelSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
-	private final LabelSliderComponent I2Slider = new LabelSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
-	private final LabelSliderComponent HISlider = new LabelSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
+	private final LabeledSliderComponent H2Slider = new LabeledSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
+	private final LabeledSliderComponent I2Slider = new LabeledSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
+	private final LabeledSliderComponent HISlider = new LabeledSliderComponent(170, 20, 0.0f, 10.0f, 1.0f, 3, SliderComponent.HORIZONTAL);
 	
 	private final ButtonComponent H2SetButton = new ButtonComponent(60, 30, "Set") {
 		@Override
