@@ -3,8 +3,10 @@ package equilibrium;
 import java.awt.Color;
 
 import draw.animation.DoubleLerpAnimation;
+import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.Vector2;
+import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
 import lab.component.VerticalGraduation;
 import lab.component.MeasurableComponent;
@@ -29,6 +31,7 @@ public class GasEquilibrium extends LabFrame {
 	private final Bulb bulb;
 	private final Thermometer thermometer;
 	private final ParticleSystem gasParticles;
+	private final BunsenBurner burner;
 	
 	private final ButtonComponent resetButton;
 	private final ButtonComponent addSubstanceButton;
@@ -58,8 +61,15 @@ public class GasEquilibrium extends LabFrame {
 		
 		bulb = new Bulb(300, 300);
 		bulb.setOffsetX(35);
+		bulb.setOffsetY(10);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
+		
+		burner = new BunsenBurner(20, 175);
+		burner.setOffsetY(1);
+		burner.setOffsetX(175);
+		burner.getFlames().setVisible(false);
+		burner.getFlames().setIntensity(0);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
@@ -90,7 +100,7 @@ public class GasEquilibrium extends LabFrame {
 		EmptyComponent infoComponent = new EmptyComponent(300, 100);
 		infoComponent.setShowBounds(true);
 		infoComponent.setOffsetX(30);
-		infoComponent.setOffsetY(30);
+		infoComponent.setOffsetY(5);
 		
 		LabelComponent massLabel = new LabelComponent(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
 		massLabel.setFontSize(20);
@@ -109,7 +119,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		infoComponent.addChild(massLabel, tempLabel, atmPressureLabel);
 		
-		middleContentArea.addChild(infoComponent, bulb);
+		middleContentArea.addChild(infoComponent, bulb, burner);
 		
 		
 		thermometer = new Thermometer(500);
@@ -219,6 +229,9 @@ public class GasEquilibrium extends LabFrame {
 		reactionOccuring = false;
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
+		
+		burner.getFlames().setVisible(false);
+		burner.getFlames().setIntensity(0);
 	}
 	
 	public void addSubstance() {
@@ -238,6 +251,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		evacuateButton.setEnabled(false);
 		heatButton.setEnabled(true);
+		
 	}
 
 	public void heat() {
@@ -249,6 +263,19 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.spawnParticle();
 		
 		reactionOccuring = true;
+		
+		burner.getFlames().setVisible(true);
+		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
+			@Override
+			public Integer getValue() {
+				return burner.getFlames().getIntensity();
+			}
+			
+			@Override
+			public void setValue(Integer v) {
+				burner.getFlames().setIntensity(v);
+			}
+		});
 		
 	}
 	
