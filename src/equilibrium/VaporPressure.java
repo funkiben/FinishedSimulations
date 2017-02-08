@@ -5,8 +5,9 @@ import lab.component.HorizontalGraduation;
 import lab.component.VerticalGraduation;
 import lab.component.data.DataTable;
 import lab.component.data.Graph;
-import lab.component.swing.input.ButtonComponent;
-import lab.component.swing.input.CheckBoxComponent;
+import lab.component.swing.input.Button;
+import lab.component.swing.input.CheckBox;
+
 
 //Vapor pressure simulation lab from Ms. Lund Easy Java
 
@@ -20,15 +21,13 @@ public class VaporPressure extends LabFrame{
 	int time = 0;
 	int dtime = 1;
 	
-	ButtonComponent play;
-	ButtonComponent step;
-	ButtonComponent reset;
+
 	Graph molarity;
 	Graph vaporPressure;
 	Graph pressure;
-	CheckBoxComponent showTank;
-	CheckBoxComponent showEquipment;
-	CheckBoxComponent showPressureGraph;
+	CheckBox showTank;
+	CheckBox showEquipment;
+	CheckBox showPressureGraph;
 	DataTable<Double> vaporPressureMolarity;
 	DataTable<Double> vaporPressureTime;
 	
@@ -36,21 +35,26 @@ public class VaporPressure extends LabFrame{
 		new VaporPressure("Vapor Pressure Lab", 700, 800);
 	}
 	
+
+	Button play;
+	Button step;
+	Button reset;
+
 	public VaporPressure(String name, int width, int height) {
 		super(name, width, height);
-		play = new ButtonComponent(100, 25, "Play"){
+		play = new Button(100, 25, "Play"){
 			@Override
 			public void doSomething() {
 				
 			}
 		};
-		step = new ButtonComponent(100, 25, "Step"){
+		step = new Button(100, 25, "Step"){
 			@Override
 			public void doSomething() {
 				
 			}
 		};
-		reset = new ButtonComponent(100, 25, "Reset"){
+		reset = new Button(100, 25, "Reset"){
 			@Override
 			public void doSomething() {
 				
