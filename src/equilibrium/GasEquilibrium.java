@@ -3,8 +3,10 @@ package equilibrium;
 import java.awt.Color;
 
 import draw.animation.DoubleLerpAnimation;
+import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.Vector2;
+import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
 import lab.component.VerticalGraduation;
 import lab.component.MeasurableComponent;
@@ -15,8 +17,8 @@ import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
-import lab.component.swing.LabelComponent;
-import lab.component.swing.input.ButtonComponent;
+import lab.component.swing.Label;
+import lab.component.swing.input.Button;
 
 public class GasEquilibrium extends LabFrame {
 
@@ -29,15 +31,16 @@ public class GasEquilibrium extends LabFrame {
 	private final Bulb bulb;
 	private final Thermometer thermometer;
 	private final ParticleSystem gasParticles;
+	private final BunsenBurner burner;
 	
-	private final ButtonComponent resetButton;
-	private final ButtonComponent addSubstanceButton;
-	private final ButtonComponent evacuateButton;
-	private final ButtonComponent heatButton;
-	private final ButtonComponent showKpButton;
-	private final ButtonComponent showKcButton;
-	private final LabelComponent KcLabel;
-	private final LabelComponent KpLabel;
+	private final Button resetButton;
+	private final Button addSubstanceButton;
+	private final Button evacuateButton;
+	private final Button heatButton;
+	private final Button showKpButton;
+	private final Button showKcButton;
+	private final Label KcLabel;
+	private final Label KpLabel;
 	
 	private boolean reactionOccuring = false;
 	
@@ -58,8 +61,15 @@ public class GasEquilibrium extends LabFrame {
 		
 		bulb = new Bulb(300, 300);
 		bulb.setOffsetX(35);
+		bulb.setOffsetY(10);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
+		
+		burner = new BunsenBurner(20, 175);
+		burner.setOffsetY(1);
+		burner.setOffsetX(175);
+		burner.getFlames().setVisible(false);
+		burner.getFlames().setIntensity(0);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
@@ -90,26 +100,26 @@ public class GasEquilibrium extends LabFrame {
 		EmptyComponent infoComponent = new EmptyComponent(300, 100);
 		infoComponent.setShowBounds(true);
 		infoComponent.setOffsetX(30);
-		infoComponent.setOffsetY(30);
+		infoComponent.setOffsetY(5);
 		
-		LabelComponent massLabel = new LabelComponent(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
+		Label massLabel = new Label(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
 		massLabel.setFontSize(20);
 		massLabel.setOffsetX(10);
 		massLabel.setOffsetY(0);
 		
-		LabelComponent atmPressureLabel = new LabelComponent(300, 30, "Atmosphere: 1.0 atm");
+		Label atmPressureLabel = new Label(300, 30, "Atmosphere: 1.0 atm");
 		atmPressureLabel.setFontSize(20);
 		atmPressureLabel.setOffsetX(10);
 		atmPressureLabel.setOffsetY(0);
 		
-		LabelComponent tempLabel = new LabelComponent(300, 30, "Initial Temp: " + initialTemp + "C");
+		Label tempLabel = new Label(300, 30, "Initial Temp: " + initialTemp + "C");
 		tempLabel.setFontSize(20);
 		tempLabel.setOffsetX(10);
 		tempLabel.setOffsetY(0);
 		
 		infoComponent.addChild(massLabel, tempLabel, atmPressureLabel);
 		
-		middleContentArea.addChild(infoComponent, bulb);
+		middleContentArea.addChild(infoComponent, bulb, burner);
 		
 		
 		thermometer = new Thermometer(500);
@@ -125,54 +135,54 @@ public class GasEquilibrium extends LabFrame {
 		
 		
 		
-		resetButton = new ButtonComponent(150, 25, "Reset Experiment") {
+		resetButton = new Button(150, 25, "Reset Experiment") {
 			@Override
 			public void doSomething() {
 				resetExperiment();
 			}
 		};
 		
-		addSubstanceButton = new ButtonComponent(150, 25, "Add " + substance) {
+		addSubstanceButton = new Button(150, 25, "Add " + substance) {
 			@Override
 			public void doSomething() {
 				addSubstance();
 			}
 		};
 		
-		evacuateButton = new ButtonComponent(150, 25, "Evacuate Bulb") {
+		evacuateButton = new Button(150, 25, "Evacuate Bulb") {
 			@Override
 			public void doSomething() {
 				evacuate();
 			}
 		};
 		
-		heatButton = new ButtonComponent(150, 25, "Heat System") {
+		heatButton = new Button(150, 25, "Heat System") {
 			@Override
 			public void doSomething() {
 				heat();
 			}
 		};
 		
-		showKpButton = new ButtonComponent(100, 25, "Show Kp")  {
+		showKpButton = new Button(100, 25, "Show Kp")  {
 			@Override
 			public void doSomething() {
 				showKp();
 			}
 		};
 		
-		showKcButton = new ButtonComponent(100, 25, "Show Kc")  {
+		showKcButton = new Button(100, 25, "Show Kc")  {
 			@Override
 			public void doSomething() {
 				showKc();
 			}
 		};
 		
-		KpLabel = new LabelComponent(100, 20, "Kp: " + Kp);
+		KpLabel = new Label(100, 20, "Kp: " + Kp);
 		KpLabel.setVisible(false);
-		KcLabel = new LabelComponent(100, 20, "Kc: " + Kc);
+		KcLabel = new Label(100, 20, "Kc: " + Kc);
 		KcLabel.setVisible(false);
 		
-		LabelComponent reactionLabel = new LabelComponent(250, 15, reaction);
+		Label reactionLabel = new Label(250, 15, reaction);
 		reactionLabel.setOffsetY(0);
 		
 		resetButton.setOffsetY(5);
@@ -219,6 +229,9 @@ public class GasEquilibrium extends LabFrame {
 		reactionOccuring = false;
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
+		
+		burner.getFlames().setVisible(false);
+		burner.getFlames().setIntensity(0);
 	}
 	
 	public void addSubstance() {
@@ -238,6 +251,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		evacuateButton.setEnabled(false);
 		heatButton.setEnabled(true);
+		
 	}
 
 	public void heat() {
@@ -249,6 +263,19 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.spawnParticle();
 		
 		reactionOccuring = true;
+		
+		burner.getFlames().setVisible(true);
+		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
+			@Override
+			public Integer getValue() {
+				return burner.getFlames().getIntensity();
+			}
+			
+			@Override
+			public void setValue(Integer v) {
+				burner.getFlames().setIntensity(v);
+			}
+		});
 		
 	}
 	
