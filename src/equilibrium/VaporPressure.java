@@ -56,11 +56,14 @@ public class VaporPressure extends LabFrame {
 
 			}
 		};
-		HorizontalGraduation horizontalGraduation = new HorizontalGraduation(0, 100, 20, 10);
-		VerticalGraduation verticalGraduation = new VerticalGraduation(54, 55.8, .2, .1);
+		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
+		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.8, .2, .1);
+		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
 		molarity = new Graph(750, 500, "Molarity vs Time 20C, 30C, 40C, 60C", "Molarity H2O (mol/L)", "Time (s)",
-				verticalGraduation, horizontalGraduation);
-		addComponent(molarity, play, step, reset);
+				molarityGraduation, timeGraduation);
+		vaporPressure = new Graph(750, 500, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Vapor Pressure", "Time (s)",
+				vaporPressureGraduation, timeGraduation);
+		addComponent(molarity, vaporPressure, play, step, reset);
 		start(30);
 	}
 
