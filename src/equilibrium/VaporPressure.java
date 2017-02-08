@@ -1,7 +1,7 @@
 package equilibrium;
 
 import lab.LabFrame;
-import lab.component.input.ButtonComponent;
+import lab.component.swing.input.Button;
 
 //Vapor pressure simulation lab from Ms. Lund Easy Java
 
@@ -14,9 +14,9 @@ public class VaporPressure extends LabFrame{
 	int time = 0;
 	int dtime = 1;
 	
-	ButtonComponent play;
-	ButtonComponent step;
-	ButtonComponent reset;
+	Button play;
+	Button step;
+	Button reset;
 	public VaporPressure(String name, int width, int height) {
 		super("Vapor Pressure Lab", 700, 800);
 
