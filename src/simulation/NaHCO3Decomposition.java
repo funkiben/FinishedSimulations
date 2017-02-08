@@ -1,4 +1,4 @@
-package equilibrium;
+package simulation;
 
 public class NaHCO3Decomposition {
 	
