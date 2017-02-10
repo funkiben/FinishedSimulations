@@ -1,4 +1,4 @@
-package equilibrium;
+package simulation;
 
 import lab.LabFrame;
 import lab.component.HorizontalGraduation;
