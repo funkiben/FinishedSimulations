@@ -38,33 +38,37 @@ public class VaporPressure extends LabFrame {
 
 	public VaporPressure(String name, int width, int height) {
 		super(name, width, height);
+		getRoot().setLayout(0);
 		play = new Button(100, 25, "Play") {
 			@Override
 			public void doSomething() {
 
 			}
 		};
+		play.setOffset(60, 500);
 		step = new Button(100, 25, "Step") {
 			@Override
 			public void doSomething() {
 
 			}
 		};
+		step.setOffset(160, 500);
 		reset = new Button(100, 25, "Reset") {
 			@Override
 			public void doSomething() {
 
 			}
 		};
+		reset.setOffset(260, 500);
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.8, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
 		molarity = new Graph(300, 400, "Molarity vs Time 20C, 30C, 40C, 60C", "Molarity H2O (mol/L)", "Time (s)",
 				molarityGraduation, timeGraduation);
-		molarity.setOffsetX(50);
+		molarity.setOffset(60, 50);
 		vaporPressure = new Graph(300, 400, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Vapor Pressure", "Time (s)",
 				vaporPressureGraduation, timeGraduation);
-		vaporPressure.setOffsetX(130);
+		vaporPressure.setOffset(580, 50);
 		addComponent(molarity, vaporPressure, play, step, reset);
 		start(30);
 	}
