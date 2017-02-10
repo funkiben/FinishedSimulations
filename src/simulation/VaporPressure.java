@@ -33,7 +33,7 @@ public class VaporPressure extends LabFrame {
 	private DataTable<Double> vaporPressureTime;
 
 	public static void main(String args[]) {
-		new VaporPressure("Vapor Pressure Lab", 1000, 800);
+		new VaporPressure("Vapor Pressure Lab", 930, 800);
 	}
 
 	public VaporPressure(String name, int width, int height) {
@@ -66,9 +66,10 @@ public class VaporPressure extends LabFrame {
 		molarity = new Graph(300, 400, "Molarity vs Time 20C, 30C, 40C, 60C", "Molarity H2O (mol/L)", "Time (s)",
 				molarityGraduation, timeGraduation);
 		molarity.setOffset(60, 50);
+		molarityGraduation.setTextOffset(-32);
 		vaporPressure = new Graph(300, 400, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Vapor Pressure", "Time (s)",
 				vaporPressureGraduation, timeGraduation);
-		vaporPressure.setOffset(580, 50);
+		vaporPressure.setOffset(500, 50);
 		addComponent(molarity, vaporPressure, play, step, reset);
 		start(30);
 	}
