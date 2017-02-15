@@ -3,8 +3,10 @@ package simulation;
 import java.awt.Color;
 
 import draw.animation.DoubleLerpAnimation;
+import draw.animation.DoubleLinearAnimation;
 import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
+import lab.SigFig;
 import lab.Vector2;
 import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
@@ -37,10 +39,9 @@ public class GasEquilibrium extends LabFrame {
 	private final Button addSubstanceButton;
 	private final Button evacuateButton;
 	private final Button heatButton;
-	private final Button showKpButton;
-	private final Button showKcButton;
-	private final Label KcLabel;
-	private final Label KpLabel;
+	private final Button detailsButton;
+	
+	private final LabFrame detailsWindow;
 	
 	private boolean reactionOccuring = false;
 	
@@ -61,7 +62,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		bulb = new Bulb(300, 300);
 		bulb.setOffsetX(35);
-		bulb.setOffsetY(10);
+		bulb.setOffsetY(60);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
 		
@@ -97,29 +98,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		bulb.addChild(gasParticles);
 		
-		EmptyComponent infoComponent = new EmptyComponent(300, 100);
-		infoComponent.setShowBounds(true);
-		infoComponent.setOffsetX(30);
-		infoComponent.setOffsetY(5);
-		
-		Label massLabel = new Label(300, 30, "Initial NaHCO3 Mass: " + mass + "g");
-		massLabel.setFontSize(20);
-		massLabel.setOffsetX(10);
-		massLabel.setOffsetY(0);
-		
-		Label atmPressureLabel = new Label(300, 30, "Atmosphere: 1.0 atm");
-		atmPressureLabel.setFontSize(20);
-		atmPressureLabel.setOffsetX(10);
-		atmPressureLabel.setOffsetY(0);
-		
-		Label tempLabel = new Label(300, 30, "Initial Temp: " + initialTemp + "C");
-		tempLabel.setFontSize(20);
-		tempLabel.setOffsetX(10);
-		tempLabel.setOffsetY(0);
-		
-		infoComponent.addChild(massLabel, tempLabel, atmPressureLabel);
-		
-		middleContentArea.addChild(infoComponent, bulb, burner);
+		middleContentArea.addChild(bulb, burner);
 		
 		
 		thermometer = new Thermometer(500);
@@ -163,24 +142,12 @@ public class GasEquilibrium extends LabFrame {
 			}
 		};
 		
-		showKpButton = new Button(100, 25, "Show Kp")  {
+		detailsButton = new Button(100, 25, "Show Details")  {
 			@Override
 			public void doSomething() {
-				showKp();
+				detailsWindow.setVisible(true);
 			}
 		};
-		
-		showKcButton = new Button(100, 25, "Show Kc")  {
-			@Override
-			public void doSomething() {
-				showKc();
-			}
-		};
-		
-		KpLabel = new Label(100, 20, "Kp: " + Kp);
-		KpLabel.setVisible(false);
-		KcLabel = new Label(100, 20, "Kc: " + Kc);
-		KcLabel.setVisible(false);
 		
 		Label reactionLabel = new Label(250, 15, reaction);
 		reactionLabel.setOffsetY(0);
@@ -190,12 +157,49 @@ public class GasEquilibrium extends LabFrame {
 		addSubstanceButton.setOffsetY(5);
 		evacuateButton.setOffsetY(5);
 		heatButton.setOffsetY(5);
-		showKpButton.setOffsetY(5);
-		showKcButton.setOffsetY(5);
-		KpLabel.setOffsetY(5);
-		KcLabel.setOffsetY(5);
 		
-		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, heatButton, showKpButton, showKcButton, KpLabel, KcLabel);
+		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, heatButton, detailsButton);
+		
+		
+		detailsWindow = new LabFrame("Simulation Details", 400, 250, false) {
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void update() {
+				
+			}
+		};
+		
+		detailsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		detailsWindow.setResizable(false);
+		
+		Label massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
+		massLabel.setFontSize(20);
+		massLabel.setOffset(10, 0);
+		
+		Label atmPressureLabel = new Label(400, 30, "Atmosphere Pressure = 1.0 atm");
+		atmPressureLabel.setFontSize(20);
+		atmPressureLabel.setOffset(10, 0);
+		
+		Label initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
+		initTempLabel.setFontSize(20);
+		initTempLabel.setOffset(10, 0);
+		
+		Label finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
+		finalTempLabel.setFontSize(20);
+		finalTempLabel.setOffset(10, 0);
+		
+		Label KpLabel = new Label(400, 30, "Kp = " + Kp);
+		KpLabel.setFontSize(20);
+		KpLabel.setOffset(10, 0);
+		
+		Label KcLabel = new Label(400, 30, "Kc = " + Kc);
+		KcLabel.setFontSize(20);
+		KcLabel.setOffset(10, 0);
+		
+		detailsWindow.addComponent(massLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
+		detailsWindow.start(10);
 		
 		resetExperiment();
 		
@@ -255,7 +259,6 @@ public class GasEquilibrium extends LabFrame {
 	}
 
 	public void heat() {
-		//animateMeasurable(Kp * 760, manometer);
 		animateMeasurable(temp, thermometer);
 		
 		heatButton.setEnabled(false);
@@ -265,6 +268,7 @@ public class GasEquilibrium extends LabFrame {
 		reactionOccuring = true;
 		
 		burner.getFlames().setVisible(true);
+		
 		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
 			@Override
 			public Integer getValue() {
@@ -277,16 +281,19 @@ public class GasEquilibrium extends LabFrame {
 			}
 		});
 		
+		getAnimator().addAnimation("removeSolid", new DoubleLinearAnimation(15.0, 0.06) {
+			@Override
+			public Double getValue() {
+				return bulb.getValue();
+			}
+			
+			@Override
+			public void setValue(Double v) {
+				bulb.setValue(v);
+			}
+		});
+		
 	}
-	
-	public void showKp() {
-		KpLabel.setVisible(!KpLabel.isVisible());
-	}
-	
-	public void showKc() {
-		KcLabel.setVisible(!KcLabel.isVisible());
-	}
-	
 	
 	@Override
 	public void update() {
