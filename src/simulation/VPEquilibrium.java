@@ -12,7 +12,7 @@ import lab.component.container.Bulb;
 import lab.component.data.GraphDataSet;
 import lab.component.data.Graph;
 import lab.component.swing.input.DropdownMenu;
-import lab.component.swing.input.LabeledSlider;
+import lab.component.swing.input.LabeledDoubleSlider;
 import lab.component.swing.Label;
 import lab.substance.Substance;
 
@@ -21,7 +21,7 @@ public class VPEquilibrium extends LabFrame {
 	private final Graph graph;
 	private static final long serialVersionUID = 1L;
 	private final Bulb flask1, flask2;
-	private final LabeledSlider tempSlider;
+	private final LabeledDoubleSlider tempSlider;
 	private final VerticalGraduation vGrad;
 	private final HorizontalGraduation hGrad;
 	private ArrayList<Substance> substances;
@@ -65,7 +65,7 @@ public class VPEquilibrium extends LabFrame {
 				hGrad);
 		flask1 = new Bulb(150, 150);
 		flask2 = new Bulb(150, 150);
-		tempSlider = new LabeledSlider(200, 300, 0.0f, 100.0f, 1f, 4, 1);
+		tempSlider = new LabeledDoubleSlider(200, 300, 0.0f, 100.0f, 1f, 4, 1);
 		dropdown = new DropdownMenu(200, 50) {
 
 			@Override
@@ -147,14 +147,14 @@ public class VPEquilibrium extends LabFrame {
 			}
 		}
 
-		if (Math.abs(tempo - (float) tempSlider.getValue()) > 1) {
-			if (tempo - (float) tempSlider.getValue() < -1) {
+		if (Math.abs(tempo - tempSlider.getValue()) > 1) {
+			if (tempo - tempSlider.getValue() < -1) {
 				tempo++;
-			} else if (tempo - (float) tempSlider.getValue() > 1) {
+			} else if (tempo - tempSlider.getValue() > 1) {
 				tempo--;
 			}
 		} else {
-			tempo = (float) tempSlider.getValue();
+			tempo = tempSlider.getValue();
 		}
 	}
 

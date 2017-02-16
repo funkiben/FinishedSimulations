@@ -19,7 +19,7 @@ import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.swing.input.Button;
 import lab.component.swing.Label;
-import lab.component.swing.input.Slider;
+import lab.component.swing.input.DoubleSlider;
 import lab.component.swing.input.TextField;
 import lab.substance.Substance;
 
@@ -58,7 +58,7 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 
 
 
-	private Slider slider;
+	private DoubleSlider doubleSlider;
 	private TextField tempField;
 
 	private VerticalGraduation vg = new VerticalGraduation(0, 10, 2, 1);
@@ -96,8 +96,8 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 				temperature = 0;
 				tempValue = 0;
 				globalDifference = 0;
-				slider.setValue(((2750-700)/2)+700);
-				tempField.setText(slider.getValue() + "");
+				doubleSlider.setValue(((2750-700)/2)+700);
+				tempField.setText(doubleSlider.getValue() + "");
 				
 			}
 		};
@@ -135,13 +135,13 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 		button.setOffsetX(25);
 		tempField = new TextField(100, 30,"");
 		tempField.setOffsetY(25);
-		slider = new Slider(200, 100, 700, 2750, 0.01f, 0){
+		doubleSlider = new DoubleSlider(200, 100, 700, 2750, 0.01f, 0){
 			@Override
 			public void onChange() {}
 		};
 		
-		slider.setOffsetX(-215);
-		slider.setOffsetY(100);
+		doubleSlider.setOffsetX(-215);
+		doubleSlider.setOffsetY(100);
 		
 		s = new Graph(400, 400, "Moles of reactants", "s", "Moles", vg, hg);
 		s.setOffsetX(150);
@@ -165,7 +165,7 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 		
 		addComponent(button);
 		addComponent(tempField);
-		addComponent(slider);
+		addComponent(doubleSlider);
 		addComponent(l);
 		
 		for(int i = 0; i < substanceArray.size(); i++) {
@@ -207,26 +207,26 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 			
 			if (keyPressed) {
 				try {
-					slider.setValue(Float.parseFloat(tempField.getValue()));
+					doubleSlider.setValue(tempField.getValue());
 				} catch(Exception e) {
 					
 				}
-				temperature = (float)slider.getValue();
-				slider.getJComponent().requestFocus();
+				temperature = doubleSlider.getValue();
+				doubleSlider.getJComponent().requestFocus();
 				keyPressed = false;
 			}
 			
-		} else if (slider.getJComponent().hasFocus()) {
+		} else if (doubleSlider.getJComponent().hasFocus()) {
 			
 			
-			tempField.setText(slider.getValue() + "");
-			temperature = (float)slider.getValue();
+			tempField.setText(doubleSlider.getValue() + "");
+			temperature = doubleSlider.getValue();
 			
 			
 		} else {
 			
-			temperature = (float)slider.getValue();
-			tempField.setText(slider.getValue() + "");
+			temperature = doubleSlider.getValue();
+			tempField.setText(doubleSlider.getValue() + "");
 			
 		}
 		
