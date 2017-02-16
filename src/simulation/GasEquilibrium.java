@@ -142,7 +142,7 @@ public class GasEquilibrium extends LabFrame {
 			}
 		};
 		
-		detailsButton = new Button(100, 25, "Show Details")  {
+		detailsButton = new Button(150, 25, "Show Details")  {
 			@Override
 			public void doSomething() {
 				detailsWindow.setVisible(true);
@@ -225,6 +225,10 @@ public class GasEquilibrium extends LabFrame {
 	public void resetExperiment() {
 		animateMeasurable(760, manometer); 
 		animateMeasurable(initialTemp, thermometer);
+		
+		if (getAnimator().animationExists("removeSolid")) {
+			getAnimator().getAnimation("removeSolid").cancel();
+		}
 		
 		bulb.setValue(0.0);
 		addSubstanceButton.setEnabled(true);
