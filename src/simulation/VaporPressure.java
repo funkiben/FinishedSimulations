@@ -35,7 +35,7 @@ public class VaporPressure extends LabFrame {
 	private DataTable<Double> vaporPressureTimeTable;
 
 	public static void main(String args[]) {
-		new VaporPressure("Vapor Pressure Lab", 930, 975);
+		new VaporPressure("Vapor Pressure Lab", 800, 800);
 	}
 
 	public VaporPressure(String name, int width, int height) {
