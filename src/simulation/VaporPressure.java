@@ -47,33 +47,33 @@ public class VaporPressure extends LabFrame {
 
 			}
 		};
-		play.setOffset(60, 500);
+		play.setOffset(30, 400);
 		step = new Button(100, 25, "Step") {
 			@Override
 			public void doSomething() {
 
 			}
 		};
-		step.setOffset(160, 500);
+		step.setOffset(130, 400);
 		reset = new Button(100, 25, "Reset") {
 			@Override
 			public void doSomething() {
 
 			}
 		};
-		reset.setOffset(260, 500);
+		reset.setOffset(230, 400);
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
-		molarityGraph = new Graph(300, 350, "Molarity vs Time 20C, 30C, 40C, 60C", "Molarity H2O (mol/L)", "Time (s)",
+		molarityGraph = new Graph(250, 300, "Molarity vs Time 20C, 30C, 40C, 60C", "Molarity H2O (mol/L)", "Time (s)",
 				molarityGraduation, timeGraduation);
 		molarityGraph.setOffset(60, 50);
 		molarityGraduation.setTextOffset(-32);
-		vaporPressureGraph = new Graph(300, 350, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Vapor Pressure", "Time (s)",
+		vaporPressureGraph = new Graph(250, 300, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Vapor Pressure", "Time (s)",
 				vaporPressureGraduation, timeGraduation);
-		vaporPressureGraph.setOffset(500, 50);
+		vaporPressureGraph.setOffset(450, 50);
 		vaporPressureMolarityTable = new DataTable<Double>(600, 75, 2, 4, DataTable.ROW_TITLES_ONLY);
-		vaporPressureMolarityTable.setOffset(60, 550);
+		vaporPressureMolarityTable.setOffset(30, 450);
 		for(int i = 0; i < vaporPressure.length; i++){
 			vaporPressure[i] = 0;
 		}
@@ -85,14 +85,14 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
-		showTank = new CheckBox(210, 25, "Show Tank");
-		showTank.setOffset(700, 500);
-		showEquipment = new CheckBox(210, 25, "Show Equipment");
-		showEquipment.setOffset(700, 525);
-		showPressureGraph = new CheckBox(210, 25, "Show Pressure vs. Time Graph");
-		showPressureGraph.setOffset(700, 550);
-		vaporPressureTimeTable = new DataTable<Double>(850, 375, 11, 8, DataTable.COLUMN_TITLES_ONLY);
-		vaporPressureTimeTable.setOffset(60, 600);
+		showTank = new CheckBox(90, 25, "Show Tank");
+		showTank.setOffset(345, 400);
+		showEquipment = new CheckBox(125, 25, "Show Equipment");
+		showEquipment.setOffset(435, 400);
+		showPressureGraph = new CheckBox(205, 25, "Show Pressure vs. Time Graph");
+		showPressureGraph.setOffset(560, 400);
+		vaporPressureTimeTable = new DataTable<Double>(730, 375, 11, 8, DataTable.COLUMN_TITLES_ONLY);
+		vaporPressureTimeTable.setOffset(30, 550);
 		for(int i = 0; i < 4; i++){
 			vaporPressureTimeTable.setColumnTitle(i*2, "Time (s)");
 		}
