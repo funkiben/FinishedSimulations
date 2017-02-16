@@ -207,7 +207,7 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 			
 			if (keyPressed) {
 				try {
-					slider.setValue((float)tempField.getValue());
+					slider.setValue(Float.parseFloat(tempField.getValue()));
 				} catch(Exception e) {
 					
 				}
