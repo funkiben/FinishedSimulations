@@ -69,8 +69,8 @@ public class GasEquilibrium extends LabFrame {
 		burner = new BunsenBurner(20, 175);
 		burner.setOffsetY(1);
 		burner.setOffsetX(175);
-		burner.getFlames().setVisible(false);
-		burner.getFlames().setIntensity(0);
+		burner.getFlame().setVisible(false);
+		burner.getFlame().setIntensity(0);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
@@ -238,8 +238,8 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
 		
-		burner.getFlames().setVisible(false);
-		burner.getFlames().setIntensity(0);
+		burner.getFlame().setVisible(false);
+		burner.getFlame().setIntensity(0);
 	}
 	
 	public void addSubstance() {
@@ -271,17 +271,17 @@ public class GasEquilibrium extends LabFrame {
 		
 		reactionOccuring = true;
 		
-		burner.getFlames().setVisible(true);
+		burner.getFlame().setVisible(true);
 		
 		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
 			@Override
 			public Integer getValue() {
-				return burner.getFlames().getIntensity();
+				return burner.getFlame().getIntensity();
 			}
 			
 			@Override
 			public void setValue(Integer v) {
-				burner.getFlames().setIntensity(v);
+				burner.getFlame().setIntensity(v);
 			}
 		});
 		
