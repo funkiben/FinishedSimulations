@@ -121,6 +121,8 @@ public class GasEquilibrium extends LabFrame {
 			}
 		};
 		
+		resetButton.setOffsetX(30);
+		
 		addSubstanceButton = new Button(150, 25, "Add " + substance) {
 			@Override
 			public void doSomething() {
@@ -148,6 +150,8 @@ public class GasEquilibrium extends LabFrame {
 				detailsWindow.setVisible(true);
 			}
 		};
+		
+		detailsButton.setOffset(30, 5);
 		
 		Label reactionLabel = new Label(250, 15, reaction);
 		reactionLabel.setOffsetY(0);
@@ -314,7 +318,5 @@ public class GasEquilibrium extends LabFrame {
 		
 		
 	}
-
-	
 
 }
