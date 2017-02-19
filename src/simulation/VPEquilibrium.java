@@ -65,7 +65,7 @@ public class VPEquilibrium extends LabFrame {
 				hGrad);
 		flask1 = new Bulb(150, 150);
 		flask2 = new Bulb(150, 150);
-		tempSlider = new LabeledDoubleSlider(200, 300, 0.0f, 100.0f, 1f, 4, 1);
+		tempSlider = new LabeledDoubleSlider(200, 0.0f, 100.0f, 1f, 4, 1);
 		dropdown = new DropdownMenu<String>(200, 50) {
 
 			@Override

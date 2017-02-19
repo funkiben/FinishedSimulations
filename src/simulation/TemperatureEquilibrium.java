@@ -133,9 +133,9 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 		};
 		button.setOffsetY(25);
 		button.setOffsetX(25);
-		tempField = new TextField(100, 30,"");
+		tempField = new TextField(100,"");
 		tempField.setOffsetY(25);
-		doubleSlider = new DoubleSlider(200, 100, 700, 2750, 0.01f, 0){
+		doubleSlider = new DoubleSlider(200, 700, 2750, 0.01f, 0){
 			@Override
 			public void onChange() {}
 		};

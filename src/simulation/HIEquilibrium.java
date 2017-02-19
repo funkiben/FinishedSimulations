@@ -50,9 +50,9 @@ public class HIEquilibrium extends LabFrame {
 
 	
 	
-	private final LabeledDoubleSlider H2Slider = new LabeledDoubleSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
-	private final LabeledDoubleSlider I2Slider = new LabeledDoubleSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
-	private final LabeledDoubleSlider HISlider = new LabeledDoubleSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
+	private final LabeledDoubleSlider H2Slider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
+	private final LabeledDoubleSlider I2Slider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
+	private final LabeledDoubleSlider HISlider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
 	
 	private final Button H2SetButton = new Button(60, 30, "Set") {
 		@Override
