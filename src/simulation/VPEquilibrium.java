@@ -11,7 +11,7 @@ import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.data.GraphDataSet;
 import lab.component.data.Graph;
-import lab.component.swing.input.DropdownMenu;
+import lab.component.swing.input.Dropdown;
 import lab.component.swing.input.LabeledDoubleSlider;
 import lab.component.swing.Label;
 import lab.substance.Substance;
@@ -25,8 +25,8 @@ public class VPEquilibrium extends LabFrame {
 	private final VerticalGraduation vGrad;
 	private final HorizontalGraduation hGrad;
 	private ArrayList<Substance> substances;
-	private DropdownMenu<String> dropdown;
-	private DropdownMenu<String> dropdown2;
+	private Dropdown<String> dropdown;
+	private Dropdown<String> dropdown2;
 	private Label f1Label;
 	private Label f2Label;
 	private double tempo;
@@ -66,7 +66,7 @@ public class VPEquilibrium extends LabFrame {
 		flask1 = new Bulb(150, 150);
 		flask2 = new Bulb(150, 150);
 		tempSlider = new LabeledDoubleSlider(200, 0.0f, 100.0f, 1f, 4, 1);
-		dropdown = new DropdownMenu<String>(200, 50) {
+		dropdown = new Dropdown<String>(200, 50) {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -74,7 +74,7 @@ public class VPEquilibrium extends LabFrame {
 			}
 
 		};
-		dropdown2 = new DropdownMenu<String>(200, 50) {
+		dropdown2 = new Dropdown<String>(200, 50) {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
