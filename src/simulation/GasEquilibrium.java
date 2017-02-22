@@ -15,6 +15,7 @@ import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.fx.Particle;
+import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
 import lab.component.sensor.Manometer;
@@ -78,7 +79,7 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.setSpawnArea(new Vector2(150, 295));
 		gasParticles.setColor(Color.black);
 		gasParticles.setColorFade(0);
-		gasParticles.setShape(Particle.ELLIPSE);
+		gasParticles.setShape(ParticleShape.ELLIPSE);
 		gasParticles.setParticleWidth(6);
 		gasParticles.setParticleHeight(6);
 		gasParticles.setParticleWidthChange(0);
