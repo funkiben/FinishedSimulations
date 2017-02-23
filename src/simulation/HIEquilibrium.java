@@ -2,16 +2,16 @@ package simulation;
 import java.awt.Color;
 
 import lab.LabFrame;
-import lab.SigFig;
 import lab.component.EmptyComponent;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.data.GraphDataSet;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
 import lab.component.swing.input.LabeledDoubleSlider;
+import lab.util.HorizontalGraduation;
+import lab.util.SigFig;
+import lab.util.VerticalGraduation;
 import lab.component.swing.input.DoubleSlider;
 import lab.component.data.Graph;
 

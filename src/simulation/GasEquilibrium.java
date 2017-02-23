@@ -6,11 +6,8 @@ import draw.animation.DoubleLerpAnimation;
 import draw.animation.DoubleLinearAnimation;
 import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
-import lab.SigFig;
-import lab.Vector2;
 import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
-import lab.component.VerticalGraduation;
 import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
@@ -22,6 +19,9 @@ import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
+import lab.util.SigFig;
+import lab.util.Vector2;
+import lab.util.VerticalGraduation;
 
 public class GasEquilibrium extends LabFrame {
 

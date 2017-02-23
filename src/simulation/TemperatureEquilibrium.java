@@ -11,10 +11,6 @@ import lab.component.data.Graph;
 
 
 import lab.LabFrame;
-import lab.SigFig;
-import lab.Vector2;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.swing.input.Button;
@@ -22,6 +18,10 @@ import lab.component.swing.Label;
 import lab.component.swing.input.DoubleSlider;
 import lab.component.swing.input.TextField;
 import lab.substance.Substance;
+import lab.util.HorizontalGraduation;
+import lab.util.SigFig;
+import lab.util.Vector2;
+import lab.util.VerticalGraduation;
 
 public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 

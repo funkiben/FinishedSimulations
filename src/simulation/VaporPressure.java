@@ -1,12 +1,12 @@
 package simulation;
 
 import lab.LabFrame;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.data.DataTable;
 import lab.component.data.Graph;
 import lab.component.swing.input.Button;
 import lab.component.swing.input.CheckBox;
+import lab.util.HorizontalGraduation;
+import lab.util.VerticalGraduation;
 
 
 //Vapor pressure simulation lab from Ms. Lund Easy Java

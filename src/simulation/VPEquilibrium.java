@@ -5,9 +5,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import lab.LabFrame;
-import lab.Vector2;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.data.GraphDataSet;
 import lab.component.data.Graph;
@@ -15,6 +12,9 @@ import lab.component.swing.input.Dropdown;
 import lab.component.swing.input.LabeledDoubleSlider;
 import lab.component.swing.Label;
 import lab.substance.Substance;
+import lab.util.HorizontalGraduation;
+import lab.util.Vector2;
+import lab.util.VerticalGraduation;
 
 public class VPEquilibrium extends LabFrame {
 
