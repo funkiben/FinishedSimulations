@@ -10,7 +10,6 @@ import lab.component.EmptyComponent;
 import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
-import lab.component.fx.Particle;
 import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
