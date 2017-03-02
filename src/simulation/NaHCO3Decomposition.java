@@ -213,7 +213,7 @@ public class NaHCO3Decomposition extends LabFrame {
 		KcLabel.setOffset(10, 0);
 		
 		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
-		detailsWindow.start(10);
+		detailsWindow.start(0);
 		
 		resetExperiment();
 		
