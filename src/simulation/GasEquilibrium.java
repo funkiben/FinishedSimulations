@@ -45,7 +45,7 @@ public class GasEquilibrium extends LabFrame {
 	
 	private boolean reactionOccuring = false;
 	
-	public GasEquilibrium(String name, double mass, String substance, String reaction, double Kp, double Kc, double initialTemp, double temp) {
+	public GasEquilibrium(String name, double mass, double volume, String substance, String reaction, double Kp, double Kc, double initialTemp, double temp) {
 		super(name, 660, 725);
 		
 		this.Kp = Kp;
@@ -178,31 +178,37 @@ public class GasEquilibrium extends LabFrame {
 		detailsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		detailsWindow.setResizable(false);
 		
-		Label massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
+		Label massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel;
+		
+		massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
 		massLabel.setFontSize(20);
 		massLabel.setOffset(10, 0);
 		
-		Label atmPressureLabel = new Label(400, 30, "Atmosphere Pressure = 1.0 atm");
+		volumeLabel = new Label(400, 30, "Bulb Volume = " + SigFig.sigfigalize(volume, 3) + "L");
+		volumeLabel.setFontSize(20);
+		volumeLabel.setOffset(10, 0);
+		
+		atmPressureLabel = new Label(400, 30, "Atmosphere Pressure = 1.0 atm");
 		atmPressureLabel.setFontSize(20);
 		atmPressureLabel.setOffset(10, 0);
 		
-		Label initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
+		initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
 		initTempLabel.setFontSize(20);
 		initTempLabel.setOffset(10, 0);
 		
-		Label finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
+		finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
 		finalTempLabel.setFontSize(20);
 		finalTempLabel.setOffset(10, 0);
 		
-		Label KpLabel = new Label(400, 30, "Kp = " + Kp);
+		KpLabel = new Label(400, 30, "Kp = " + Kp);
 		KpLabel.setFontSize(20);
 		KpLabel.setOffset(10, 0);
 		
-		Label KcLabel = new Label(400, 30, "Kc = " + Kc);
+		KcLabel = new Label(400, 30, "Kc = " + Kc);
 		KcLabel.setFontSize(20);
 		KcLabel.setOffset(10, 0);
 		
-		detailsWindow.addComponent(massLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
+		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
 		detailsWindow.start(10);
 		
 		resetExperiment();
