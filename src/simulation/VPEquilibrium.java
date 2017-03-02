@@ -5,28 +5,28 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import lab.LabFrame;
-import lab.Vector2;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.data.GraphDataSet;
 import lab.component.data.Graph;
-import lab.component.swing.input.DropdownMenu;
-import lab.component.swing.input.LabeledSlider;
+import lab.component.swing.input.Dropdown;
+import lab.component.swing.input.LabeledDoubleSlider;
 import lab.component.swing.Label;
 import lab.substance.Substance;
+import lab.util.HorizontalGraduation;
+import lab.util.Vector2;
+import lab.util.VerticalGraduation;
 
 public class VPEquilibrium extends LabFrame {
 
 	private final Graph graph;
 	private static final long serialVersionUID = 1L;
 	private final Bulb flask1, flask2;
-	private final LabeledSlider tempSlider;
+	private final LabeledDoubleSlider tempSlider;
 	private final VerticalGraduation vGrad;
 	private final HorizontalGraduation hGrad;
 	private ArrayList<Substance> substances;
-	private DropdownMenu dropdown;
-	private DropdownMenu dropdown2;
+	private Dropdown<String> dropdown;
+	private Dropdown<String> dropdown2;
 	private Label f1Label;
 	private Label f2Label;
 	private double tempo;
@@ -65,8 +65,8 @@ public class VPEquilibrium extends LabFrame {
 				hGrad);
 		flask1 = new Bulb(150, 150);
 		flask2 = new Bulb(150, 150);
-		tempSlider = new LabeledSlider(200, 300, 0.0f, 100.0f, 1f, 4, 1);
-		dropdown = new DropdownMenu(200, 50) {
+		tempSlider = new LabeledDoubleSlider(200, 0.0f, 100.0f, 1f, 4, 1);
+		dropdown = new Dropdown<String>(200, 50) {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -74,7 +74,7 @@ public class VPEquilibrium extends LabFrame {
 			}
 
 		};
-		dropdown2 = new DropdownMenu(200, 50) {
+		dropdown2 = new Dropdown<String>(200, 50) {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -129,7 +129,7 @@ public class VPEquilibrium extends LabFrame {
 		changeAction();
 		tempSlider.getLabel().setText(tempSlider.getValue() + "C");
 		for (int i = 0; i < substances.size(); i++) {
-			if (substances.get(i).getName() == dropdown.getSelectedItem()) {
+			if (substances.get(i).getName() == dropdown.getValue()) {
 				substances.get(i).getSet().addPoint(new Vector2(tempo, pressure1));
 				f1Label.setText("<html><font color=\"red\">Flask 1</font> <br>Substance: " + "<font color=\"rgb("
 						+ substances.get(i).getColor().getRed() + "," + substances.get(i).getColor().getGreen() + ","
@@ -137,7 +137,7 @@ public class VPEquilibrium extends LabFrame {
 						+ "</font><br>Pressure: " + (Math.floor(pressure1 * 100) / 100) + "mmHg</html>");
 				flask1.setColor(calculateFlaskColor(substances.get(i), pressure1));
 			}
-			if (substances.get(i).getName() == dropdown2.getSelectedItem()) {
+			if (substances.get(i).getName() == dropdown2.getValue()) {
 				substances.get(i).getSet().addPoint(new Vector2(tempo, pressure2));
 				f2Label.setText("<html><font color=\"blue\">Flask 2</font> <br>Substance: " + "<font color=\"rgb("
 						+ substances.get(i).getColor().getRed() + "," + substances.get(i).getColor().getGreen() + ","
@@ -147,33 +147,33 @@ public class VPEquilibrium extends LabFrame {
 			}
 		}
 
-		if (Math.abs(tempo - (float) tempSlider.getValue()) > 1) {
-			if (tempo - (float) tempSlider.getValue() < -1) {
+		if (Math.abs(tempo - tempSlider.getValue()) > 1) {
+			if (tempo - tempSlider.getValue() < -1) {
 				tempo++;
-			} else if (tempo - (float) tempSlider.getValue() > 1) {
+			} else if (tempo - tempSlider.getValue() > 1) {
 				tempo--;
 			}
 		} else {
-			tempo = (float) tempSlider.getValue();
+			tempo = tempSlider.getValue();
 		}
 	}
 
 	private void changeAction() {
 
 		for (int i = 0; i < substances.size(); i++) {
-			if (substances.get(i).getName().equals(dropdown.getSelectedItem())
-					|| substances.get(i).getName().equals(dropdown2.getSelectedItem())) {
+			if (substances.get(i).getName().equals(dropdown.getValue())
+					|| substances.get(i).getName().equals(dropdown2.getValue())) {
 
 				graph.removeDataSet(substances.get(i).getName());
 
 				graph.addDataSet(substances.get(i).getSet());
-				if (substances.get(i).getName().equals(dropdown.getSelectedItem())) {
+				if (substances.get(i).getName().equals(dropdown.getValue())) {
 
 					pressure1 = findPressure(373.15, substances.get(i).getBoilPressure(),
 							substances.get(i).getHeatOfVaporization(), 273.15 + tempo);
 
 				}
-				if (substances.get(i).getName().equals(dropdown2.getSelectedItem())) {
+				if (substances.get(i).getName().equals(dropdown2.getValue())) {
 
 					pressure2 = findPressure(373.15, substances.get(i).getBoilPressure(),
 							substances.get(i).getHeatOfVaporization(), 273.15 + tempo);

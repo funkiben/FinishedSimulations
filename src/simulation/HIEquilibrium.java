@@ -2,17 +2,17 @@ package simulation;
 import java.awt.Color;
 
 import lab.LabFrame;
-import lab.SigFig;
 import lab.component.EmptyComponent;
-import lab.component.HorizontalGraduation;
-import lab.component.VerticalGraduation;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.data.GraphDataSet;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.LabeledSlider;
-import lab.component.swing.input.Slider;
+import lab.component.swing.input.LabeledDoubleSlider;
+import lab.util.HorizontalGraduation;
+import lab.util.SigFig;
+import lab.util.VerticalGraduation;
+import lab.component.swing.input.DoubleSlider;
 import lab.component.data.Graph;
 
 public class HIEquilibrium extends LabFrame {
@@ -50,28 +50,28 @@ public class HIEquilibrium extends LabFrame {
 
 	
 	
-	private final LabeledSlider H2Slider = new LabeledSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, Slider.HORIZONTAL);
-	private final LabeledSlider I2Slider = new LabeledSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, Slider.HORIZONTAL);
-	private final LabeledSlider HISlider = new LabeledSlider(170, 20, 0.0f, 10.0f, 1.0f, 3, Slider.HORIZONTAL);
+	private final LabeledDoubleSlider H2Slider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
+	private final LabeledDoubleSlider I2Slider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
+	private final LabeledDoubleSlider HISlider = new LabeledDoubleSlider(170, 0.0f, 10.0f, 1.0f, 3, DoubleSlider.HORIZONTAL);
 	
 	private final Button H2SetButton = new Button(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			H2Concentration = H2Slider.getFloatValue();
+			H2Concentration = H2Slider.getValue();
 		}
 	};
 	
 	private final Button I2SetButton = new Button(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			I2Concentration = I2Slider.getFloatValue();
+			I2Concentration = I2Slider.getValue();
 		}
 	};
 	
 	private final Button HISetButton = new Button(60, 30, "Set") {
 		@Override
 		public void doSomething() {
-			HIConcentration = HISlider.getFloatValue();
+			HIConcentration = HISlider.getValue();
 		}
 	};
 	
@@ -111,24 +111,15 @@ public class HIEquilibrium extends LabFrame {
 
 		addComponent(graph, bulb);
 		
-		addComponent(new EmptyComponent(900, 20));
+		addComponent(new EmptyComponent(900, 50));
 	
-		H2Slider.setOffsetY(20);
-		I2Slider.setOffsetY(20);
-		HISlider.setOffsetY(20);
+		H2SetButton.setOffset(40, -3);
+		I2SetButton.setOffset(40, -3);
+		HISetButton.setOffset(40, -3);
 		
-		H2Slider.getLabel().setOffsetY(-5);
-		I2Slider.getLabel().setOffsetY(-5);
-		HISlider.getLabel().setOffsetY(-5);
-		
-		H2SetButton.setOffsetX(55);
-		I2SetButton.setOffsetX(55);
-		HISetButton.setOffsetX(55);
-		
-		
-		addComponent(new EmptyComponent(80, 0), new Label(20, 30, "H2"), H2Slider, H2SetButton, new EmptyComponent(400, 0));
-		addComponent(new EmptyComponent(80, 0), new Label(20, 30, "I2"), I2Slider, I2SetButton, new EmptyComponent(400, 0));
-		addComponent(new EmptyComponent(80, 0), new Label(20, 30, "HI"), HISlider, HISetButton);
+		addComponent(new EmptyComponent(80, 0), new Label(20, 20, "H2"), H2Slider, H2SetButton, new EmptyComponent(400, 0));
+		addComponent(new EmptyComponent(80, 0), new Label(20, 20, "I2"), I2Slider, I2SetButton, new EmptyComponent(400, 0));
+		addComponent(new EmptyComponent(80, 0), new Label(20, 20, "HI"), HISlider, HISetButton);
 		
 		start(30);
 		

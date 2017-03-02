@@ -6,21 +6,21 @@ import draw.animation.DoubleLerpAnimation;
 import draw.animation.DoubleLinearAnimation;
 import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
-import lab.SigFig;
-import lab.Vector2;
-import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
-import lab.component.VerticalGraduation;
 import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
-import lab.component.fx.Particle;
+import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
+import lab.component.misc.BunsenBurner;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
+import lab.util.SigFig;
+import lab.util.Vector2;
+import lab.util.VerticalGraduation;
 
 public class GasEquilibrium extends LabFrame {
 
@@ -69,8 +69,8 @@ public class GasEquilibrium extends LabFrame {
 		burner = new BunsenBurner(20, 175);
 		burner.setOffsetY(1);
 		burner.setOffsetX(175);
-		burner.getFlames().setVisible(false);
-		burner.getFlames().setIntensity(0);
+		burner.getFlame().setVisible(false);
+		burner.getFlame().setIntensity(0);
 		
 		gasParticles = new ParticleSystem(300, 300, 50);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
@@ -78,7 +78,7 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.setSpawnArea(new Vector2(150, 295));
 		gasParticles.setColor(Color.black);
 		gasParticles.setColorFade(0);
-		gasParticles.setShape(Particle.ELLIPSE);
+		gasParticles.setShape(ParticleShape.ELLIPSE);
 		gasParticles.setParticleWidth(6);
 		gasParticles.setParticleHeight(6);
 		gasParticles.setParticleWidthChange(0);
@@ -121,6 +121,8 @@ public class GasEquilibrium extends LabFrame {
 			}
 		};
 		
+		resetButton.setOffsetX(30);
+		
 		addSubstanceButton = new Button(150, 25, "Add " + substance) {
 			@Override
 			public void doSomething() {
@@ -148,6 +150,8 @@ public class GasEquilibrium extends LabFrame {
 				detailsWindow.setVisible(true);
 			}
 		};
+		
+		detailsButton.setOffset(30, 5);
 		
 		Label reactionLabel = new Label(250, 15, reaction);
 		reactionLabel.setOffsetY(0);
@@ -238,8 +242,8 @@ public class GasEquilibrium extends LabFrame {
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
 		
-		burner.getFlames().setVisible(false);
-		burner.getFlames().setIntensity(0);
+		burner.getFlame().setVisible(false);
+		burner.getFlame().setIntensity(0);
 	}
 	
 	public void addSubstance() {
@@ -271,17 +275,17 @@ public class GasEquilibrium extends LabFrame {
 		
 		reactionOccuring = true;
 		
-		burner.getFlames().setVisible(true);
+		burner.getFlame().setVisible(true);
 		
 		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
 			@Override
 			public Integer getValue() {
-				return burner.getFlames().getIntensity();
+				return burner.getFlame().getIntensity();
 			}
 			
 			@Override
 			public void setValue(Integer v) {
-				burner.getFlames().setIntensity(v);
+				burner.getFlame().setIntensity(v);
 			}
 		});
 		
@@ -314,7 +318,5 @@ public class GasEquilibrium extends LabFrame {
 		
 		
 	}
-
-	
 
 }
