@@ -25,7 +25,7 @@ import lab.util.VerticalGraduation;
 public class NaHCO3Decomposition extends LabFrame {
 
 	public static void main(String[] args) {
-		new NaHCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Bicarbonate", 10.0, 0.5, "NaHCO3", "NaHCO3(s) => NaOH(s) + CO2(g)", 0.559, 0.00851, 20, 800);
+		new NaHCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Bicarbonate", 10.0, 0.5, 0.559, 0.00851, 20, 800);
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class NaHCO3Decomposition extends LabFrame {
 	
 	private boolean reactionOccuring = false;
 	
-	public NaHCO3Decomposition(String name, double mass, double volume, String substance, String reaction, double Kp, double Kc, double initialTemp, double temp) {
+	public NaHCO3Decomposition(String name, double mass, double volume, double Kp, double Kc, double initialTemp, double temp) {
 		super(name, 660, 725);
 		
 		this.Kp = Kp;
@@ -127,7 +127,7 @@ public class NaHCO3Decomposition extends LabFrame {
 		
 		resetButton.setOffsetX(30);
 		
-		addSubstanceButton = new Button(150, 25, "Add " + substance) {
+		addSubstanceButton = new Button(150, 25, "Add NaHCO3") {
 			@Override
 			public void doSomething() {
 				addSubstance();
@@ -157,7 +157,7 @@ public class NaHCO3Decomposition extends LabFrame {
 		
 		detailsButton.setOffset(30, 5);
 		
-		Label reactionLabel = new Label(250, 15, reaction);
+		Label reactionLabel = new Label(250, 15, "NaHCO3(s) <=> NaOH(s) + CO2(g)");
 		reactionLabel.setOffsetY(0);
 		
 		resetButton.setOffsetY(5);
