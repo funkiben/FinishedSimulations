@@ -92,7 +92,7 @@ public class VaporPressure extends LabFrame {
 		showTank = new CheckBox(90, 25, "Show Tank");
 		showTank.setOffset(345, 500);
 		showTank.onSelect(
-				
+				//to do create tank
 		);
 		showEquipment = new CheckBox(125, 25, "Show Equipment");
 		showEquipment.setOffset(435, 500);
