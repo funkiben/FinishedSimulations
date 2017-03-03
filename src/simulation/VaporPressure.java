@@ -32,9 +32,9 @@ public class VaporPressure extends LabFrame {
 	private Graph molarityGraph;
 	private Graph vaporPressureGraph;
 	private Graph pressureGraph;
-	private CheckBox showTank;
-	private CheckBox showEquipment;
-	private CheckBox showPressureGraph;
+	private Button showTank;
+	private Button showEquipment;
+	private Button showPressureGraph;
 	private DataTable<Double> vaporPressureMolarityTable;
 	private DataTable<Double> vaporPressureTimeTable;
 
@@ -89,8 +89,6 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
-		showTank = new CheckBox(90, 25, "Show Tank");
-		showTank.setOffset(345, 500);
 		tankFrame = new LabFrame("Tank", 400, 300, false){
 			private static final long serialVersionUID = 1L;
 			
@@ -99,12 +97,53 @@ public class VaporPressure extends LabFrame {
 				
 			}
 		};
-		showTank.onSelect(
-				tankFrame.start(30);
-		);
-		showEquipment = new CheckBox(125, 25, "Show Equipment");
+		tankFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		tankFrame.setVisible(false);
+		tankFrame.start(30);
+		showTank = new Button(90, 25, "Show Tank"){
+			@Override
+			public void doSomething() {
+				tankFrame.setVisible(true);
+			}
+		};
+		showTank.setOffset(345, 500);
+		
+		equipmentFrame = new LabFrame("Equipment", 400, 300, false){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void update() {
+				
+			}
+		};
+		equipmentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		equipmentFrame.setVisible(false);
+		equipmentFrame.start(0);
+		showEquipment = new Button(125, 25, "Show Equipment"){
+			@Override
+			public void doSomething() {
+				equipmentFrame.setVisible(true);
+			}
+		};
 		showEquipment.setOffset(435, 500);
-		showPressureGraph = new CheckBox(205, 25, "Show Pressure vs. Time Graph");
+		pressureTimeGraphFrame = new LabFrame("Vapor Pressure vs. Time Graph", 500, 600, false){
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void update() {
+				
+			}
+		};
+		pressureTimeGraphFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		pressureTimeGraphFrame.setVisible(false);
+		pressureTimeGraphFrame.start(30);
+		showPressureGraph = new Button(205, 25, "Show Pressure vs. Time Graph"){
+			@Override
+			public void doSomething() {
+				pressureTimeGraphFrame.setVisible(true);
+			}
+		};
 		showPressureGraph.setOffset(560, 500);
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank, showEquipment, showPressureGraph);
 		start(30);
