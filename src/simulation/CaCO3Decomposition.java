@@ -18,6 +18,7 @@ import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
+import lab.component.swing.input.Dropdown;
 import lab.util.SigFig;
 import lab.util.Vector2;
 import lab.util.VerticalGraduation;
@@ -25,13 +26,19 @@ import lab.util.VerticalGraduation;
 public class CaCO3Decomposition extends LabFrame {
 
 	public static void main(String[] args) {
-		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 10.0, 0.5, 0.559, 0.00851, 20, 800);
+		
+		TemperaturePressurePair[] pressures = {
+					new TemperaturePressurePair(298, 1.126E-21),
+					new TemperaturePressurePair(550, 2.3438E-7),
+					new TemperaturePressurePair(1100, 105.682)
+		};
+		
+		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 10.0, 0.5, pressures);
 	}
 	
 	private static final long serialVersionUID = 1L;
-	private final double Kp;
-	private final double initialTemp;
-	private final double temp;
+	
+	private final TemperaturePressurePair[] pressures;
 	
 	private final Manometer manometer;
 	private final Bulb bulb;
@@ -42,19 +49,21 @@ public class CaCO3Decomposition extends LabFrame {
 	private final Button resetButton;
 	private final Button addSubstanceButton;
 	private final Button evacuateButton;
-	private final Button heatButton;
+	private final Button setTemperatureButton;
 	private final Button detailsButton;
+	
+	private final Dropdown<TemperaturePressurePair> temperatureSelector;
 	
 	private final LabFrame detailsWindow;
 	
+	private TemperaturePressurePair currentTempAndPressure;
 	private boolean reactionOccuring = false;
 	
-	public CaCO3Decomposition(String name, double mass, double volume, double Kp, double Kc, double initialTemp, double temp) {
+	public CaCO3Decomposition(String name, double mass, double volume, TemperaturePressurePair[] pressures) {
 		super(name, 660, 725);
 		
-		this.Kp = Kp;
-		this.initialTemp = initialTemp;
-		this.temp = temp;
+		this.pressures = pressures;
+		currentTempAndPressure = pressures[0];
 		
 		manometer = new Manometer(150, 600);
 		manometer.setOffsetY(20);
@@ -108,8 +117,8 @@ public class CaCO3Decomposition extends LabFrame {
 		thermometer = new Thermometer(500);
 		thermometer.setOffsetX(80);
 		thermometer.setOffsetY(20);
-		thermometer.setGraduation(new VerticalGraduation(0, 1000, 100, 20));
-		thermometer.setValue(initialTemp);
+		thermometer.setGraduation(new VerticalGraduation(0, 1100, 50, 10));
+		thermometer.setValue(currentTempAndPressure.temperature);
 		thermometer.getGraduation().setSuffix("C");
 		
 		
@@ -141,10 +150,17 @@ public class CaCO3Decomposition extends LabFrame {
 			}
 		};
 		
-		heatButton = new Button(150, 25, "Heat System") {
+		setTemperatureButton = new Button(150, 25, "Heat System") {
 			@Override
 			public void doSomething() {
 				heat();
+			}
+		};
+		
+		temperatureSelector = new Dropdown<TemperaturePressurePair>(100, 20, pressures) {
+			@Override
+			public void onSelectItem(TemperaturePressurePair p) {
+				currentTempAndPressure = p;
 			}
 		};
 		
@@ -164,9 +180,9 @@ public class CaCO3Decomposition extends LabFrame {
 		addSubstanceButton.setOffsetY(5);
 		addSubstanceButton.setOffsetY(5);
 		evacuateButton.setOffsetY(5);
-		heatButton.setOffsetY(5);
+		setTemperatureButton.setOffsetY(5);
 		
-		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, heatButton, detailsButton);
+		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, setTemperatureButton, detailsButton, temperatureSelector);
 		
 		
 		detailsWindow = new LabFrame("Simulation Details", 400, 250, false) {
@@ -182,7 +198,7 @@ public class CaCO3Decomposition extends LabFrame {
 		detailsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		detailsWindow.setResizable(false);
 		
-		Label massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel;
+		Label massLabel, volumeLabel, atmPressureLabel;
 		
 		massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
 		massLabel.setFontSize(20);
@@ -196,23 +212,7 @@ public class CaCO3Decomposition extends LabFrame {
 		atmPressureLabel.setFontSize(20);
 		atmPressureLabel.setOffset(10, 0);
 		
-		initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
-		initTempLabel.setFontSize(20);
-		initTempLabel.setOffset(10, 0);
-		
-		finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
-		finalTempLabel.setFontSize(20);
-		finalTempLabel.setOffset(10, 0);
-		
-		KpLabel = new Label(400, 30, "Kp = " + Kp);
-		KpLabel.setFontSize(20);
-		KpLabel.setOffset(10, 0);
-		
-		KcLabel = new Label(400, 30, "Kc = " + Kc);
-		KcLabel.setFontSize(20);
-		KcLabel.setOffset(10, 0);
-		
-		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
+		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel);
 		detailsWindow.start(0);
 		
 		resetExperiment();
@@ -238,7 +238,7 @@ public class CaCO3Decomposition extends LabFrame {
 	
 	public void resetExperiment() {
 		animateMeasurable(760, manometer); 
-		animateMeasurable(initialTemp, thermometer);
+		animateMeasurable(currentTempAndPressure.temperature, thermometer);
 		
 		if (getAnimator().animationExists("removeSolid")) {
 			getAnimator().getAnimation("removeSolid").cancel();
@@ -247,7 +247,8 @@ public class CaCO3Decomposition extends LabFrame {
 		bulb.setValue(0.0);
 		addSubstanceButton.setEnabled(true);
 		evacuateButton.setEnabled(false);
-		heatButton.setEnabled(false);
+		setTemperatureButton.setEnabled(false);
+		temperatureSelector.setEnabled(false);
 		reactionOccuring = false;
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
@@ -272,14 +273,15 @@ public class CaCO3Decomposition extends LabFrame {
 		gasParticles.spawnParticle();
 		
 		evacuateButton.setEnabled(false);
-		heatButton.setEnabled(true);
+		setTemperatureButton.setEnabled(true);
+		temperatureSelector.setEnabled(true);
 		
 	}
 
 	public void heat() {
-		animateMeasurable(temp, thermometer);
+		animateMeasurable(currentTempAndPressure.temperature, thermometer);
 		
-		heatButton.setEnabled(false);
+		setTemperatureButton.setEnabled(false);
 		
 		gasParticles.spawnParticle();
 		
@@ -317,9 +319,9 @@ public class CaCO3Decomposition extends LabFrame {
 	public void update() {
 		
 		if (reactionOccuring) {
-			gasParticles.setParticleSpawnRate(105 - thermometer.getValue() / temp * 100.0);
+			gasParticles.setParticleSpawnRate(105 - thermometer.getValue() / currentTempAndPressure.temperature * 100.0);
 			
-			double p = ((double) gasParticles.getActiveParticles() / gasParticles.getTotalParticles()) * Kp * 760.0;
+			double p = ((double) gasParticles.getActiveParticles() / gasParticles.getTotalParticles()) * currentTempAndPressure.pressure;
 			
 			animateMeasurable(p, manometer);
 		}
@@ -327,6 +329,22 @@ public class CaCO3Decomposition extends LabFrame {
 		
 		
 		
+	}
+	
+	
+	static class TemperaturePressurePair {
+		final double temperature;
+		final double pressure;
+		
+		TemperaturePressurePair(double temperature, double pressure) {
+			this.temperature = temperature;
+			this.pressure = pressure;
+		}
+		
+		@Override
+		public String toString() {
+			return SigFig.sigfigalize(temperature, 3, 5) + "K";
+		}
 	}
 
 }
