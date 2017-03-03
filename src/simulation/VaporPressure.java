@@ -12,10 +12,10 @@ import lab.util.VerticalGraduation;
 
 public class VaporPressure extends LabFrame {
 	private static final long serialVersionUID = 1L;
-	private LabFrame pressureTimeTable;
-	private LabFrame pressureTimeGraph;
-	private LabFrame tank;
-	private LabFrame equipment;
+	private LabFrame pressureTimeTableFrame;
+	private LabFrame pressureTimeGraphFrame;
+	private LabFrame tankFrame;
+	private LabFrame equipmentFrame;
 	// initial values from simulation
 	private int temperature = 0;
 	private int dtemperature = 1;
@@ -91,16 +91,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRow(1, molarity);
 		showTank = new CheckBox(90, 25, "Show Tank");
 		showTank.setOffset(345, 500);
-		showTank.onSelect(
-				//to do create tank
-		);
-		showEquipment = new CheckBox(125, 25, "Show Equipment");
-		showEquipment.setOffset(435, 500);
-		showPressureGraph = new CheckBox(205, 25, "Show Pressure vs. Time Graph");
-		showPressureGraph.setOffset(560, 500);
-		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank, showEquipment, showPressureGraph);
-		start(30);
-		pressureTimeTable = new LabFrame("Vapor Pressure vs. Time Table", 600, 375, true){
+		tankFrame = new LabFrame("Tank", 400, 300, false){
 			private static final long serialVersionUID = 1L;
 			
 			@Override
@@ -108,15 +99,32 @@ public class VaporPressure extends LabFrame {
 				
 			}
 		};
-		pressureTimeTable.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		showTank.onSelect(
+				tankFrame.start(30);
+		);
+		showEquipment = new CheckBox(125, 25, "Show Equipment");
+		showEquipment.setOffset(435, 500);
+		showPressureGraph = new CheckBox(205, 25, "Show Pressure vs. Time Graph");
+		showPressureGraph.setOffset(560, 500);
+		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank, showEquipment, showPressureGraph);
+		start(30);
+		pressureTimeTableFrame = new LabFrame("Vapor Pressure vs. Time Table", 600, 375, true){
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void update() {
+				
+			}
+		};
+		pressureTimeTableFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		vaporPressureTimeTable = new DataTable<Double>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
 		vaporPressureTimeTable.setColumnTitle(0, "Time (s)");
 		vaporPressureTimeTable.setColumnTitle(1, "VP (kPa) @ 20C");
 		vaporPressureTimeTable.setColumnTitle(2, "VP (kPa) @ 30C");
 		vaporPressureTimeTable.setColumnTitle(3, "VP (kPa) @ 40C");
 		vaporPressureTimeTable.setColumnTitle(4, "VP (kPa) @ 60C");
-		pressureTimeTable.addComponent(vaporPressureTimeTable);
-		pressureTimeTable.start(30);
+		pressureTimeTableFrame.addComponent(vaporPressureTimeTable);
+		pressureTimeTableFrame.start(30);
 	}
 
 	@Override
