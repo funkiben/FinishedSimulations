@@ -27,18 +27,18 @@ public class CaCO3Decomposition extends LabFrame {
 
 	public static void main(String[] args) {
 		
-		TemperaturePressurePair[] pressures = {
-					new TemperaturePressurePair(298, 1.126E-21),
-					new TemperaturePressurePair(550, 2.3438E-7),
-					new TemperaturePressurePair(1100, 105.682)
+		ReactionCondition[] conditions = {
+					new ReactionCondition(298, 1.126E-21, 1, 20.0, 0),
+					new ReactionCondition(550, 2.3438E-7, 2, 20.0, 50),
+					new ReactionCondition(1100, 105.682, 50, 15.0, 150)
 		};
 		
-		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 10.0, 0.5, pressures);
+		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 10.0, 0.5, conditions);
 	}
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final TemperaturePressurePair[] pressures;
+	private final ReactionCondition[] reactionConditions;
 	
 	private final Manometer manometer;
 	private final Bulb bulb;
@@ -52,18 +52,19 @@ public class CaCO3Decomposition extends LabFrame {
 	private final Button setTemperatureButton;
 	private final Button detailsButton;
 	
-	private final Dropdown<TemperaturePressurePair> temperatureSelector;
+	private final Dropdown<ReactionCondition> conditionSelector;
 	
 	private final LabFrame detailsWindow;
 	
-	private TemperaturePressurePair currentTempAndPressure;
-	private boolean reactionOccuring = false;
+	private boolean bulbEvacuated = false;
 	
-	public CaCO3Decomposition(String name, double mass, double volume, TemperaturePressurePair[] pressures) {
+	private ReactionCondition currentCondition;
+	
+	public CaCO3Decomposition(String name, double mass, double volume, ReactionCondition[] reactionConditions) {
 		super(name, 660, 725);
 		
-		this.pressures = pressures;
-		currentTempAndPressure = pressures[0];
+		this.reactionConditions = reactionConditions;
+		currentCondition = reactionConditions[0];
 		
 		manometer = new Manometer(150, 600);
 		manometer.setOffsetY(20);
@@ -85,7 +86,7 @@ public class CaCO3Decomposition extends LabFrame {
 		burner.getFlame().setVisible(false);
 		burner.getFlame().setIntensity(0);
 		
-		gasParticles = new ParticleSystem(300, 300, 50);
+		gasParticles = new ParticleSystem(300, 300, reactionConditions[2].gasParticles);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
 		gasParticles.setSpawnArea(new Vector2(150, 295));
@@ -118,8 +119,8 @@ public class CaCO3Decomposition extends LabFrame {
 		thermometer.setOffsetX(80);
 		thermometer.setOffsetY(20);
 		thermometer.setGraduation(new VerticalGraduation(0, 1100, 50, 10));
-		thermometer.setValue(currentTempAndPressure.temperature);
-		thermometer.getGraduation().setSuffix("C");
+		thermometer.setValue(currentCondition.temperature);
+		thermometer.getGraduation().setSuffix("K");
 		
 		
 		addComponent(manometer, middleContentArea, thermometer);
@@ -150,17 +151,18 @@ public class CaCO3Decomposition extends LabFrame {
 			}
 		};
 		
-		setTemperatureButton = new Button(150, 25, "Heat System") {
+		setTemperatureButton = new Button(200, 25, "Set Temperature") {
 			@Override
 			public void doSomething() {
-				heat();
+				changeTemperature();
 			}
 		};
 		
-		temperatureSelector = new Dropdown<TemperaturePressurePair>(100, 20, pressures) {
+		conditionSelector = new Dropdown<ReactionCondition>(100, 25, reactionConditions) {
 			@Override
-			public void onSelectItem(TemperaturePressurePair p) {
-				currentTempAndPressure = p;
+			public void onSelectItem(ReactionCondition p) {
+				setTemperatureButton.setEnabled(p != currentCondition);
+				
 			}
 		};
 		
@@ -180,9 +182,13 @@ public class CaCO3Decomposition extends LabFrame {
 		addSubstanceButton.setOffsetY(5);
 		addSubstanceButton.setOffsetY(5);
 		evacuateButton.setOffsetY(5);
-		setTemperatureButton.setOffsetY(5);
 		
-		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, setTemperatureButton, detailsButton, temperatureSelector);
+		setTemperatureButton.setOffsetY(5);
+		conditionSelector.setOffset(30, 5);
+		
+		detailsButton.setOffsetY(20);
+		
+		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, new EmptyComponent(100, 0), conditionSelector, setTemperatureButton, new EmptyComponent(200, 0), detailsButton);
 		
 		
 		detailsWindow = new LabFrame("Simulation Details", 400, 250, false) {
@@ -237,8 +243,10 @@ public class CaCO3Decomposition extends LabFrame {
 	
 	
 	public void resetExperiment() {
+		currentCondition = reactionConditions[0];
+		
 		animateMeasurable(760, manometer); 
-		animateMeasurable(currentTempAndPressure.temperature, thermometer);
+		animateMeasurable(currentCondition.temperature, thermometer);
 		
 		if (getAnimator().animationExists("removeSolid")) {
 			getAnimator().getAnimation("removeSolid").cancel();
@@ -248,10 +256,11 @@ public class CaCO3Decomposition extends LabFrame {
 		addSubstanceButton.setEnabled(true);
 		evacuateButton.setEnabled(false);
 		setTemperatureButton.setEnabled(false);
-		temperatureSelector.setEnabled(false);
-		reactionOccuring = false;
+		conditionSelector.setValue(currentCondition);
+		conditionSelector.setEnabled(false);
 		gasParticles.stop();
 		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
+		
 		
 		burner.getFlame().setVisible(false);
 		burner.getFlame().setIntensity(0);
@@ -262,46 +271,47 @@ public class CaCO3Decomposition extends LabFrame {
 		evacuateButton.setEnabled(true);
 		addSubstanceButton.setEnabled(false);
 		gasParticles.start();
-		gasParticles.spawnParticle();
 	}
 	
 	public void evacuate() {
 		animateMeasurable(0, manometer);
 		
-		gasParticles.stop();
-		gasParticles.start();
-		gasParticles.spawnParticle();
-		
 		evacuateButton.setEnabled(false);
-		setTemperatureButton.setEnabled(true);
-		temperatureSelector.setEnabled(true);
+		conditionSelector.setEnabled(true);
+		
+		bulbEvacuated = true;
 		
 	}
 
-	public void heat() {
-		animateMeasurable(currentTempAndPressure.temperature, thermometer);
+	public void changeTemperature() {
+		currentCondition = conditionSelector.getValue();
+		animateMeasurable(currentCondition.temperature, thermometer);
 		
 		setTemperatureButton.setEnabled(false);
 		
-		gasParticles.spawnParticle();
+		if (thermometer.getValue() < currentCondition.temperature) {
+			burner.getFlame().setVisible(true);
+		}
 		
-		reactionOccuring = true;
-		
-		burner.getFlame().setVisible(true);
-		
-		getAnimator().addAnimation("flame", new IntegerLinearAnimation(150, 5) {
+		getAnimator().addAnimation("flame", new IntegerLinearAnimation(currentCondition.flameIntensity, 5) {
 			@Override
 			public Integer getValue() {
 				return burner.getFlame().getIntensity();
 			}
-			
+				
 			@Override
 			public void setValue(Integer v) {
 				burner.getFlame().setIntensity(v);
+				
+				if (v == 0) {
+					burner.getFlame().setVisible(false);
+				}
 			}
 		});
 		
-		getAnimator().addAnimation("removeSolid", new DoubleLinearAnimation(15.0, 0.06) {
+		
+		
+		getAnimator().addAnimation("removeSolid", new DoubleLinearAnimation(currentCondition.solidAmount, 0.09) {
 			@Override
 			public Double getValue() {
 				return bulb.getValue();
@@ -318,27 +328,37 @@ public class CaCO3Decomposition extends LabFrame {
 	@Override
 	public void update() {
 		
-		if (reactionOccuring) {
-			gasParticles.setParticleSpawnRate(105 - thermometer.getValue() / currentTempAndPressure.temperature * 100.0);
+		if (bulbEvacuated) {
+			if (gasParticles.getActiveParticles() < currentCondition.gasParticles) {
+				gasParticles.spawnParticle();
+			} else if (gasParticles.getActiveParticles() > currentCondition.gasParticles) {
+				
+				gasParticles.removeParticle();
+				
+			}
 			
-			double p = ((double) gasParticles.getActiveParticles() / gasParticles.getTotalParticles()) * currentTempAndPressure.pressure;
-			
+			double p = ((double) gasParticles.getActiveParticles() / currentCondition.gasParticles) * ((currentCondition.pressure / 101.325) * 760);
+				
 			animateMeasurable(p, manometer);
 		}
-		
-		
 		
 		
 	}
 	
 	
-	static class TemperaturePressurePair {
+	static class ReactionCondition {
 		final double temperature;
 		final double pressure;
+		final int gasParticles;
+		final double solidAmount;
+		final int flameIntensity;
 		
-		TemperaturePressurePair(double temperature, double pressure) {
+		ReactionCondition(double temperature, double pressure, int gasParticles, double solidAmount, int flameIntensity) {
 			this.temperature = temperature;
 			this.pressure = pressure;
+			this.gasParticles = gasParticles;
+			this.solidAmount = solidAmount;
+			this.flameIntensity = flameIntensity;
 		}
 		
 		@Override
