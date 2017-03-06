@@ -23,17 +23,17 @@ import lab.util.SigFig;
 import lab.util.Vector2;
 import lab.util.VerticalGraduation;
 
-public class CaCO3Decomposition extends LabFrame {
+public class NH4ClDecomposition extends LabFrame {
 
 	public static void main(String[] args) {
 		
 		ReactionCondition[] conditions = {
-					new ReactionCondition(298, 1.126E-21, 1, 20.0, 0),
-					new ReactionCondition(550, 2.3438E-7, 2, 20.0, 50),
-					new ReactionCondition(1100, 105.682, 50, 15.0, 150)
+					new ReactionCondition(298, 2.04E-8 * 101.325, 1, 20.0, 0),
+					new ReactionCondition(611, 1.63134 * 101.325, 5, 15.0, 50),
+					new ReactionCondition(650, 4.6132 * 101.325, 50, 6.0, 150)
 		};
 		
-		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 50.0, 1.00, conditions);
+		new NH4ClDecomposition("Heterogeneous Equilibrium: Decomposition of Ammonium Chloride", 25.0, 1.00, conditions);
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,8 @@ public class CaCO3Decomposition extends LabFrame {
 	private final Manometer manometer;
 	private final Bulb bulb;
 	private final Thermometer thermometer;
-	private final ParticleSystem gasParticles;
+	private final ParticleSystem NH3Particles;
+	private final ParticleSystem HClParticles;
 	private final BunsenBurner burner;
 	
 	private final Button resetButton;
@@ -60,7 +61,7 @@ public class CaCO3Decomposition extends LabFrame {
 	
 	private ReactionCondition currentCondition;
 	
-	public CaCO3Decomposition(String name, double mass, double volume, ReactionCondition[] reactionConditions) {
+	public NH4ClDecomposition(String name, double mass, double volume, ReactionCondition[] reactionConditions) {
 		super(name, 660, 725);
 		
 		this.reactionConditions = reactionConditions;
@@ -80,35 +81,64 @@ public class CaCO3Decomposition extends LabFrame {
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
 		
+		bulb.setLayout(Bulb.FREE_FORM);
+		
 		burner = new BunsenBurner(20, 175);
 		burner.setOffsetY(1);
 		burner.setOffsetX(175);
 		burner.getFlame().setVisible(false);
 		burner.getFlame().setIntensity(0);
 		
-		gasParticles = new ParticleSystem(300, 300, reactionConditions[2].gasParticles);
-		gasParticles.setLifetime(Integer.MAX_VALUE);
-		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
-		gasParticles.setSpawnArea(new Vector2(150, 295));
-		gasParticles.setColorFade(0);
-		gasParticles.setShape(ParticleShape.ELLIPSE);
-		gasParticles.setParticleWidth(6);
-		gasParticles.setParticleHeight(6);
-		gasParticles.setParticleWidthChange(0);
-		gasParticles.setParticleHeightChange(0);
-		gasParticles.setVelocity(new RandomVector2Generator(6));
-		gasParticles.setColor(new Color(0, 0, 255));
+		NH3Particles = new ParticleSystem(300, 300, reactionConditions[2].gasParticles);
+		NH3Particles.setLifetime(Integer.MAX_VALUE);
+		NH3Particles.setParticleSpawnRate(Double.MAX_VALUE);
+		NH3Particles.setSpawnArea(new Vector2(150, 295));
+		NH3Particles.setColorFade(0);
+		NH3Particles.setShape(ParticleShape.ELLIPSE);
+		NH3Particles.setParticleWidth(6);
+		NH3Particles.setParticleHeight(6);
+		NH3Particles.setParticleWidthChange(0);
+		NH3Particles.setParticleHeightChange(0);
+		NH3Particles.setVelocity(new RandomVector2Generator(6));
+		NH3Particles.setColor(new Color(0, 0, 255));
 
 		for (int i = 1; i < Bulb.POLY1_X.length - 3; i++) {
-			gasParticles.addCollidableEdge(Bulb.POLY1_X[i - 1] * bulb.getWidth(), Bulb.POLY1_Y[i - 1] * bulb.getHeight(), Bulb.POLY1_X[i] * bulb.getWidth(), Bulb.POLY1_Y[i] * bulb.getHeight());
-			gasParticles.addCollidableEdge(Bulb.POLY2_X[i - 1] * bulb.getWidth(), Bulb.POLY2_Y[i - 1] * bulb.getHeight(), Bulb.POLY2_X[i] * bulb.getWidth(), Bulb.POLY2_Y[i] * bulb.getHeight());
+			NH3Particles.addCollidableEdge(Bulb.POLY1_X[i - 1] * bulb.getWidth(), Bulb.POLY1_Y[i - 1] * bulb.getHeight(), Bulb.POLY1_X[i] * bulb.getWidth(), Bulb.POLY1_Y[i] * bulb.getHeight());
+			NH3Particles.addCollidableEdge(Bulb.POLY2_X[i - 1] * bulb.getWidth(), Bulb.POLY2_Y[i - 1] * bulb.getHeight(), Bulb.POLY2_X[i] * bulb.getWidth(), Bulb.POLY2_Y[i] * bulb.getHeight());
 		}
 		
-		gasParticles.addCollidableEdge(Bulb.POLY2_X[0] * bulb.getWidth(), Bulb.POLY2_Y[0] * bulb.getHeight(), Bulb.POLY1_X[0] * bulb.getWidth(), Bulb.POLY1_Y[0] * bulb.getHeight());
+		NH3Particles.addCollidableEdge(Bulb.POLY2_X[0] * bulb.getWidth(), Bulb.POLY2_Y[0] * bulb.getHeight(), Bulb.POLY1_X[0] * bulb.getWidth(), Bulb.POLY1_Y[0] * bulb.getHeight());
 		
 		
 		
-		bulb.addChild(gasParticles);
+		bulb.addChild(NH3Particles);
+		
+		
+		HClParticles = new ParticleSystem(300, 300, reactionConditions[2].gasParticles);
+		HClParticles.setLifetime(Integer.MAX_VALUE);
+		HClParticles.setParticleSpawnRate(Double.MAX_VALUE);
+		HClParticles.setSpawnArea(new Vector2(150, 295));
+		HClParticles.setColorFade(0);
+		HClParticles.setShape(ParticleShape.ELLIPSE);
+		HClParticles.setParticleWidth(6);
+		HClParticles.setParticleHeight(6);
+		HClParticles.setParticleWidthChange(0);
+		HClParticles.setParticleHeightChange(0);
+		HClParticles.setVelocity(new RandomVector2Generator(6));
+		HClParticles.setColor(new Color(255, 0, 0));
+
+		for (int i = 1; i < Bulb.POLY1_X.length - 3; i++) {
+			HClParticles.addCollidableEdge(Bulb.POLY1_X[i - 1] * bulb.getWidth(), Bulb.POLY1_Y[i - 1] * bulb.getHeight(), Bulb.POLY1_X[i] * bulb.getWidth(), Bulb.POLY1_Y[i] * bulb.getHeight());
+			HClParticles.addCollidableEdge(Bulb.POLY2_X[i - 1] * bulb.getWidth(), Bulb.POLY2_Y[i - 1] * bulb.getHeight(), Bulb.POLY2_X[i] * bulb.getWidth(), Bulb.POLY2_Y[i] * bulb.getHeight());
+		}
+		
+		HClParticles.addCollidableEdge(Bulb.POLY2_X[0] * bulb.getWidth(), Bulb.POLY2_Y[0] * bulb.getHeight(), Bulb.POLY1_X[0] * bulb.getWidth(), Bulb.POLY1_Y[0] * bulb.getHeight());
+		
+		
+		
+		bulb.addChild(HClParticles);
+		
+		
 		
 		middleContentArea.addChild(bulb, burner);
 		
@@ -135,7 +165,7 @@ public class CaCO3Decomposition extends LabFrame {
 		
 		resetButton.setOffsetX(30);
 		
-		addSubstanceButton = new Button(150, 25, "Add CaCO3") {
+		addSubstanceButton = new Button(150, 25, "Add NH4Cl") {
 			@Override
 			public void doSomething() {
 				addSubstance();
@@ -172,7 +202,7 @@ public class CaCO3Decomposition extends LabFrame {
 		};
 		
 		
-		Label reactionLabel = new Label(250, 15, "CaCO3(s) <=> CaO(s) + CO2(g)");
+		Label reactionLabel = new Label(250, 15, "NH4Cl(s) <=> HCl(g) + NH3(g)");
 		reactionLabel.setOffsetY(0);
 		
 		resetButton.setOffsetY(5);
@@ -203,7 +233,7 @@ public class CaCO3Decomposition extends LabFrame {
 		
 		Label massLabel, volumeLabel, atmPressureLabel;
 		
-		massLabel = new Label(400, 30, "Calcium Carbonate Mass = " + mass + "g");
+		massLabel = new Label(400, 30, "Ammonium Chloride Mass = " + mass + "g");
 		massLabel.setFontSize(20);
 		massLabel.setOffset(10, 0);
 		
@@ -255,9 +285,11 @@ public class CaCO3Decomposition extends LabFrame {
 		setTemperatureButton.setEnabled(false);
 		conditionSelector.setValue(currentCondition);
 		conditionSelector.setEnabled(false);
-		gasParticles.stop();
+		HClParticles.stop();
+		NH3Particles.stop();
 		
 		bulbEvacuated = false;
+		
 		
 		burner.getFlame().setVisible(false);
 		burner.getFlame().setIntensity(0);
@@ -267,6 +299,7 @@ public class CaCO3Decomposition extends LabFrame {
 		bulb.setValue(20.0);
 		evacuateButton.setEnabled(true);
 		addSubstanceButton.setEnabled(false);
+
 	}
 	
 	public void evacuate() {
@@ -277,7 +310,10 @@ public class CaCO3Decomposition extends LabFrame {
 		
 		bulbEvacuated = true;
 		
-		gasParticles.start();
+		HClParticles.start();
+		NH3Particles.start();
+		
+		
 	}
 
 	public void changeTemperature() {
@@ -325,16 +361,25 @@ public class CaCO3Decomposition extends LabFrame {
 	@Override
 	public void update() {
 		
+		
 		if (bulbEvacuated) {
-			if (gasParticles.getActiveParticles() < currentCondition.gasParticles) {
-				gasParticles.spawnParticle();
-			} else if (gasParticles.getActiveParticles() > currentCondition.gasParticles) {
+			if (HClParticles.getActiveParticles() < currentCondition.gasParticles) {
+				HClParticles.spawnParticle();
+			} else if (HClParticles.getActiveParticles() > currentCondition.gasParticles) {
 				
-				gasParticles.removeParticle();
+				HClParticles.removeParticle();
 				
 			}
 			
-			double p = ((double) gasParticles.getActiveParticles() / currentCondition.gasParticles) * ((currentCondition.pressure / 101.325) * 760);
+			if (NH3Particles.getActiveParticles() < currentCondition.gasParticles) {
+				NH3Particles.spawnParticle();
+			} else if (NH3Particles.getActiveParticles() > currentCondition.gasParticles) {
+				
+				NH3Particles.removeParticle();
+				
+			}
+			
+			double p = ((double) NH3Particles.getActiveParticles() / currentCondition.gasParticles) * ((currentCondition.pressure / 101.325) * 760);
 				
 			animateMeasurable(p, manometer);
 		}
