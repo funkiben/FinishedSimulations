@@ -1,4 +1,4 @@
-package simulation;
+package NaHCO3_decomposition;
 
 import java.awt.Color;
 

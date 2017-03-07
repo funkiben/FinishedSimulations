@@ -1,4 +1,4 @@
-package simulation;
+package NH4Cl_decomposition;
 
 import java.awt.Color;
 

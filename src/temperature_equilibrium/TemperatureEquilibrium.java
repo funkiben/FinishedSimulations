@@ -1,4 +1,4 @@
-package simulation;
+package temperature_equilibrium;
 
 
 import java.awt.Color;

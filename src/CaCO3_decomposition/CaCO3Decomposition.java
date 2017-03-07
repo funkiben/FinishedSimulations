@@ -1,4 +1,4 @@
-package simulation;
+package CaCO3_decomposition;
 
 import java.awt.Color;
 
