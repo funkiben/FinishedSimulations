@@ -51,7 +51,7 @@ public class VaporPressure extends LabFrame {
 		play = new Button(100, 25, "Play") {
 			@Override
 			public void doSomething() {
-
+				startSimulation();
 			}
 		};
 		play.setOffset(30, 500);
@@ -142,6 +142,7 @@ public class VaporPressure extends LabFrame {
 		};
 		pressureTimeGraphFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pressureTimeGraphFrame.setVisible(false);
+	
 		pressureTimeGraphFrame.start(30);
 		showPressureGraph = new Button(205, 25, "Show Pressure vs. Time Graph") {
 			@Override
@@ -171,7 +172,11 @@ public class VaporPressure extends LabFrame {
 		pressureTimeTableFrame.addComponent(vaporPressureTimeTable);
 		pressureTimeTableFrame.start(30);
 	}
-
+	
+	private void startSimulation(){
+		//TO DO Make simulation
+	}
+	
 	@Override
 	public void update() {
 
