@@ -1,4 +1,4 @@
-package vaporpressure;
+package vapor_pressure_lab;
 
 import lab.LabFrame;
 import lab.component.ImageComponent;
@@ -121,7 +121,7 @@ public class VaporPressure extends LabFrame {
 		};
 		equipmentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		equipmentFrame.setVisible(false);
-		equipment = new ImageComponent(400, 300, "/VaporPressure/flask.gif");
+		equipment = new ImageComponent(400, 300, "/vapor_pressure_lab/flask.gif");
 		equipmentFrame.addComponent(equipment);
 		equipmentFrame.start(0);
 		showEquipment = new Button(125, 25, "Show Equipment") {
