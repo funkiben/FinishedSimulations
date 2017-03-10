@@ -1,4 +1,4 @@
-package simulation;
+package HI_equilibrium;
 import java.awt.Color;
 
 import lab.LabFrame;
