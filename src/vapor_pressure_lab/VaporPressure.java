@@ -247,7 +247,7 @@ public class VaporPressure extends LabFrame {
 	}
 
 	private void stepSimulation() {
-		if (time > 101.0) {
+		if (time > 100 || temperature > 101) {
 			running = false;
 		} else {
 			time += dtime;
