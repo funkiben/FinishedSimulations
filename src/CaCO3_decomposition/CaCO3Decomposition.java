@@ -7,14 +7,18 @@ import draw.animation.DoubleLinearAnimation;
 import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
+import lab.component.LabComponent;
 import lab.component.MeasurableComponent;
+import lab.component.Tube;
 import lab.component.container.Bulb;
 import lab.component.container.ContentState;
 import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
+import lab.component.geo.Rectangle;
 import lab.component.misc.BunsenBurner;
 import lab.component.sensor.Manometer;
+import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
@@ -40,7 +44,8 @@ public class CaCO3Decomposition extends LabFrame {
 	
 	private final ReactionCondition[] reactionConditions;
 	
-	private final Manometer manometer;
+	//private final Manometer manometer;
+	private final PressureGauge pressureGauge;
 	private final Bulb bulb;
 	private final Thermometer thermometer;
 	private final ParticleSystem gasParticles;
@@ -61,30 +66,33 @@ public class CaCO3Decomposition extends LabFrame {
 	private ReactionCondition currentCondition;
 	
 	public CaCO3Decomposition(String name, double mass, double volume, ReactionCondition[] reactionConditions) {
-		super(name, 660, 725);
+		super(name, 660, 650);
 		
 		this.reactionConditions = reactionConditions;
 		currentCondition = reactionConditions[0];
 		
-		manometer = new Manometer(150, 600);
-		manometer.setOffsetY(20);
-		manometer.setGraduation(new VerticalGraduation(0, 760, 20, 5));
-		manometer.setValue(760.0);
+		pressureGauge = new PressureGauge(220, 220, "CO2 Pressure", "kPa", 6, 6);
+		pressureGauge.setOffset(10, 150);
 		
-		EmptyComponent middleContentArea = new EmptyComponent(300, 600);
-		middleContentArea.setOffsetX(20);
+		EmptyComponent middleContentArea = new EmptyComponent(300, 475);
+		middleContentArea.setOffset(35, 50);
+		
+		middleContentArea.addChild(Tube.straight(0, 0, 270, 160));
 		
 		bulb = new Bulb(300, 300);
-		bulb.setOffsetX(35);
-		bulb.setOffsetY(60);
+		bulb.setOffsetX(0);
+		bulb.setOffsetY(0);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
+		bulb.setLayout(LabComponent.FREE_FORM);
+		
 		
 		burner = new BunsenBurner(20, 175);
 		burner.setOffsetY(1);
-		burner.setOffsetX(175);
+		burner.setOffsetX(140);
 		burner.getFlame().setVisible(false);
 		burner.getFlame().setIntensity(0);
+
 		
 		gasParticles = new ParticleSystem(300, 300, reactionConditions[2].gasParticles);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
@@ -114,14 +122,14 @@ public class CaCO3Decomposition extends LabFrame {
 		
 		
 		thermometer = new Thermometer(500);
-		thermometer.setOffsetX(80);
+		thermometer.setOffsetX(40);
 		thermometer.setOffsetY(20);
 		thermometer.setGraduation(new VerticalGraduation(0, 1100, 50, 10));
 		thermometer.setValue(currentCondition.temperature);
 		thermometer.getGraduation().setSuffix("K");
 		
 		
-		addComponent(manometer, middleContentArea, thermometer);
+		addComponent(pressureGauge, middleContentArea, thermometer);
 		
 		
 		
@@ -132,8 +140,6 @@ public class CaCO3Decomposition extends LabFrame {
 				resetExperiment();
 			}
 		};
-		
-		resetButton.setOffsetX(30);
 		
 		addSubstanceButton = new Button(150, 25, "Add CaCO3") {
 			@Override
@@ -172,20 +178,17 @@ public class CaCO3Decomposition extends LabFrame {
 		};
 		
 		
-		Label reactionLabel = new Label(250, 15, "CaCO3(s) <=> CaO(s) + CO2(g)");
-		reactionLabel.setOffsetY(0);
+		addSubstanceButton.setOffsetX(10);
+		addSubstanceButton.setOffsetX(10);
+		evacuateButton.setOffsetX(10);
 		
-		resetButton.setOffsetY(5);
-		addSubstanceButton.setOffsetY(5);
-		addSubstanceButton.setOffsetY(5);
-		evacuateButton.setOffsetY(5);
+		conditionSelector.setOffsetX(10);
 		
-		setTemperatureButton.setOffsetY(5);
-		conditionSelector.setOffset(30, 5);
+
+		resetButton.setOffset(10, 15);
+		detailsButton.setOffset(10, 15);
 		
-		detailsButton.setOffsetY(20);
-		
-		addComponent(new EmptyComponent(250, 1), reactionLabel, resetButton, addSubstanceButton, evacuateButton, new EmptyComponent(100, 0), conditionSelector, setTemperatureButton, new EmptyComponent(175, 0), detailsButton);
+		addComponent( new EmptyComponent(660, 30), addSubstanceButton, evacuateButton, conditionSelector, setTemperatureButton, resetButton, detailsButton);
 		
 		
 		detailsWindow = new LabFrame("Simulation Details", 400, 250, false) {
@@ -201,7 +204,12 @@ public class CaCO3Decomposition extends LabFrame {
 		detailsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		detailsWindow.setResizable(false);
 		
-		Label massLabel, volumeLabel, atmPressureLabel;
+		Label reactionLabel, massLabel, volumeLabel, atmPressureLabel;
+		
+		reactionLabel = new Label(400, 30, "CaCO3(s) <=> CaO(s) + CO2(g)");
+		reactionLabel.setFontSize(20);
+		reactionLabel.setOffset(10, 0);
+		
 		
 		massLabel = new Label(400, 30, "Calcium Carbonate Mass = " + mass + "g");
 		massLabel.setFontSize(20);
@@ -215,12 +223,13 @@ public class CaCO3Decomposition extends LabFrame {
 		atmPressureLabel.setFontSize(20);
 		atmPressureLabel.setOffset(10, 0);
 		
-		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel);
+		detailsWindow.addComponent(reactionLabel, massLabel, volumeLabel, atmPressureLabel);
 		detailsWindow.start(0);
 		
 		resetExperiment();
 		
 		start(30);
+		
 	}
 	
 	private void animateMeasurable(double value, final MeasurableComponent c) {
@@ -242,7 +251,7 @@ public class CaCO3Decomposition extends LabFrame {
 	public void resetExperiment() {
 		currentCondition = reactionConditions[0];
 		
-		animateMeasurable(760, manometer); 
+		animateMeasurable(101.325, pressureGauge); 
 		animateMeasurable(currentCondition.temperature, thermometer);
 		
 		if (getAnimator().animationExists("removeSolid")) {
@@ -270,7 +279,7 @@ public class CaCO3Decomposition extends LabFrame {
 	}
 	
 	public void evacuate() {
-		animateMeasurable(0, manometer);
+		animateMeasurable(0, pressureGauge);
 		
 		evacuateButton.setEnabled(false);
 		conditionSelector.setEnabled(true);
@@ -334,9 +343,9 @@ public class CaCO3Decomposition extends LabFrame {
 				
 			}
 			
-			double p = ((double) gasParticles.getActiveParticles() / currentCondition.gasParticles) * ((currentCondition.pressure / 101.325) * 760);
+			double p = ((double) gasParticles.getActiveParticles() / currentCondition.gasParticles) * (currentCondition.pressure);
 				
-			animateMeasurable(p, manometer);
+			animateMeasurable(p, pressureGauge);
 		}
 		
 		
