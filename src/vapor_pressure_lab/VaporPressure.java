@@ -200,7 +200,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		instructionsFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		
+
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
 				showEquipment, showPressureGraph);
 		start(30);
@@ -221,10 +221,10 @@ public class VaporPressure extends LabFrame {
 		for (int i = 0; i < vaporPressure.length; i++) {
 			vaporPressure[i] = 0;
 		}
-		molarity[0] = 55.409;
-		molarity[1] = 55.268;
-		molarity[2] = 55.076;
-		molarity[3] = 54.576;
+		molarity[0] = 55.4082;
+		molarity[1] = 55.2661;
+		molarity[2] = 55.0728;
+		molarity[3] = 54.5686;
 		time = 0;
 		temperature = 0;
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
@@ -243,7 +243,14 @@ public class VaporPressure extends LabFrame {
 		vaporPressureGraph.removeDataSet(vaporPressure30Set.getName());
 		vaporPressureGraph.removeDataSet(vaporPressure40Set.getName());
 		vaporPressureGraph.removeDataSet(vaporPressure60Set.getName());
-
+		molarityGraph.addDataSet(molarity20Set);
+		molarityGraph.addDataSet(molarity30Set);
+		molarityGraph.addDataSet(molarity40Set);
+		molarityGraph.addDataSet(molarity60Set);
+		vaporPressureGraph.addDataSet(vaporPressure20Set);
+		vaporPressureGraph.addDataSet(vaporPressure30Set);
+		vaporPressureGraph.addDataSet(vaporPressure40Set);
+		vaporPressureGraph.addDataSet(vaporPressure60Set);
 	}
 
 	private void stepSimulation() {
@@ -251,29 +258,26 @@ public class VaporPressure extends LabFrame {
 			running = false;
 		} else {
 			time += dtime;
-			vaporPressure[0] = (2.333 - vaporPressure[0] * Math.exp(-k[0] * time));
-			molarity[0] = (molarity[0] * Math.exp(-k[4] * time));
-			if (time > 101.0) {
-				running = false;
-			}
-			if (time > 37.0) {
-				molarity[0] = 55.4082;
-			}
-			vaporPressure[1] = (4.234 - vaporPressure[1] * Math.exp(-k[1] * time));
-			molarity[1] = (molarity[1] * Math.exp(-k[5] * time));
-			if (time > 20.0) {
-				molarity[1] = 55.2661;
-			}
-			vaporPressure[2] = (7.367 - vaporPressure[2] * Math.exp(-k[2] * time));
-			molarity[2] = (molarity[2] * Math.exp(-k[6] * time));
-			if (time > 18.0) {
-				molarity[2] = 55.0728;
-			}
-			vaporPressure[3] = (19.993 - vaporPressure[3] * Math.exp(-k[3] * time));
-			molarity[3] = (molarity[3] * Math.exp(-k[7] * time));
-			if (time > 6.0) {
-				molarity[3] = 54.5686;
-			}
+			vaporPressure[0] = (2.333 - 2.333 * Math.exp(-k[0] * time));
+			// molarity[0] = (molarity[0] * Math.exp(-k[4] * time));
+			// if (time > 37.0) {
+			// molarity[0] = 55.4082;
+			// }
+			vaporPressure[1] = (4.234 - 4.234 * Math.exp(-k[1] * time));
+			// molarity[1] = (molarity[1] * Math.exp(-k[5] * time));
+			// if (time > 20.0) {
+			// molarity[1] = 55.2661;
+			// }
+			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-k[2] * time));
+			// molarity[2] = (molarity[2] * Math.exp(-k[6] * time));
+			// if (time > 18.0) {
+			// molarity[2] = 55.0728;
+			// }
+			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-k[3] * time));
+			// molarity[3] = (molarity[3] * Math.exp(-k[7] * time));
+			// if (time > 6.0) {
+			// molarity[3] = 54.5686;
+			// }
 
 			for (int i = 0; i < 4; i++) {
 				vaporPressureMolarityTable.setCell(i, 0, Double.parseDouble(round.format(vaporPressure[i])));
@@ -291,19 +295,12 @@ public class VaporPressure extends LabFrame {
 			molarity30Set.addPoint(time, molarity[1]);
 			molarity40Set.addPoint(time, molarity[2]);
 			molarity60Set.addPoint(time, molarity[3]);
-			molarityGraph.addDataSet(molarity20Set);
-			molarityGraph.addDataSet(molarity30Set);
-			molarityGraph.addDataSet(molarity40Set);
-			molarityGraph.addDataSet(molarity60Set);
 
 			vaporPressure20Set.addPoint(time, vaporPressure[0]);
 			vaporPressure30Set.addPoint(time, vaporPressure[1]);
 			vaporPressure40Set.addPoint(time, vaporPressure[2]);
 			vaporPressure60Set.addPoint(time, vaporPressure[3]);
-			vaporPressureGraph.addDataSet(vaporPressure20Set);
-			vaporPressureGraph.addDataSet(vaporPressure30Set);
-			vaporPressureGraph.addDataSet(vaporPressure40Set);
-			vaporPressureGraph.addDataSet(vaporPressure60Set);
+
 		}
 
 		// pressure = 6.112 * Math.exp((17.62 * temperature / (243.12 +
