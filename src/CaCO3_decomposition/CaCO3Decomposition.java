@@ -15,9 +15,7 @@ import lab.component.container.ContentState;
 import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
-import lab.component.geo.Rectangle;
 import lab.component.misc.BunsenBurner;
-import lab.component.sensor.Manometer;
 import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
@@ -71,21 +69,22 @@ public class CaCO3Decomposition extends LabFrame {
 		this.reactionConditions = reactionConditions;
 		currentCondition = reactionConditions[0];
 		
-		pressureGauge = new PressureGauge(220, 220, "CO2 Pressure", "kPa", 6, 6);
-		pressureGauge.setOffset(10, 150);
+		pressureGauge = new PressureGauge(200, 200, "CO2 Pressure", "kPa", 6, 6);
+		pressureGauge.setOffset(10, 115);
+		pressureGauge.setValue(101.325);
+		
+		pressureGauge.addChild(Tube.straight(200, 105, 270, 50));
 		
 		EmptyComponent middleContentArea = new EmptyComponent(300, 475);
 		middleContentArea.setOffset(35, 50);
 		
-		middleContentArea.addChild(Tube.straight(0, 0, 270, 160));
-		
 		bulb = new Bulb(300, 300);
-		bulb.setOffsetX(0);
-		bulb.setOffsetY(0);
+		bulb.setOffset(0, 0);
 		bulb.setContentColor(new Color(240, 240, 240));
 		bulb.setContentState(ContentState.SOLID);
 		bulb.setLayout(LabComponent.FREE_FORM);
 		
+		bulb.addChild(Tube.straight(145, 0, 0, -100));
 		
 		burner = new BunsenBurner(20, 175);
 		burner.setOffsetY(1);
@@ -124,7 +123,7 @@ public class CaCO3Decomposition extends LabFrame {
 		thermometer = new Thermometer(500);
 		thermometer.setOffsetX(40);
 		thermometer.setOffsetY(20);
-		thermometer.setGraduation(new VerticalGraduation(0, 1100, 50, 10));
+		thermometer.setGraduation(new VerticalGraduation(250, 1100, 50, 10));
 		thermometer.setValue(currentCondition.temperature);
 		thermometer.getGraduation().setSuffix("K");
 		
@@ -331,16 +330,23 @@ public class CaCO3Decomposition extends LabFrame {
 		
 	}
 	
+	private int t = 0;
+	
 	@Override
 	public void update() {
 		
 		if (bulbEvacuated) {
-			if (gasParticles.getActiveParticles() < currentCondition.gasParticles) {
-				gasParticles.spawnParticle();
-			} else if (gasParticles.getActiveParticles() > currentCondition.gasParticles) {
-				
-				gasParticles.removeParticle();
-				
+			
+			if (t % 2 == 0) {
+			
+				if (gasParticles.getActiveParticles() < currentCondition.gasParticles) {
+					gasParticles.spawnParticle();
+				} else if (gasParticles.getActiveParticles() > currentCondition.gasParticles) {
+					
+					gasParticles.removeParticle();
+					
+				}
+			
 			}
 			
 			double p = ((double) gasParticles.getActiveParticles() / currentCondition.gasParticles) * (currentCondition.pressure);
