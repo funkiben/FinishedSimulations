@@ -30,9 +30,9 @@ public class NH4ClDecomposition extends LabFrame {
 	public static void main(String[] args) {
 		
 		ReactionCondition[] conditions = {
-					new ReactionCondition(298, 2.04E-8, 1, 20.0, 0),
-					new ReactionCondition(611, 1.63134, 17, 13.0, 100),
-					new ReactionCondition(650, 4.6132, 25, 7.0, 150)
+					new ReactionCondition(298, 2.07E-6, 1, 20.0, 0),
+					new ReactionCondition(611, 165.296, 12, 13.0, 100),
+					new ReactionCondition(650, 467.43, 25, 7.0, 150)
 		};
 		
 		new NH4ClDecomposition("Heterogeneous Equilibrium: Decomposition of Ammonium Chloride", 25.0, 1.00, conditions);
@@ -167,7 +167,7 @@ public class NH4ClDecomposition extends LabFrame {
 			}
 		};
 		
-		addSubstanceButton = new Button(150, 25, "Add CaCO3") {
+		addSubstanceButton = new Button(150, 25, "Add NH4Cl") {
 			@Override
 			public void doSomething() {
 				addSubstance();
