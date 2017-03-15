@@ -8,6 +8,7 @@ import lab.component.LabComponent;
 import lab.component.data.DataTable;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
+import lab.component.swing.ScrollLabel;
 import lab.component.swing.input.Button;
 import lab.util.HorizontalGraduation;
 import lab.util.VerticalGraduation;
@@ -23,10 +24,6 @@ public class VaporPressure extends LabFrame {
 	private LabFrame instructionsFrame;
 	// initial values from simulation
 	private double temperature;
-	private double dtemperature = 1;
-	private double volume = 1;
-	private double R = 8.314;
-	private double pressure;
 	private int time;
 	private int dtime = 1;
 	private double[] vaporPressure = new double[4];
@@ -56,6 +53,8 @@ public class VaporPressure extends LabFrame {
 	private DataTable<Double> vaporPressureMolarityTable;
 	private DataTable<Double> vaporPressureTimeTable;
 	private ImageComponent equipment;
+	private ScrollLabel instructions;
+	private String instructionsText;
 
 	public static void main(String args[]) {
 		new VaporPressure("Vapor Pressure Lab", 800, 650);
@@ -74,6 +73,19 @@ public class VaporPressure extends LabFrame {
 		k[6] = 4.4528E-6;
 		k[7] = 1.5284E-5;
 
+		instructionsText = "<html><body style='width:360px'><p>Measuring the Vapor Pressure and Temperature of a Water Equilbrium System </p> "
+				+ "<br /><p>In this simulation you will experiment with the properties of a closed system containing liquid water and water vapor at different temperatures. The properties of water you will measure include, vapor pressure, temperature, and molarity. Using your data, you will also be able to experimentally determine an average enthalpy of vaporization for water, the density of water at different temperatures, and the values for the equilibrium constants of the water equilibrium system at different temperatures.</p>"
+				+ "<br /><p>This simulation assumes the following experimental conditions for generating the data. A flask with a total volume of vapor equal to 1.0  Liters, a temperature range for the experiment from 0°C to 100°C, a value for R of 8.314 kPa-L/mole-K, and an approximate surface area of liquid water in the system of 1 dm2.</p>"
+				+ "<br /><p>Some Suggestions for Using this Simulation</p>"   
+				+ "<br /><p>1. When you open the simulation you will see a window with two graphs and a number of buttons and data windows.</p>"
+				+ "<br /><p>2. Each time you hit the \"Play\" button the simulation will run for 100 seconds.</p>"
+				+ "<br /><p>3. You can \"Pause\" the simulation at any time during this time frame, and you can hit \"Reset\" to run the simulation again.</p>"
+				+ "<br /><p>4. The \"Step\" button will allow you to increase the time frame in increments of 1 second.</p>"
+				+ "<br /><p>5. By clicking \"showTank\" you will open a new window with a series of \"closed tanks\" containing water at three different temperatures.</p>"
+				+ "<br /><p>6. By clicking \"showEquipment\" you will open a window with an image of the equipment you would use in the laboratory to collect pressure and temperature data for water or other liquids, similar to the data presented in this simulation.</p>"
+				+ "<br /><p>7. Finally, by clicking on the \"PvTgraph\" box you will open a window, which displays a graph and two data windows.</p>"
+				+ "<br /><p>8. You can enter any value for temperature from 0°C to 100°C and a corresponding value for the Vapor Pressure of water will appear in the Pressure data box, along with a data point on the graph.</p></body></html>";
+		
 		play = new Button(100, 25, "Play") {
 			@Override
 			public void doSomething() {
@@ -104,13 +116,15 @@ public class VaporPressure extends LabFrame {
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
-		molarityGraph = new Graph(275, 400, "Molarity vs Time 20C, 30C, 40C, 60C", "Time (s)", "Molarity H2O",
+		molarityGraph = new Graph(275, 400, "Molarity vs Time 20C, 30C, 40C, 60C", "Time (s)", "Molarity H2O (mol/L)",
 				molarityGraduation, timeGraduation);
 		molarityGraph.setOffset(60, 50);
+		molarityGraph.setYLabelOffset(32);
 		molarityGraduation.setTextOffset(-32);
 		vaporPressureGraph = new Graph(275, 400, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Time (s)",
-				"Vapor Pressure", vaporPressureGraduation, timeGraduation);
+				"Vapor Pressure (kPa)", vaporPressureGraduation, timeGraduation);
 		vaporPressureGraph.setOffset(450, 50);
+		vaporPressureGraph.setYLabelOffset(32);
 		vaporPressureMolarityTable = new DataTable<Double>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY);
 		vaporPressureMolarityTable.setOffset(30, 550);
 		vaporPressureMolarityTable.setRowTitle(0, "Vapor Pressure");
@@ -200,6 +214,10 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		instructionsFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		instructions = new ScrollLabel(500, 350, instructionsText);
+		instructions.setHoriztonalScrollBarPolicy(ScrollLabel.HORIZONTAL_SCROLLBAR_NEVER);
+		instructionsFrame.addComponent(instructions);
+		instructionsFrame.start(0);
 
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
 				showEquipment, showPressureGraph);
@@ -259,26 +277,9 @@ public class VaporPressure extends LabFrame {
 		} else {
 			time += dtime;
 			vaporPressure[0] = (2.333 - 2.333 * Math.exp(-k[0] * time));
-			// molarity[0] = (molarity[0] * Math.exp(-k[4] * time));
-			// if (time > 37.0) {
-			// molarity[0] = 55.4082;
-			// }
 			vaporPressure[1] = (4.234 - 4.234 * Math.exp(-k[1] * time));
-			// molarity[1] = (molarity[1] * Math.exp(-k[5] * time));
-			// if (time > 20.0) {
-			// molarity[1] = 55.2661;
-			// }
 			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-k[2] * time));
-			// molarity[2] = (molarity[2] * Math.exp(-k[6] * time));
-			// if (time > 18.0) {
-			// molarity[2] = 55.0728;
-			// }
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-k[3] * time));
-			// molarity[3] = (molarity[3] * Math.exp(-k[7] * time));
-			// if (time > 6.0) {
-			// molarity[3] = 54.5686;
-			// }
-
 			for (int i = 0; i < 4; i++) {
 				vaporPressureMolarityTable.setCell(i, 0, Double.parseDouble(round.format(vaporPressure[i])));
 				vaporPressureMolarityTable.setCell(i, 1, Double.parseDouble(round.format(molarity[i])));
@@ -290,25 +291,15 @@ public class VaporPressure extends LabFrame {
 				vaporPressureTimeTable.setCell(3, time / 10, Double.parseDouble(round.format(vaporPressure[2])));
 				vaporPressureTimeTable.setCell(4, time / 10, Double.parseDouble(round.format(vaporPressure[3])));
 			}
-
 			molarity20Set.addPoint(time, molarity[0]);
 			molarity30Set.addPoint(time, molarity[1]);
 			molarity40Set.addPoint(time, molarity[2]);
 			molarity60Set.addPoint(time, molarity[3]);
-
 			vaporPressure20Set.addPoint(time, vaporPressure[0]);
 			vaporPressure30Set.addPoint(time, vaporPressure[1]);
 			vaporPressure40Set.addPoint(time, vaporPressure[2]);
 			vaporPressure60Set.addPoint(time, vaporPressure[3]);
-
 		}
-
-		// pressure = 6.112 * Math.exp((17.62 * temperature / (243.12 +
-		// temperature)) / 10.0);
-		// if(temperature > 99.3352){
-		// pressure = 101.325;
-		// temperature = 100.0;
-		// }
 
 	}
 
