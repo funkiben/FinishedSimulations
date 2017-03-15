@@ -25,7 +25,7 @@ public class WaterTank extends Tank {
 			
 		};
 		
-		
+		WaterTank tank = new WaterTank(200, 200, 100, 100, 10, 10);
 		tank.setOffset(100, 100);
 		
 		lf.addComponent(tank);
@@ -48,15 +48,20 @@ public class WaterTank extends Tank {
 		gasParticles.setColor(Color.red);
 		gasParticles.setParticleWidth(4);
 		gasParticles.setParticleHeight(4);
-		gasParticles.setVelocity(new RandomVector2Generator(-gasParticleSpeed, -gasParticleSpeed, gasParticleSpeed, gasParticleSpeed, Vector2DistributionType.ELLIPSE_BORDER));
+		gasParticles.setVelocity(new RandomVector2Generator(-gasParticleSpeed / 2, 0, gasParticleSpeed / 2, gasParticleSpeed, Vector2DistributionType.ELLIPSE_BORDER));
 		gasParticles.setColorFade(0);
 		gasParticles.setLifetime(Integer.MAX_VALUE);
+		gasParticles.setSpawnArea(new RandomVector2Generator(3, (height / 2) - 5, width - 3, (height / 2) - 1, Vector2DistributionType.RECTANGLE));
+		gasParticles.setParticleSpawnRate(Double.MAX_VALUE);
 		
 		gasParticles.addCollidableEdge(0, 0, width, 0); // top
 		gasParticles.addCollidableEdge(0, 0, 0, height / 2); // left
 		gasParticles.addCollidableEdge(width, 0, width, height / 2); // right
 		gasParticles.addCollidableEdge(0, height / 2, width, height / 2); // bottom
+
 		
+		gasParticles.start();
+
 		
 		liquidParticles = new ParticleSystem(width, height / 2, liquidParticleAmount);
 		
@@ -64,10 +69,11 @@ public class WaterTank extends Tank {
 		liquidParticles.setColor(Color.blue);
 		liquidParticles.setParticleWidth(4);
 		liquidParticles.setParticleHeight(4);
-		liquidParticles.setVelocity(new RandomVector2Generator(-liquidParticleSpeed, -liquidParticleSpeed, liquidParticleSpeed, liquidParticleSpeed, Vector2DistributionType.ELLIPSE_BORDER));
+		liquidParticles.setVelocity(new RandomVector2Generator(-liquidParticleSpeed / 2, 0, liquidParticleSpeed / 2, liquidParticleSpeed, Vector2DistributionType.ELLIPSE_BORDER));
 		liquidParticles.setColorFade(0);
 		liquidParticles.setLifetime(Integer.MAX_VALUE);
-		liquidParticles.setSpawnArea(new RandomVector2Generator(3, (height / 2) - 5, width - 3, (height / 2) - 1, Vector2DistributionType.RECTANGLE));
+		liquidParticles.setSpawnArea(new RandomVector2Generator(1, 1, width - 1, height / 2 - 1, Vector2DistributionType.RECTANGLE));
+		liquidParticles.setParticleSpawnRate(Double.MAX_VALUE);
 		
 		liquidParticles.addCollidableEdge(0, 0, width, 0); // top
 		liquidParticles.addCollidableEdge(0, 0, 0, height / 2); // left
@@ -76,8 +82,15 @@ public class WaterTank extends Tank {
 		
 		
 		liquidParticles.start();
-		gasParticles.start();
-
+		
+		for (int i = 0; i < gasParticleAmount; i++) {
+			gasParticles.spawnParticle();
+		}
+		
+		for (int i = 0; i < liquidParticleAmount; i++) {
+			liquidParticles.spawnParticle();
+		}
+		
 		addChild(gasParticles, liquidParticles);
 		
 		
