@@ -7,7 +7,7 @@ import lab.component.LabComponent;
 import lab.component.Tube;
 import lab.component.container.Tank;
 import lab.component.geo.Rectangle;
-import lab.component.misc.Piston;
+import lab.component.Piston;
 import lab.util.VerticalGraduation;
 
 public class ReactionApparatus extends LabComponent {
