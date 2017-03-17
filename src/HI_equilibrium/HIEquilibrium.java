@@ -8,6 +8,7 @@ import lab.component.data.GraphDataSet;
 import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.input.Button;
+import lab.component.swing.input.CheckBox;
 import lab.component.swing.input.Dropdown;
 import lab.util.HorizontalGraduation;
 import lab.util.VerticalGraduation;
@@ -19,7 +20,7 @@ public class HIEquilibrium extends LabFrame{
 	}
 	
 	
-	private static final HIReactionState state298K = new HIReactionState(
+	private static final HIReactionState state298K = new HIReactionState("298K",
 			10, // volume
 			298, // temperature
 			0.0, // initial hi
@@ -32,7 +33,7 @@ public class HIEquilibrium extends LabFrame{
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state500K = new HIReactionState(
+	private static final HIReactionState state500K = new HIReactionState("500K",
 			10, // volume
 			500, // temperature
 			0.0, // initial hi
@@ -45,7 +46,7 @@ public class HIEquilibrium extends LabFrame{
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state700K = new HIReactionState(
+	private static final HIReactionState state700K = new HIReactionState("700K",
 			10, // volume
 			700, // temperature
 			0.0, // initial hi
@@ -58,7 +59,7 @@ public class HIEquilibrium extends LabFrame{
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state1000K = new HIReactionState(
+	private static final HIReactionState state1000K = new HIReactionState("1000K",
 			10, // volume
 			1000, // temperature
 			0.0, // initial hi
@@ -74,7 +75,7 @@ public class HIEquilibrium extends LabFrame{
 	
 	
 	
-	private static final HIReactionState state5L = new HIReactionState(
+	private static final HIReactionState state5L = new HIReactionState("5.00L",
 			5, // volume
 			700, // temperature
 			0.0, // initial hi
@@ -87,7 +88,20 @@ public class HIEquilibrium extends LabFrame{
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state20L = new HIReactionState(
+	private static final HIReactionState state10L = new HIReactionState("10.00L",
+			10, // volume
+			700, // temperature
+			0.0, // initial hi
+			4.9, // initial h2
+			4.9, // initial i2
+			4.9 - 0.2383, // final hi
+			0.2383, // final h2
+			0.2383, // final i2
+			false, // hi tube
+			true, // h2 tube
+			true // i2 tube
+	);
+	private static final HIReactionState state20L = new HIReactionState("20.00L",
 			20, // volume
 			700, // temperature
 			0.0, // initial hi
@@ -101,7 +115,21 @@ public class HIEquilibrium extends LabFrame{
 			true // i2 tube
 	);
 	
-	private static final HIReactionState stateHIReactant = new HIReactionState(
+	
+	private static final HIReactionState stateH2I2Reactant = new HIReactionState("H2 & I2",
+			10, // volume
+			700, // temperature
+			3.5, // initial hi
+			0.0, // initial h2
+			0.0, // initial i2
+			2.819, // final hi
+			3.5 - 2.819, // final h2
+			3.5 - 2.819, // final i2
+			false, // hi tube
+			true, // h2 tube
+			true // i2 tube
+	);
+	private static final HIReactionState stateHIReactant = new HIReactionState("HI",
 			10, // volume
 			700, // temperature
 			3.5, // initial hi
@@ -114,6 +142,7 @@ public class HIEquilibrium extends LabFrame{
 			false, // h2 tube
 			false // i2 tube
 	);
+	
 	
 
 	private static final long serialVersionUID = 7321300459079955237L;
@@ -153,10 +182,13 @@ public class HIEquilibrium extends LabFrame{
 	
 	private final Thermometer thermometer = new Thermometer(100);
 	
-	private Dropdown<HIReactionState> temperatureSelector;
-	private Dropdown<HIReactionState> volumeSelector;
-	private Dropdown<HIReactionState> reactantSelector;
+	private final Dropdown<HIReactionState> temperatureSelector;
+	private final Dropdown<HIReactionState> volumeSelector;
+	private final Dropdown<HIReactionState> reactantSelector;
 	
+	private CheckBox varyTemperatureCheckBox;
+	private CheckBox varyVolumeCheckBox;
+	private CheckBox varyReactantCheckBox;
 	
 	private HIReactionState currentState;
 	
@@ -167,9 +199,29 @@ public class HIEquilibrium extends LabFrame{
 		
 		addComponent(reactionApparatus);
 		
-		temperatureSelector = new Dropdown<HIReactionState>(100, 20, state298K, state500K, state700K, state1000K);
-		volumeSelector = new Dropdown<HIReactionState>(100, 20, state5L, state700K, state20L);
-		reactantSelector = new Dropdown<HIReactionState>(100, 20, state298K, stateHIReactant);
+		temperatureSelector = new Dropdown<HIReactionState>(100, 20, state298K, state500K, state700K, state1000K) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s);
+			}
+		};
+		volumeSelector = new Dropdown<HIReactionState>(100, 20, state5L, state10L, state20L) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s);
+			}
+		};
+		reactantSelector = new Dropdown<HIReactionState>(100, 20, stateH2I2Reactant, stateHIReactant) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s);
+			}
+		};
+		
+		
+		varyTemperatureCheckBox = new CheckBox(20, 20, "Vary Temperature");
+		varyVolumeCheckBox = new CheckBox(20, 20, "Vary Volume");
+		varyReactantCheckBox = new CheckBox(20, 20, "Vary Reactant");
 		
 		
 		/*
@@ -267,6 +319,12 @@ public class HIEquilibrium extends LabFrame{
 		*/
 		
 		start(30);
+	}
+	
+	private void changeState(HIReactionState state) {
+		currentState = state;
+		
+		
 	}
 	
 	private static double lerp(double v1, double v2, float f) {
