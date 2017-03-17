@@ -1,4 +1,4 @@
-package simulation;
+package vapor_pressure_equilibrium;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

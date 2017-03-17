@@ -1,4 +1,4 @@
-package simulation;
+package HI_equilibrium;
 import java.awt.Color;
 
 import lab.LabFrame;
@@ -15,14 +15,14 @@ import lab.util.VerticalGraduation;
 import lab.component.swing.input.DoubleSlider;
 import lab.component.data.Graph;
 
-public class HIEquilibrium extends LabFrame {
+public class HIEquilibriumLEGACY extends LabFrame {
 
 	private static final long serialVersionUID = 1L;
 
 
 
 	public static void main(String[] args) {
-		new HIEquilibrium();
+		new HIEquilibriumLEGACY();
 		
 	}
 
@@ -76,7 +76,7 @@ public class HIEquilibrium extends LabFrame {
 	};
 	
 	
-	public HIEquilibrium() {
+	public HIEquilibriumLEGACY() {
 		super("H2 + I2 -> 2HI", 820, 630);
 
 		bulb = new Bulb(300, 300);

@@ -1,4 +1,4 @@
-package simulation;
+package NaHCO3_decomposition;
 
 import java.awt.Color;
 
@@ -6,6 +6,7 @@ import draw.animation.DoubleLerpAnimation;
 import draw.animation.DoubleLinearAnimation;
 import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
+import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
 import lab.component.MeasurableComponent;
 import lab.component.container.Bulb;
@@ -13,7 +14,6 @@ import lab.component.container.ContentState;
 import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
-import lab.component.misc.BunsenBurner;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
@@ -22,8 +22,12 @@ import lab.util.SigFig;
 import lab.util.Vector2;
 import lab.util.VerticalGraduation;
 
-public class GasEquilibrium extends LabFrame {
+public class NaHCO3Decomposition extends LabFrame {
 
+	public static void main(String[] args) {
+		new NaHCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Bicarbonate", 10.0, 0.5, 0.559, 0.00851, 20, 800);
+	}
+	
 	private static final long serialVersionUID = 1L;
 	private final double Kp;
 	private final double initialTemp;
@@ -45,7 +49,7 @@ public class GasEquilibrium extends LabFrame {
 	
 	private boolean reactionOccuring = false;
 	
-	public GasEquilibrium(String name, double mass, String substance, String reaction, double Kp, double Kc, double initialTemp, double temp) {
+	public NaHCO3Decomposition(String name, double mass, double volume, double Kp, double Kc, double initialTemp, double temp) {
 		super(name, 660, 725);
 		
 		this.Kp = Kp;
@@ -123,7 +127,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		resetButton.setOffsetX(30);
 		
-		addSubstanceButton = new Button(150, 25, "Add " + substance) {
+		addSubstanceButton = new Button(150, 25, "Add NaHCO3") {
 			@Override
 			public void doSomething() {
 				addSubstance();
@@ -153,7 +157,7 @@ public class GasEquilibrium extends LabFrame {
 		
 		detailsButton.setOffset(30, 5);
 		
-		Label reactionLabel = new Label(250, 15, reaction);
+		Label reactionLabel = new Label(250, 15, "NaHCO3(s) <=> NaOH(s) + CO2(g)");
 		reactionLabel.setOffsetY(0);
 		
 		resetButton.setOffsetY(5);
@@ -178,32 +182,38 @@ public class GasEquilibrium extends LabFrame {
 		detailsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		detailsWindow.setResizable(false);
 		
-		Label massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
+		Label massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel;
+		
+		massLabel = new Label(400, 30, "Sodium Bicarbonate Mass = " + mass + "g");
 		massLabel.setFontSize(20);
 		massLabel.setOffset(10, 0);
 		
-		Label atmPressureLabel = new Label(400, 30, "Atmosphere Pressure = 1.0 atm");
+		volumeLabel = new Label(400, 30, "Bulb Volume = " + SigFig.sigfigalize(volume, 3) + "L");
+		volumeLabel.setFontSize(20);
+		volumeLabel.setOffset(10, 0);
+		
+		atmPressureLabel = new Label(400, 30, "Atmosphere Pressure = 1.0 atm");
 		atmPressureLabel.setFontSize(20);
 		atmPressureLabel.setOffset(10, 0);
 		
-		Label initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
+		initTempLabel = new Label(400, 30, "Initial Temperature = " + SigFig.sigfigalize(initialTemp, 3, 4) + "C");
 		initTempLabel.setFontSize(20);
 		initTempLabel.setOffset(10, 0);
 		
-		Label finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
+		finalTempLabel = new Label(400, 30, "Final Temperature = " + SigFig.sigfigalize(temp, 3, 4) + "C");
 		finalTempLabel.setFontSize(20);
 		finalTempLabel.setOffset(10, 0);
 		
-		Label KpLabel = new Label(400, 30, "Kp = " + Kp);
+		KpLabel = new Label(400, 30, "Kp = " + Kp);
 		KpLabel.setFontSize(20);
 		KpLabel.setOffset(10, 0);
 		
-		Label KcLabel = new Label(400, 30, "Kc = " + Kc);
+		KcLabel = new Label(400, 30, "Kc = " + Kc);
 		KcLabel.setFontSize(20);
 		KcLabel.setOffset(10, 0);
 		
-		detailsWindow.addComponent(massLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
-		detailsWindow.start(10);
+		detailsWindow.addComponent(massLabel, volumeLabel, atmPressureLabel, initTempLabel, finalTempLabel, KpLabel, KcLabel);
+		detailsWindow.start(0);
 		
 		resetExperiment();
 		
