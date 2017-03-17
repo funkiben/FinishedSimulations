@@ -8,8 +8,10 @@ import lab.component.LabComponent;
 import lab.component.data.DataTable;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
+import lab.component.swing.Label;
 import lab.component.swing.ScrollLabel;
 import lab.component.swing.input.Button;
+import lab.component.swing.input.TextField;
 import lab.util.HorizontalGraduation;
 import lab.util.VerticalGraduation;
 
@@ -18,7 +20,7 @@ import lab.util.VerticalGraduation;
 public class VaporPressure extends LabFrame {
 	private static final long serialVersionUID = 1L;
 	private LabFrame pressureTimeTableFrame;
-	private LabFrame pressureTimeGraphFrame;
+	private LabFrame vaporPressureTemperatureGraphFrame;
 	private LabFrame tankFrame;
 	private LabFrame equipmentFrame;
 	private LabFrame instructionsFrame;
@@ -29,7 +31,7 @@ public class VaporPressure extends LabFrame {
 	private double[] vaporPressure = new double[4];
 	private double[] molarity = new double[4];
 	// 20 30 40 60 120 130 140 160
-	private double[] k = new double[8];
+	private double[] k = { 0.0693, 0.077, 0.086625, 0.1155, 1.197833E-6, 2.341675E-6, 4.4528E-6, 1.5284E-5 };
 	private boolean running = false;
 	private DecimalFormat round = new DecimalFormat("#.####");
 	private GraphDataSet molarity20Set;
@@ -46,15 +48,17 @@ public class VaporPressure extends LabFrame {
 	private Button reset;
 	private Graph molarityGraph;
 	private Graph vaporPressureGraph;
-	private Graph pressureGraph;
+	private Graph vaporPressureTemperatureGraph;
 	private Button showTank;
 	private Button showEquipment;
 	private Button showPressureGraph;
+	private Button plot;
+	private TextField inputTemperature;
+	private Label outputVaporPressure;
 	private DataTable<Double> vaporPressureMolarityTable;
 	private DataTable<Double> vaporPressureTimeTable;
 	private ImageComponent equipment;
 	private ScrollLabel instructions;
-	private String instructionsText;
 
 	public static void main(String args[]) {
 		new VaporPressure("Vapor Pressure Lab", 800, 650);
@@ -64,28 +68,6 @@ public class VaporPressure extends LabFrame {
 		super(name, width, height);
 		getRoot().setLayout(LabComponent.FREE_FORM);
 
-		k[0] = 0.0693;
-		k[1] = 0.077;
-		k[2] = 0.086625;
-		k[3] = 0.1155;
-		k[4] = 1.197833E-6;
-		k[5] = 2.341675E-6;
-		k[6] = 4.4528E-6;
-		k[7] = 1.5284E-5;
-
-		instructionsText = "<html><body style='width:360px'><p>Measuring the Vapor Pressure and Temperature of a Water Equilbrium System </p> "
-				+ "<br /><p>In this simulation you will experiment with the properties of a closed system containing liquid water and water vapor at different temperatures. The properties of water you will measure include, vapor pressure, temperature, and molarity. Using your data, you will also be able to experimentally determine an average enthalpy of vaporization for water, the density of water at different temperatures, and the values for the equilibrium constants of the water equilibrium system at different temperatures.</p>"
-				+ "<br /><p>This simulation assumes the following experimental conditions for generating the data. A flask with a total volume of vapor equal to 1.0  Liters, a temperature range for the experiment from 0°C to 100°C, a value for R of 8.314 kPa-L/mole-K, and an approximate surface area of liquid water in the system of 1 dm2.</p>"
-				+ "<br /><p>Some Suggestions for Using this Simulation</p>"   
-				+ "<br /><p>1. When you open the simulation you will see a window with two graphs and a number of buttons and data windows.</p>"
-				+ "<br /><p>2. Each time you hit the \"Play\" button the simulation will run for 100 seconds.</p>"
-				+ "<br /><p>3. You can \"Pause\" the simulation at any time during this time frame, and you can hit \"Reset\" to run the simulation again.</p>"
-				+ "<br /><p>4. The \"Step\" button will allow you to increase the time frame in increments of 1 second.</p>"
-				+ "<br /><p>5. By clicking \"showTank\" you will open a new window with a series of \"closed tanks\" containing water at three different temperatures.</p>"
-				+ "<br /><p>6. By clicking \"showEquipment\" you will open a window with an image of the equipment you would use in the laboratory to collect pressure and temperature data for water or other liquids, similar to the data presented in this simulation.</p>"
-				+ "<br /><p>7. Finally, by clicking on the \"PvTgraph\" box you will open a window, which displays a graph and two data windows.</p>"
-				+ "<br /><p>8. You can enter any value for temperature from 0°C to 100°C and a corresponding value for the Vapor Pressure of water will appear in the Pressure data box, along with a data point on the graph.</p></body></html>";
-		
 		play = new Button(100, 25, "Play") {
 			@Override
 			public void doSomething() {
@@ -116,13 +98,13 @@ public class VaporPressure extends LabFrame {
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
-		molarityGraph = new Graph(275, 400, "Molarity vs Time 20C, 30C, 40C, 60C", "Time (s)", "Molarity H2O (mol/L)",
-				molarityGraduation, timeGraduation);
+		molarityGraph = new Graph(275, 400, "Molarity vs Time", "Time (s)", "Molarity H2O (mol/L)", molarityGraduation,
+				timeGraduation);
 		molarityGraph.setOffset(60, 50);
 		molarityGraph.setYLabelOffset(32);
 		molarityGraduation.setTextOffset(-32);
-		vaporPressureGraph = new Graph(275, 400, "Vapor Pressure vs Time 20C, 30C, 40C, 60C", "Time (s)",
-				"Vapor Pressure (kPa)", vaporPressureGraduation, timeGraduation);
+		vaporPressureGraph = new Graph(275, 400, "Vapor Pressure vs Time", "Time (s)", "Vapor Pressure (kPa)",
+				vaporPressureGraduation, timeGraduation);
 		vaporPressureGraph.setOffset(450, 50);
 		vaporPressureGraph.setYLabelOffset(32);
 		vaporPressureMolarityTable = new DataTable<Double>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY);
@@ -168,7 +150,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		showEquipment.setOffset(435, 500);
-		pressureTimeGraphFrame = new LabFrame("Vapor Pressure vs. Time Graph", 500, 600, false) {
+		vaporPressureTemperatureGraphFrame = new LabFrame("Vapor Pressure vs Temperature Graph", 500, 600, false) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -177,18 +159,22 @@ public class VaporPressure extends LabFrame {
 
 			}
 		};
-		pressureTimeGraphFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		pressureTimeGraphFrame.setVisible(false);
+		vaporPressureTemperatureGraphFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		vaporPressureTemperatureGraphFrame.setVisible(false);
+		HorizontalGraduation temperatureGraduation = new HorizontalGraduation(0, 100, 20, 10);
+		vaporPressureTemperatureGraph = new Graph(400, 400, "Vapor Pressure vs Temperature", "Vapor Pressure (kPa)",
+				"Temperature (C)", vaporPressureGraduation, temperatureGraduation);
 
-		pressureTimeGraphFrame.start(30);
-		showPressureGraph = new Button(205, 25, "Show Pressure vs. Time Graph") {
+		vaporPressureTemperatureGraphFrame.addComponent(vaporPressureTemperatureGraph);
+		vaporPressureTemperatureGraphFrame.start(30);
+		showPressureGraph = new Button(205, 25, "Show Pressure vs Temperature") {
 			@Override
 			public void doSomething() {
-				pressureTimeGraphFrame.setVisible(true);
+				vaporPressureTemperatureGraphFrame.setVisible(true);
 			}
 		};
 		showPressureGraph.setOffset(560, 500);
-		pressureTimeTableFrame = new LabFrame("Vapor Pressure vs. Time Table", 600, 375, true) {
+		pressureTimeTableFrame = new LabFrame("Vapor Pressure vs Time Table", 600, 375, true) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -214,8 +200,10 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		instructionsFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		instructions = new ScrollLabel(500, 350, instructionsText);
+		instructionsFrame.setResizable(false);
+		instructions = new ScrollLabel(500, 350, "/vapor_pressure_lab/instructions.txt");
 		instructions.setHoriztonalScrollBarPolicy(ScrollLabel.HORIZONTAL_SCROLLBAR_NEVER);
+		instructions.setFontSize(13);
 		instructionsFrame.addComponent(instructions);
 		instructionsFrame.start(0);
 
