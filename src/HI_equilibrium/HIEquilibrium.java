@@ -157,6 +157,10 @@ public class HIEquilibrium extends LabFrame{
 	private Dropdown<HIReactionState> volumeSelector;
 	private Dropdown<HIReactionState> reactantSelector;
 	
+	private Graph pressureVsTime;
+	
+	private GraphDataSet H2I2Set;
+	private GraphDataSet HISet;
 	
 	private HIReactionState currentState;
 	
@@ -171,6 +175,13 @@ public class HIEquilibrium extends LabFrame{
 		volumeSelector = new Dropdown<HIReactionState>(100, 20, state5L, state700K, state20L);
 		reactantSelector = new Dropdown<HIReactionState>(100, 20, state298K, stateHIReactant);
 		
+		pressureVsTime = new Graph(350, 350, "Pressure vs Time", "Time (s)", "Pressure (atm)", new VerticalGraduation(0,2.45,.5,.1), new HorizontalGraduation(0,10,1,.5f));
+		
+		H2I2Set = new GraphDataSet("H2 & I2",true,true);
+		HISet = new GraphDataSet("HI",true,true);
+		
+		pressureVsTime.addDataSet(H2I2Set);
+		pressureVsTime.addDataSet(HISet);
 		
 		/*
 		getRoot().setScaleChildren(true);
