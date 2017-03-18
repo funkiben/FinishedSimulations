@@ -43,9 +43,9 @@ public class ReactionApparatus extends LabComponent {
 
 		Tube.setDiameter(6);
 
-		H2Tube = Tube.straight(95, 70, 300, 100);
+		H2Tube = Tube.straight(95, 70, 300, 110);
 		I2Tube = Tube.straight(99, 163, 270, 75);
-		HITube = Tube.straight(95, 253, 240, 100);
+		HITube = Tube.straight(95, 253, 240, 110);
 
 		addChild(H2Tube, I2Tube, HITube);
 
@@ -77,6 +77,12 @@ public class ReactionApparatus extends LabComponent {
 
 	public Tube getHITube() {
 		return HITube;
+	}
+	
+	public void setReactionBulbSize(int size) {
+		reactionBulb.setOffset(reactionBulb.getOffsetX() + (reactionBulb.getWidth() - size) / 2, reactionBulb.getOffsetY() + (reactionBulb.getHeight() - size) / 2);
+		reactionBulb.setWidth(size);
+		reactionBulb.setHeight(size);
 	}
 
 	@Override
