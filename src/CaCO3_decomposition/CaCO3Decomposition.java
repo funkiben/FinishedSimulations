@@ -35,7 +35,7 @@ public class CaCO3Decomposition extends LabFrame {
 					new ReactionCondition(1100, 105.682, 50, 15.0, 150)
 		};
 		
-		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Sodium Calcium Carbonate", 50.0, 1.00, conditions);
+		new CaCO3Decomposition("Heterogeneous Equilibrium: Decomposition of Calcium Carbonate", 50.0, 1.00, conditions);
 	}
 	
 	private static final long serialVersionUID = 1L;
