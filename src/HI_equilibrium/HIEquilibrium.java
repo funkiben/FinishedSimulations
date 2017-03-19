@@ -91,9 +91,9 @@ public class HIEquilibrium extends LabFrame{
 			0.0, // initial hi
 			4.9, // initial h2
 			4.9, // initial i2
-			(4.9 - 0.2383) * 2, // final hi
-			0.2383, // final h2
-			0.2383, // final i2
+			(4.9 - 0.9531) * 2, // final hi
+			0.9531, // final h2
+			0.9531, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
@@ -119,9 +119,9 @@ public class HIEquilibrium extends LabFrame{
 			0.0, // initial hi
 			1.225, // initial h2
 			1.225, // initial i2
-			(1.225 - 0.9531) * 2, // final hi
-			0.9531, // final h2
-			0.9531, // final i2
+			(1.225 - 0.2383) * 2, // final hi
+			0.2383, // final h2
+			0.2383, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
@@ -176,7 +176,7 @@ public class HIEquilibrium extends LabFrame{
 	private HIReactionState currentState = state298K;
 	
 	public HIEquilibrium() {
-		super("Gauge Test Lab", 700, 750);
+		super("Homogeneous Equilibrium: H2 + I2 <-> 2HI", 700, 750);
 		
 		
 		reactionApparatus = new ReactionApparatus();
@@ -384,7 +384,6 @@ public class HIEquilibrium extends LabFrame{
 	private double Qc() {
 		return (HIPressure * HIPressure) / (H2Pressure * I2Pressure);
 	}
-
 	
 	private void changeState(HIReactionState state, boolean reset) {
 		currentState = state;
