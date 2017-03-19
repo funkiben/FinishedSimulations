@@ -2,17 +2,17 @@ package HI_equilibrium;
 
 import java.awt.Color;
 
+import draw.animation.ColorLinearAnimation;
+import draw.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.LabComponent;
-import lab.component.container.Bulb;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
 import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.CheckBox;
 import lab.component.swing.input.Dropdown;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
@@ -355,9 +355,9 @@ public class HIEquilibrium extends LabFrame{
 
 		vg.setRemovePointZero(false);
 		
-		graph = new Graph(600, 250, "Concentrations", "time (s)", "molarity (M)", vg, hg);
+		graph = new Graph(600, 250, "Pressures", "time (s)", "pressure (atm)", vg, hg);
 		
-		graph.setYLabelOffset(20);
+		graph.setYLabelOffset(30);
 		graph.getvGraduation().setTextOffset(-30);
 		graph.setOffset(40, 30);
 		
@@ -410,6 +410,11 @@ public class HIEquilibrium extends LabFrame{
 			graph.gethGraduation().setStart(0);
 			graph.gethGraduation().setEnd(60);
 			
+			reactionApparatus.getReactionBulb().setValue(0);
+			
+			reactionApparatus.getI2Bulb().setValue(50);
+			reactionApparatus.getI2Tube().setColor(ReactionApparatus.I2_COLOR);
+			
 			stop();
 		}
 		
@@ -435,6 +440,33 @@ public class HIEquilibrium extends LabFrame{
 		startButton.setEnabled(false);
 		stopButton.setEnabled(true);
 		resetButton.setEnabled(true);
+		
+		if (currentState.I2Tube) {
+			getAnimator().addAnimation("I2 Tube", new ColorLinearAnimation(new Color(230, 230, 230, 255), 5) {
+				@Override
+				public void setValue(Color color) {
+					reactionApparatus.getI2Tube().setColor(color);
+				}
+				
+				@Override
+				public Color getValue() {
+					return reactionApparatus.getI2Tube().getColor();
+				}
+			});
+			
+			getAnimator().addAnimation("I2 Bulb", new DoubleLinearAnimation(0.0, 5) {
+				@Override
+				public void setValue(Double v) {
+					reactionApparatus.getI2Bulb().setValue(v);
+				}
+				
+				@Override
+				public Double getValue() {
+					return reactionApparatus.getI2Bulb().getValue();
+				}
+			});
+		}
+		
 	}
 	
 	private void stop() {
@@ -442,6 +474,9 @@ public class HIEquilibrium extends LabFrame{
 		
 		stopButton.setEnabled(false);
 		startButton.setEnabled(true);
+		
+		getAnimator().cancelAnimation("I2 Tube");
+		getAnimator().cancelAnimation("I2 Bulb");
 	}
 	
 	public void reset() {
@@ -469,9 +504,9 @@ public class HIEquilibrium extends LabFrame{
 			
 			time += 0.1;
 			
-			H2Pressure = lerp(H2Pressure, currentState.H2PressureFinal, 0.05f);
-			I2Pressure = lerp(I2Pressure, currentState.I2PressureFinal, 0.05f);
-			HIPressure = lerp(HIPressure, currentState.HIPressureFinal, 0.05f);
+			H2Pressure = lerp(H2Pressure, currentState.H2PressureFinal, 0.03f);
+			I2Pressure = lerp(I2Pressure, currentState.I2PressureFinal, 0.03f);
+			HIPressure = lerp(HIPressure, currentState.HIPressureFinal, 0.03f);
 			
 			H2I2DataSet.addPoint(time, I2Pressure);
 			HIDataSet.addPoint(time, HIPressure);
@@ -496,13 +531,13 @@ public class HIEquilibrium extends LabFrame{
 			I2PressureReader.setValue(I2Pressure);
 			HIPressureReader.setValue(HIPressure);
 			
-		
+			reactionApparatus.getReactionBulb().setValue(I2Pressure / 2.0 * 100);
+			
 		}
 		
 		
 		
 	}
-
 	
 
 }
