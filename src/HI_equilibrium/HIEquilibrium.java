@@ -7,6 +7,7 @@ import draw.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.LabComponent;
+import lab.component.Tube;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
 import lab.component.geo.Rectangle;
@@ -321,7 +322,19 @@ public class HIEquilibrium extends LabFrame{
 		HIPressureReader.getTitleLabel().setFontSize(10);
 		HIPressureReader.getGaugeLabel().setFontSize(11);
 		
+		Tube tube;
 		
+		tube = Tube.straight(3, 80, 75, 100);
+		tube.setZOrder(-1);
+		H2PressureReader.addChild(tube);
+		
+		tube = Tube.straight(3, 70, 105, 100);
+		tube.setZOrder(-1);
+		I2PressureReader.addChild(tube);
+		
+		tube = Tube.straight(3, 75, 90, 100);
+		tube.setZOrder(-1);
+		HIPressureReader.addChild(tube);
 		
 		H2PressureReader.setOffset(0, 20);
 		I2PressureReader.setOffset(0, 190);

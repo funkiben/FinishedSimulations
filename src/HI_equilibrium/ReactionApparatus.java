@@ -63,6 +63,8 @@ public class ReactionApparatus extends LabComponent {
 		I2Tube.setColor(I2_COLOR);
 		
 		addChild(H2Tube, I2Tube, HITube);
+		
+		reactionBulb.addChild(Tube.straight(115, 0, 180, 100));
 
 	}
 
