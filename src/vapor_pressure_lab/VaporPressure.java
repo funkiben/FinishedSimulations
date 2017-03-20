@@ -150,7 +150,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		showEquipment.setOffset(435, 500);
-		vaporPressureTemperatureGraphFrame = new LabFrame("Vapor Pressure vs Temperature Graph", 500, 600, false) {
+		vaporPressureTemperatureGraphFrame = new LabFrame("Vapor Pressure vs Temperature Graph", 550, 630, false) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -161,11 +161,24 @@ public class VaporPressure extends LabFrame {
 		};
 		vaporPressureTemperatureGraphFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		vaporPressureTemperatureGraphFrame.setVisible(false);
+		vaporPressureTemperatureGraphFrame.getRoot().setLayout(LabComponent.FREE_FORM);
+		vaporPressureGraduation =  new VerticalGraduation(0, 105, 10, 5);
 		HorizontalGraduation temperatureGraduation = new HorizontalGraduation(0, 100, 20, 10);
-		vaporPressureTemperatureGraph = new Graph(400, 400, "Vapor Pressure vs Temperature", "Vapor Pressure (kPa)",
+		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Vapor Pressure (kPa)",
 				"Temperature (C)", vaporPressureGraduation, temperatureGraduation);
-
-		vaporPressureTemperatureGraphFrame.addComponent(vaporPressureTemperatureGraph);
+		vaporPressureTemperatureGraph.setYLabelOffset(40);
+		inputTemperature = new TextField(100, "Temperature");
+		inputTemperature.setOffset(110, 580);
+		plot = new Button(100, 25, "Plot"){
+			@Override
+			public void doSomething() {
+				plotTemperature();
+			}
+		};
+		plot.setOffset(230, 575);
+		outputVaporPressure = new Label(100, 25, "Vapor Pressure");
+		outputVaporPressure.setOffset(350, 575);
+		vaporPressureTemperatureGraphFrame.addComponent(vaporPressureTemperatureGraph, inputTemperature, plot, outputVaporPressure);
 		vaporPressureTemperatureGraphFrame.start(30);
 		showPressureGraph = new Button(205, 25, "Show Pressure vs Temperature") {
 			@Override
@@ -213,6 +226,18 @@ public class VaporPressure extends LabFrame {
 		resetSimulation();
 	}
 
+	private void plotTemperature() {
+		double temp;
+		try{
+			temp = Double.parseDouble(inputTemperature.getText());
+			if(temp > 0.0 && temp < 100.0){
+
+			}
+		}catch(NumberFormatException e){
+			inputTemperature.setText("Temperature");
+		}
+	}
+	
 	private void resetSimulation() {
 		running = false;
 		molarity20Set = new GraphDataSet("20C", true, true);
