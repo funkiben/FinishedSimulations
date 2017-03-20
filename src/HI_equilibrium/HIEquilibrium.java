@@ -9,6 +9,7 @@ import lab.component.EmptyComponent;
 import lab.component.LabComponent;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
+import lab.component.geo.Rectangle;
 import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
 import lab.component.swing.Label;
@@ -269,8 +270,7 @@ public class HIEquilibrium extends LabFrame{
 		
 		
 		container = new EmptyComponent(300, 50);
-		container.setShowBounds(true);
-		container.setOffset(90, 370);
+		container.setOffset(95, 370);
 		
 		startButton = new Button(100, 50, "START") {
 			@Override
@@ -313,16 +313,13 @@ public class HIEquilibrium extends LabFrame{
 		HIPressureReader = new PressureGauge(150, 150, "Pressure HI", "atm", 4);
 		
 		H2PressureReader.getTitleLabel().setFontSize(10);
-		H2PressureReader.getGaugeLabel().setFontSize(12);
-		
-		H2PressureReader.getTitleLabel().setFontSize(10);
-		H2PressureReader.getGaugeLabel().setFontSize(12);
+		H2PressureReader.getGaugeLabel().setFontSize(11);
 		
 		I2PressureReader.getTitleLabel().setFontSize(10);
-		I2PressureReader.getGaugeLabel().setFontSize(12);
+		I2PressureReader.getGaugeLabel().setFontSize(11);
 		
 		HIPressureReader.getTitleLabel().setFontSize(10);
-		HIPressureReader.getGaugeLabel().setFontSize(12);
+		HIPressureReader.getGaugeLabel().setFontSize(11);
 		
 		
 		
@@ -355,7 +352,7 @@ public class HIEquilibrium extends LabFrame{
 
 		vg.setRemovePointZero(false);
 		
-		graph = new Graph(600, 250, "Pressures", "time (s)", "pressure (atm)", vg, hg);
+		graph = new Graph(600, 255, "Pressures", "time (s)", "pressure (atm)", vg, hg);
 		
 		graph.setYLabelOffset(30);
 		graph.getvGraduation().setTextOffset(-30);
@@ -364,6 +361,12 @@ public class HIEquilibrium extends LabFrame{
 		graph.setDrawYLines(false);
 		
 		addComponent(graph);
+		
+		Rectangle border = new Rectangle(802, 330);
+		border.setOffset(-41, -15);
+		border.setFill(false);
+		border.setStrokeColor(Color.gray);
+		graph.addChild(border);
 		
 		H2I2DataSet = new GraphDataSet("H2=I2", true, true);
 		H2I2DataSet.setColor(Color.red);
@@ -381,9 +384,11 @@ public class HIEquilibrium extends LabFrame{
 		start(30);
 	}
 	
+	/*
 	private double Qc() {
 		return (HIPressure * HIPressure) / (H2Pressure * I2Pressure);
 	}
+	*/
 	
 	private void changeState(HIReactionState state, boolean reset) {
 		currentState = state;
