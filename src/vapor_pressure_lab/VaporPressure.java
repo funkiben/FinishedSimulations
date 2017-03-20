@@ -172,7 +172,7 @@ public class VaporPressure extends LabFrame {
 		plot = new Button(100, 25, "Plot"){
 			@Override
 			public void doSomething() {
-				
+				plotTemperature();
 			}
 		};
 		plot.setOffset(230, 575);
@@ -226,6 +226,18 @@ public class VaporPressure extends LabFrame {
 		resetSimulation();
 	}
 
+	private void plotTemperature() {
+		double temp;
+		try{
+			temp = Double.parseDouble(inputTemperature.getText());
+			if(temp > 0.0 && temp < 100.0){
+
+			}
+		}catch(NumberFormatException e){
+			inputTemperature.setText("Temperature");
+		}
+	}
+	
 	private void resetSimulation() {
 		running = false;
 		molarity20Set = new GraphDataSet("20C", true, true);
