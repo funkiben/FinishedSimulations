@@ -1,15 +1,21 @@
 package HI_equilibrium;
 
+import java.awt.Color;
+
+import draw.animation.ColorLinearAnimation;
+import draw.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
-import lab.component.container.Bulb;
+import lab.component.LabComponent;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
 import lab.component.sensor.PressureGauge;
 import lab.component.sensor.Thermometer;
+import lab.component.swing.Label;
 import lab.component.swing.input.Button;
 import lab.component.swing.input.Dropdown;
 import lab.util.HorizontalGraduation;
+import lab.util.SigFig;
 import lab.util.VerticalGraduation;
 
 public class HIEquilibrium extends LabFrame{
@@ -19,52 +25,56 @@ public class HIEquilibrium extends LabFrame{
 	}
 	
 	
-	private static final HIReactionState state298K = new HIReactionState(
+	private static final HIReactionState state298K = new HIReactionState("298K",
 			10, // volume
+			225, // bulb size
 			298, // temperature
 			0.0, // initial hi
 			2.45, // initial h2
 			2.45, // initial i2
-			2.45 - 0.1825, // final hi
+			(2.45 - 0.1825) * 2, // final hi
 			0.1825, // final h2
 			0.1825, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state500K = new HIReactionState(
+	private static final HIReactionState state500K = new HIReactionState("500K",
 			10, // volume
+			225, // bulb size
 			500, // temperature
 			0.0, // initial hi
 			2.45, // initial h2
 			2.45, // initial i2
-			2.45 - 0.3637, // final hi
+			(2.45 - 0.3637) * 2, // final hi
 			0.3637, // final h2
 			0.3637, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state700K = new HIReactionState(
+	private static final HIReactionState state700K = new HIReactionState("700K",
 			10, // volume
+			225, // bulb size
 			700, // temperature
 			0.0, // initial hi
 			2.45, // initial h2
 			2.45, // initial i2
-			2.45 - 0.4765, // final hi
+			(2.45 - 0.4765) * 2, // final hi
 			0.4765, // final h2
 			0.4765, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
 	);
-	private static final HIReactionState state1000K = new HIReactionState(
+	private static final HIReactionState state1000K = new HIReactionState("1000K",
 			10, // volume
+			225, // bulb size
 			1000, // temperature
 			0.0, // initial hi
 			2.45, // initial h2
 			2.45, // initial i2
-			2.45 - 0.5773, // final hi
+			(2.45 - 0.5773) * 2, // final hi
 			0.5773, // final h2
 			0.5773, // final i2
 			false, // hi tube
@@ -74,304 +84,459 @@ public class HIEquilibrium extends LabFrame{
 	
 	
 	
-	private static final HIReactionState state5L = new HIReactionState(
+	private static final HIReactionState state5L = new HIReactionState("5.00L",
 			5, // volume
+			175, // bulb size
 			700, // temperature
 			0.0, // initial hi
 			4.9, // initial h2
 			4.9, // initial i2
-			4.9 - 0.2383, // final hi
-			0.2383, // final h2
-			0.2383, // final i2
-			false, // hi tube
-			true, // h2 tube
-			true // i2 tube
-	);
-	private static final HIReactionState state20L = new HIReactionState(
-			20, // volume
-			700, // temperature
-			0.0, // initial hi
-			4.9, // initial h2
-			4.9, // initial i2
-			4.9 - 0.9531, // final hi
+			(4.9 - 0.9531) * 2, // final hi
 			0.9531, // final h2
 			0.9531, // final i2
 			false, // hi tube
 			true, // h2 tube
 			true // i2 tube
 	);
-	
-	private static final HIReactionState stateHIReactant = new HIReactionState(
+	private static final HIReactionState state10L = new HIReactionState("10.00L",
 			10, // volume
+			225, // bulb size
+			700, // temperature
+			0.0, // initial hi
+			2.45, // initial h2
+			2.45, // initial i2
+			(2.45 - 0.4765) * 2, // final hi
+			0.4765, // final h2
+			0.4765, // final i2
+			false, // hi tube
+			true, // h2 tube
+			true // i2 tube
+	);
+	private static final HIReactionState state20L = new HIReactionState("20.00L",
+			20, // volume
+			275, // bulb size
+			700, // temperature
+			0.0, // initial hi
+			1.225, // initial h2
+			1.225, // initial i2
+			(1.225 - 0.2383) * 2, // final hi
+			0.2383, // final h2
+			0.2383, // final i2
+			false, // hi tube
+			true, // h2 tube
+			true // i2 tube
+	);
+	
+	
+	private static final HIReactionState stateH2I2Reactant = new HIReactionState("H2 & I2",
+			10, // volume
+			225, // bulb size
+			700, // temperature
+			0.0, // initial hi
+			2.45, // initial h2
+			2.45, // initial i2
+			(2.45 - 0.4765) * 2, // final hi
+			0.4765, // final h2
+			0.4765, // final i2
+			false, // hi tube
+			true, // h2 tube
+			true // i2 tube
+	);
+	private static final HIReactionState stateHIReactant = new HIReactionState("HI",
+			10, // volume
+			225, // bulb size
 			700, // temperature
 			3.5, // initial hi
 			0.0, // initial h2
 			0.0, // initial i2
 			2.819, // final hi
-			3.5 - 2.819, // final h2
-			3.5 - 2.819, // final i2
+			(3.5 - 2.819) / 2, // final h2
+			(3.5 - 2.819) / 2, // final i2
 			true, // hi tube
 			false, // h2 tube
 			false // i2 tube
 	);
 	
+	
 
 	private static final long serialVersionUID = 7321300459079955237L;
 	
-	/*
-	private Bulb bulbH2;
-	private Bulb bulbI2;
-	private Bulb bulbHI;
-	private Bulb bulbReaction;
-	
-	private Graph pressureTime;
-	
-	private PressureGauge pressureI2;
-	private PressureGauge pressureH2;
-	
-	private Dropdown<String> tempDropdown;
-	
-	private Button setTemperature;
-	
-	private GraphDataSet h2Set;
-	private GraphDataSet i2Set;
-	
-	private Thermometer thermometer;
-	
-	private double reactionTemperature;
-	private double H2Concentration = 2.45;
-	private double I2Concentration = 2.45;
-	private double HIConcentration = 0;
-	private double Kp;
-	
-	private double reactionTime = 0;
-	
-	
-	*/
-	
-	private final ReactionApparatus reactionApparatus = new ReactionApparatus();
-	
-	private final Thermometer thermometer = new Thermometer(100);
-	
-	private Dropdown<HIReactionState> temperatureSelector;
-	private Dropdown<HIReactionState> volumeSelector;
-	private Dropdown<HIReactionState> reactantSelector;
-	
-	
-	private HIReactionState currentState;
+	private final ReactionApparatus reactionApparatus;
+	private final Thermometer thermometer;
+	private final Dropdown<String> variableSelector;
+	private final Dropdown<HIReactionState> temperatureSelector, volumeSelector, reactantSelector;
+	private final PressureGauge H2PressureReader, I2PressureReader, HIPressureReader;
+	private final Label volumeLabel;
+	private final Button startButton, stopButton, resetButton;
+	private final Graph graph;
+	private final GraphDataSet H2I2DataSet, HIDataSet;
+	private double H2Pressure, I2Pressure, HIPressure;
+	private boolean reactionInProgress = false;
+	private double time = 0;
+	private HIReactionState currentState = state298K;
 	
 	public HIEquilibrium() {
-		super("Gauge Test Lab", 1400, 900);
+		super("Homogeneous Equilibrium: H2 + I2 <-> 2HI", 700, 750);
 		
+		
+		reactionApparatus = new ReactionApparatus();
 		reactionApparatus.setOffset(10, 10);
-		
 		addComponent(reactionApparatus);
 		
-		temperatureSelector = new Dropdown<HIReactionState>(100, 20, state298K, state500K, state700K, state1000K);
-		volumeSelector = new Dropdown<HIReactionState>(100, 20, state5L, state700K, state20L);
-		reactantSelector = new Dropdown<HIReactionState>(100, 20, state298K, stateHIReactant);
+		
+		volumeLabel = new Label(150, 30, "");
+		volumeLabel.setOffset(180, 275);
+		
+		reactionApparatus.addChild(volumeLabel);
 		
 		
-		/*
-		getRoot().setScaleChildren(true);
 		
-		Kp = 617.5;
 		
-		EmptyComponent bulbContainer = new EmptyComponent(450,300);
 		
-		bulbH2 = new Bulb(100,100);
-		bulbContainer.addChild(bulbH2);
-		
-		bulbHI = new Bulb(100,100);
-		bulbHI.setOffset(-100,150);
-		bulbContainer.addChild(bulbHI);
-		
-		bulbI2 = new Bulb(100,100);
-		bulbI2.setOffset(-100,275);
-		bulbContainer.addChild(bulbI2);
-		
-		bulbReaction = new Bulb(250,250);
-		bulbContainer.addChild(bulbReaction);
-		
-		pressureH2 = new PressureGauge(175,175,"Pressure H2","atm",5);
-		pressureH2.setOffset(425,-175);
-		pressureH2.setFont(pressureH2.getFont().deriveFont(12f));
-		pressureH2.setValue(2.45f);
-		bulbContainer.addChild(pressureH2);
-		
-		pressureI2 = new PressureGauge(175,175,"Pressure I2","atm",5);
-		pressureI2.setOffset(425,25);
-		pressureI2.setFont(pressureI2.getFont().deriveFont(12f));
-		pressureI2.setValue(2.45f);
-		bulbContainer.addChild(pressureI2);
-		
-		addComponent(bulbContainer);
-		
-		pressureTime = new Graph(350, 350, "Pressure vs Time", "Time (s)", "Pressure (atm)", new VerticalGraduation(0,2.45,.5,.1), new HorizontalGraduation(0,10,1,.5f));
-		h2Set = new GraphDataSet("H2",true,true);
-		i2Set = new GraphDataSet("   & I2",true,true);
-		pressureTime.addDataSet(h2Set);
-		pressureTime.addDataSet(i2Set);
-		pressureTime.setOffsetX(250);
-		addComponent(pressureTime);
-		
-		tempDropdown = new Dropdown<String>(200,50,"298K","500K","700K","1000K") {
-			public void onSelectItem(String item) {
-				try {
-					setTemperature.setEnabled(true);
-				} catch(NullPointerException e) {
-					System.out.println("Null Pointer Exception Avoided");
+		variableSelector = new Dropdown<String>(150, 25, "Temperature", "Volume", "Reactant") {
+			
+			@Override
+			public void onSelectItem(String s) {
+				
+				if (s.equals("Temperature")) {
+					temperatureSelector.setVisible(true);
+					volumeSelector.setVisible(false);
+					reactantSelector.setVisible(false);
+					
+					changeState(temperatureSelector.getValue(), true);
+				} else if (s.equals("Volume")) {
+					volumeSelector.setVisible(true);
+					temperatureSelector.setVisible(false);
+					reactantSelector.setVisible(false);
+					
+					changeState(volumeSelector.getValue(), true);
+				} else {
+					reactantSelector.setVisible(true);
+					volumeSelector.setVisible(false);
+					temperatureSelector.setVisible(false);
+					
+					changeState(reactantSelector.getValue(), true);
 				}
+				
+			}
+			
+		};
+		
+		temperatureSelector = new Dropdown<HIReactionState>(100, 25, state298K, state500K, state700K, state1000K) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s, false);
 			}
 		};
 		
-		tempDropdown.setOffset(700,25);
-		tempDropdown.setValue("298K");
+		volumeSelector = new Dropdown<HIReactionState>(100, 25, state5L, state10L, state20L) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s, true);
+			}
+		};
 		
-		thermometer = new Thermometer(350);
-		thermometer.setGraduation(new VerticalGraduation(198, 1200, 100, 10));
-		thermometer.getGraduation().setSuffix(" K");
-		thermometer.setValue(298);
-		thermometer.setOffsetY(-375);
+		reactantSelector = new Dropdown<HIReactionState>(100, 25, stateH2I2Reactant, stateHIReactant) {
+			@Override
+			public void onSelectItem(HIReactionState s) {
+				changeState(s, true);
+			}
+		};
 		
-		reactionTemperature = Double.parseDouble((tempDropdown.getValue() + "").replaceAll("K", ""));
-		addComponent(tempDropdown);
 		
-		setTemperature = new Button(200,50,"Set Temperature") {
+		
+		
+		LabComponent container = new EmptyComponent(450, 25);
+		container.setLayout(LabComponent.FREE_FORM);
+		container.setOffset(90, 335);
+		
+		variableSelector.setOffset(60, 0);
+		
+		temperatureSelector.setOffset(215, 0);
+		volumeSelector.setOffset(215, 0);
+		reactantSelector.setOffset(215, 0);
+		
+		container.addChild(new Label(75, 25, "Variable: "), variableSelector, temperatureSelector, volumeSelector, reactantSelector);
+		
+		
+		reactionApparatus.addChild(container);
+		
+		
+		
+		
+		
+		
+		
+		
+		container = new EmptyComponent(300, 50);
+		container.setShowBounds(true);
+		container.setOffset(90, 370);
+		
+		startButton = new Button(100, 50, "START") {
 			@Override
 			public void doSomething() {
-				reactionTemperature = Double.parseDouble((tempDropdown.getValue() + "").replaceAll("K", ""));
-				switch((int)reactionTemperature + "") {
-				case "298":
-					Kp = 617.5;
-				break;
-				case "500":
-					Kp = 131.6;
-				break;
-				case "700":
-					Kp = 68.6;
-				break;
-				case "1000":
-					Kp = 42.1;
-				break;
-				}
-				this.setEnabled(false);
+				start();
 			}
 		};
-		setTemperature.setEnabled(false);
-		setTemperature.setOffsetY(25);
-		addComponent(setTemperature);
 		
+		stopButton = new Button(100, 50, "STOP") {
+			@Override
+			public void doSomething() {
+				stop();
+			}
+		};
+		stopButton.setEnabled(false);
+		
+		resetButton = new Button(100, 50, "RESET") {
+			@Override
+			public void doSomething() {
+				reset();
+			}
+		};
+		resetButton.setEnabled(false);
+		
+		container.addChild(startButton, stopButton, resetButton);
+	
+		reactionApparatus.addChild(container);
+		
+		
+		
+		
+		
+		
+		
+		
+		container = new EmptyComponent(150, 340);
+		
+		H2PressureReader = new PressureGauge(150, 150, "Pressure H2", "atm", 4);
+		I2PressureReader = new PressureGauge(150, 150, "Pressure I2", "atm", 4);
+		HIPressureReader = new PressureGauge(150, 150, "Pressure HI", "atm", 4);
+		
+		H2PressureReader.getTitleLabel().setFontSize(10);
+		H2PressureReader.getGaugeLabel().setFontSize(12);
+		
+		H2PressureReader.getTitleLabel().setFontSize(10);
+		H2PressureReader.getGaugeLabel().setFontSize(12);
+		
+		I2PressureReader.getTitleLabel().setFontSize(10);
+		I2PressureReader.getGaugeLabel().setFontSize(12);
+		
+		HIPressureReader.getTitleLabel().setFontSize(10);
+		HIPressureReader.getGaugeLabel().setFontSize(12);
+		
+		
+		
+		H2PressureReader.setOffset(0, 20);
+		I2PressureReader.setOffset(0, 190);
+		HIPressureReader.setOffset(0, 95);
+		
+		container.setLayout(LabComponent.FREE_FORM);
+		container.setOffsetX(20);
+		container.addChild(H2PressureReader, I2PressureReader, HIPressureReader);
+		
+		addComponent(container);
+		
+		
+		
+		
+		
+		
+		
+		thermometer = new Thermometer(400);
+		thermometer.setOffset(40, 10);
+		thermometer.setGraduation(new VerticalGraduation(200, 1000, 100, 10));
 		
 		addComponent(thermometer);
-		*/
+		
+		
+		
+		VerticalGraduation vg = new VerticalGraduation(0, 1, 2, 0.5);
+		HorizontalGraduation hg = new HorizontalGraduation(0, 60, 60, 15);
+
+		vg.setRemovePointZero(false);
+		
+		graph = new Graph(600, 250, "Pressures", "time (s)", "pressure (atm)", vg, hg);
+		
+		graph.setYLabelOffset(30);
+		graph.getvGraduation().setTextOffset(-30);
+		graph.setOffset(40, 30);
+		
+		graph.setDrawYLines(false);
+		
+		addComponent(graph);
+		
+		H2I2DataSet = new GraphDataSet("H2=I2", true, true);
+		H2I2DataSet.setColor(Color.red);
+		
+		HIDataSet = new GraphDataSet("HI", true, true);
+		HIDataSet.setColor(Color.blue);
+		
+		graph.addDataSet(H2I2DataSet);
+		graph.addDataSet(HIDataSet);
+		
+		
+		changeState(currentState, true);
+		
 		
 		start(30);
+	}
+	
+	private double Qc() {
+		return (HIPressure * HIPressure) / (H2Pressure * I2Pressure);
+	}
+	
+	private void changeState(HIReactionState state, boolean reset) {
+		currentState = state;
+		
+		thermometer.setValue(state.temperature);
+		
+		if (reset || HIDataSet.size() == 0) {
+			H2Pressure = state.H2PressureInitial;
+			I2Pressure = state.I2PressureInitial;
+			HIPressure = state.HIPressureInitial;
+			
+			H2PressureReader.setValue(H2Pressure);
+			I2PressureReader.setValue(I2Pressure);
+			HIPressureReader.setValue(HIPressure);
+			
+			H2I2DataSet.clearPoints();
+			HIDataSet.clearPoints();
+			
+			time = 0;
+			
+			graph.getvGraduation().setEnd(1);
+			
+			graph.gethGraduation().setStart(0);
+			graph.gethGraduation().setEnd(60);
+			
+			reactionApparatus.getReactionBulb().setValue(0);
+			
+			reactionApparatus.getI2Bulb().setValue(50);
+			reactionApparatus.getI2Tube().setColor(ReactionApparatus.I2_COLOR);
+			
+			stop();
+		}
+		
+		H2PressureReader.setVisible(state.H2Tube);
+		I2PressureReader.setVisible(state.I2Tube);
+		HIPressureReader.setVisible(state.HITube);
+		
+		reactionApparatus.getH2Tube().setVisible(state.H2Tube);
+		reactionApparatus.getI2Tube().setVisible(state.I2Tube);
+		reactionApparatus.getHITube().setVisible(state.HITube);
+		
+		reactionApparatus.setReactionBulbSize(state.bulbSize);
+		
+		volumeLabel.setText("Bulb Volume: " + SigFig.sigfigalize(state.volume, 3) + "L");
+		volumeLabel.setOffsetY(165 + state.bulbSize / 2);
+		
+		
+	}
+	
+	private void start() {
+		reactionInProgress = true;
+		
+		startButton.setEnabled(false);
+		stopButton.setEnabled(true);
+		resetButton.setEnabled(true);
+		
+		if (currentState.I2Tube) {
+			getAnimator().addAnimation("I2 Tube", new ColorLinearAnimation(new Color(230, 230, 230, 255), 5) {
+				@Override
+				public void setValue(Color color) {
+					reactionApparatus.getI2Tube().setColor(color);
+				}
+				
+				@Override
+				public Color getValue() {
+					return reactionApparatus.getI2Tube().getColor();
+				}
+			});
+			
+			getAnimator().addAnimation("I2 Bulb", new DoubleLinearAnimation(0.0, 5) {
+				@Override
+				public void setValue(Double v) {
+					reactionApparatus.getI2Bulb().setValue(v);
+				}
+				
+				@Override
+				public Double getValue() {
+					return reactionApparatus.getI2Bulb().getValue();
+				}
+			});
+		}
+		
+	}
+	
+	private void stop() {
+		reactionInProgress = false;
+		
+		stopButton.setEnabled(false);
+		startButton.setEnabled(true);
+		
+		getAnimator().cancelAnimation("I2 Tube");
+		getAnimator().cancelAnimation("I2 Bulb");
+	}
+	
+	public void reset() {
+		changeState(currentState, true);
+		
+		resetButton.setEnabled(false);
 	}
 	
 	private static double lerp(double v1, double v2, float f) {
 		return ((v2 - v1) * f + v1);
 	}
-	
-	/*
-	private double Qp() {
-		return (HIConcentration * HIConcentration) / (H2Concentration * I2Concentration);
+
+	private int getMinYAxisEnd() {
+		int e = (int) Math.ceil(Math.max(HIPressure, Math.max(H2Pressure, I2Pressure)));
+		return e;
 	}
-	*/
+	
 	
 	@Override
 	public void update() {
-		/*
-		reactionTime = reactionTime + .015;
-		pressureI2.setValue(I2Concentration);
-		pressureH2.setValue(H2Concentration);
 		
-		float rate = 0.0089f;
+		if (reactionInProgress) {
+			
+			//System.out.println(Qc());
+			
+			time += 0.1;
+			
+			H2Pressure = lerp(H2Pressure, currentState.H2PressureFinal, 0.03f);
+			I2Pressure = lerp(I2Pressure, currentState.I2PressureFinal, 0.03f);
+			HIPressure = lerp(HIPressure, currentState.HIPressureFinal, 0.03f);
+			
+			H2I2DataSet.addPoint(time, I2Pressure);
+			HIDataSet.addPoint(time, HIPressure);
 		
-		thermometer.setValue(lerp(thermometer.getValue(),reactionTemperature,rate));
-		
-		h2Set.addPoint(reactionTime, pressureH2.getValue());
-		i2Set.addPoint(reactionTime, pressureI2.getValue());
-	
-		
-		double offset;
-		double Qc = Qp();
-
-		if (Qc > Kp) { // NEED MORE REACTANT, SHIFT BACKWARD
-
-			// Kc = (HI - 2x)^2 / (H2 + x)(I2 + x)
-			// Kc = (HI - 2x)(HI - 2x) / (H2 + x)(I2 + x)
-
-			// Kc = (4x^2 - (4*HI)x + (HI*HI)) / (x^2 + (I2+H2)x + (H2*I2))
-
-			double a1, b1, c1, a2, b2, c2;
-
-			// cross multiply and foil reactants
-			a1 = Kp;
-			b1 = Kp * (I2Concentration + H2Concentration);
-			c1 = Kp * H2Concentration * I2Concentration;
-
-			// foil products
-			a2 = 4;
-			b2 = -4 * HIConcentration;
-			c2 = HIConcentration * HIConcentration;
-
-			double[] zeros = findZeros(a1 - a2, b1 - b2, c1 - c2);
 			
-			offset = HIConcentration - 2 * zeros[0] > 0 ? zeros[0] : zeros[1];
-
+			graph.getvGraduation().setEnd(Math.max(graph.getvGraduation().getEnd(), getMinYAxisEnd()));
 			
-			H2Concentration = lerp(H2Concentration, H2Concentration + offset, rate);
-			I2Concentration = lerp(I2Concentration, I2Concentration + offset, rate);
-			HIConcentration = lerp(HIConcentration, HIConcentration - 2 * offset, rate);
+			if ((int) time % 60 == 59) {
+				graph.gethGraduation().setStart((int) time + 1);
+				graph.gethGraduation().setEnd((int) time + 61);
 
-
-		} else if (Qc < Kp) { // NEED MORE PRODUCT, SHIFT FORWARD
-			
-			// Kc = (HI + 2x)^2 / (H2 - x)(I2 - x)
-			// Kc = (HI + 2x)(HI + 2X) / (H2 - x)(I2 - x)
-			
-			// Kc = (4x^2 + (4*HI)x + (HI*HI)) / (x^2 - (H2+I2)x + (HI*I2))
+				graph.getvGraduation().setEnd(getMinYAxisEnd());
+			}
 			
 			
-			double a1, b1, c1, a2, b2, c2;
-
-			// cross multiply and foil reactants
-			a1 = Kp;
-			b1 = Kp * -(I2Concentration + H2Concentration);
-			c1 = Kp * H2Concentration * I2Concentration;
-
-			// foil products
-			a2 = 4;
-			b2 = 4 * HIConcentration;
-			c2 = HIConcentration * HIConcentration;
-
-			double[] zeros = findZeros(a1 - a2, b1 - b2, c1 - c2);
-
+			double m = graph.getMaxYSubTicks(10);
 			
-			offset = H2Concentration - zeros[0] > 0 && I2Concentration - zeros[0] > 0 ? zeros[0] : zeros[1];
+			graph.getvGraduation().setSubLineIntervals(m);
+			graph.getvGraduation().setLineIntervals(m < 1 ? 1 : 2);
 			
-			H2Concentration = lerp(H2Concentration, H2Concentration - offset, rate);
-			I2Concentration = lerp(I2Concentration, I2Concentration - offset, rate);
-			HIConcentration = lerp(HIConcentration, HIConcentration + 2 * offset, rate);
-
+			H2PressureReader.setValue(H2Pressure);
+			I2PressureReader.setValue(I2Pressure);
+			HIPressureReader.setValue(HIPressure);
+			
+			reactionApparatus.getReactionBulb().setValue(I2Pressure / 2.0 * 100);
 			
 		}
-		*/
+		
+		
 		
 	}
-	
-	/*
-	private static double[] findZeros(double a, double b, double c) {
-		double s = Math.sqrt((b * b) - 4 * a * c);
-
-		double[] zeros = new double[2];
-		zeros[0] = (-b + s) / (2 * a);
-		zeros[1] = (-b - s) / (2 * a);
-
-		return zeros;
-	}
-	*/
 	
 
 }
