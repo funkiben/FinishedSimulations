@@ -143,7 +143,7 @@ public class TemperatureEquilibrium extends LabFrame implements KeyListener {
 		doubleSlider.setOffsetX(-215);
 		doubleSlider.setOffsetY(100);
 		
-		s = new Graph(400, 400, "Moles of reactants", "s", "Moles", vg, hg);
+		s = new Graph(400, 400, "Moles of reactants", "s", "Moles", hg, vg);
 		s.setOffsetX(150);
 
 		
