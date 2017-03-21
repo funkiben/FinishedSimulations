@@ -365,7 +365,7 @@ public class HIEquilibrium extends LabFrame{
 
 		vg.setRemovePointZero(false);
 		
-		graph = new Graph(600, 255, "Pressures", "time (s)", "pressure (atm)", vg, hg);
+		graph = new Graph(600, 255, "Pressures", "time (s)", "pressure (atm)", hg, vg);
 		
 		graph.setYLabelOffset(30);
 		graph.getvGraduation().setTextOffset(-30);
