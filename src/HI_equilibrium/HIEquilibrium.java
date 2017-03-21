@@ -273,6 +273,49 @@ public class HIEquilibrium extends LabFrame{
 		setTemperature.setOffsetY(25);
 		addComponent(setTemperature);
 		
+
+		H2PressureReader.getTitleLabel().setFontSize(10);
+		H2PressureReader.getGaugeLabel().setFontSize(11);
+		
+		I2PressureReader.getTitleLabel().setFontSize(10);
+		I2PressureReader.getGaugeLabel().setFontSize(11);
+		
+		HIPressureReader.getTitleLabel().setFontSize(10);
+		HIPressureReader.getGaugeLabel().setFontSize(11);
+		
+		Tube tube;
+		
+		tube = Tube.straight(3, 80, 70, 110);
+		tube.setZOrder(-1);
+		H2PressureReader.addChild(tube);
+		
+		tube = Tube.straight(3, 70, 110, 110);
+		tube.setZOrder(-1);
+		I2PressureReader.addChild(tube);
+		
+		tube = Tube.straight(3, 75, 90, 100);
+		tube.setZOrder(-1);
+		HIPressureReader.addChild(tube);
+		
+		H2PressureReader.setOffset(0, 20);
+		I2PressureReader.setOffset(0, 190);
+		HIPressureReader.setOffset(0, 95);
+		
+		container.setLayout(LabComponent.FREE_FORM);
+		container.setOffsetX(20);
+		container.addChild(H2PressureReader, I2PressureReader, HIPressureReader);
+		
+		addComponent(container);
+		
+		
+		
+		
+		
+		
+		
+		thermometer = new Thermometer(400);
+		thermometer.setOffset(40, 10);
+		thermometer.setGraduation(new VerticalGraduation(200, 1000, 100, 10));
 		
 		addComponent(thermometer);
 		*/
