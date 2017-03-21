@@ -48,6 +48,7 @@ public class VaporPressure extends LabFrame {
 	private GraphDataSet vaporPressure60;
 	private GraphDataSet vaporPressureTemperature;
 
+	//components
 	private final Button play;
 	private final Button step;
 	private final Button reset;
@@ -55,16 +56,16 @@ public class VaporPressure extends LabFrame {
 	private final Button showEquipment;
 	private final Button showPressureGraph;
 	private final Button plot;
+	private DataTable<String> vaporPressureMolarityTable;
+	private DataTable<String> vaporPressureTimeTable;
+	private final DoubleField inputTemperature;
 	private final Graph molarityGraph;
 	private final Graph vaporPressureGraph;
 	private final Graph vaporPressureTemperatureGraph;
-	private final DoubleField inputTemperature;
+	private final ImageComponent equipment;
 	private final Label outputVaporPressure;
 	private final Label temperatureLabel;
-	private DataTable<String> vaporPressureMolarityTable;
-	private DataTable<String> vaporPressureTimeTable;
-	private ImageComponent equipment;
-	private ScrollLabel instructions;
+	private final ScrollLabel instructions;
 
 	public static void main(String args[]) {
 		new VaporPressure("Vapor Pressure Lab", 800, 650);
@@ -210,7 +211,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		vaporPressureTimeTableFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		vaporPressureTimeTable = new DataTable<Double>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
+		vaporPressureTimeTable = new DataTable<String>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
 		vaporPressureTimeTable.setColumnTitle(0, "Time (s)");
 		vaporPressureTimeTable.setColumnTitle(1, "VP (kPa) @ 20C");
 		vaporPressureTimeTable.setColumnTitle(2, "VP (kPa) @ 30C");
@@ -310,15 +311,15 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-K[2] * time));
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
 			for (int i = 0; i < 4; i++) {
-				vaporPressureMolarityTable.setCell(i, 0, SigFig.sigfigalize(vaporPressure[i], 5));
-				vaporPressureMolarityTable.setCell(i, 1, Double.parseDouble(round.format(molarity[i])));
+				vaporPressureMolarityTable.setCell(i, 0, SigFig.sigfigalize(vaporPressure[i], SIG_FIGS));
+				vaporPressureMolarityTable.setCell(i, 1, SigFig.sigfigalize(molarity[i], SIG_FIGS));
 			}
 			if (time % 10 == 0) {
 				vaporPressureTimeTable.setCell(0, time / 10, time);
-				vaporPressureTimeTable.setCell(1, time / 10, Double.parseDouble(round.format(vaporPressure[0])));
-				vaporPressureTimeTable.setCell(2, time / 10, Double.parseDouble(round.format(vaporPressure[1])));
-				vaporPressureTimeTable.setCell(3, time / 10, Double.parseDouble(round.format(vaporPressure[2])));
-				vaporPressureTimeTable.setCell(4, time / 10, Double.parseDouble(round.format(vaporPressure[3])));
+				vaporPressureTimeTable.setCell(1, time / 10, SigFig.sigfigalize(vaporPressure[0], SIG_FIGS));
+				vaporPressureTimeTable.setCell(2, time / 10, SigFig.sigfigalize(vaporPressure[1], SIG_FIGS));
+				vaporPressureTimeTable.setCell(3, time / 10, SigFig.sigfigalize(vaporPressure[2], SIG_FIGS));
+				vaporPressureTimeTable.setCell(4, time / 10, SigFig.sigfigalize(vaporPressure[3], SIG_FIGS));
 			}
 			molarity20.addPoint(time, molarity[0]);
 			molarity30.addPoint(time, molarity[1]);
