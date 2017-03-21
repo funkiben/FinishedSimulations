@@ -1,7 +1,5 @@
 package vapor_pressure_lab;
 
-import java.text.DecimalFormat;
-
 import lab.LabFrame;
 import lab.component.ImageComponent;
 import lab.component.LabComponent;
@@ -48,7 +46,7 @@ public class VaporPressure extends LabFrame {
 	private GraphDataSet vaporPressure60;
 	private GraphDataSet vaporPressureTemperature;
 
-	//components
+	// components
 	private final Button play;
 	private final Button step;
 	private final Button reset;
@@ -56,8 +54,8 @@ public class VaporPressure extends LabFrame {
 	private final Button showEquipment;
 	private final Button showPressureGraph;
 	private final Button plot;
-	private DataTable<String> vaporPressureMolarityTable;
-	private DataTable<String> vaporPressureTimeTable;
+	private DataTable<Double> vaporPressureMolarityTable;
+	private DataTable<Double> vaporPressureTimeTable;
 	private final DoubleField inputTemperature;
 	private final Graph molarityGraph;
 	private final Graph vaporPressureGraph;
@@ -67,12 +65,12 @@ public class VaporPressure extends LabFrame {
 	private final Label temperatureLabel;
 	private final ScrollLabel instructions;
 
-	//start simulation
+	// start simulation
 	public static void main(String args[]) {
 		new VaporPressure("Vapor Pressure Lab", 800, 650);
 	}
 
-	//create windows and components
+	// create windows and components
 	public VaporPressure(String name, int width, int height) {
 		super(name, width, height);
 		getRoot().setLayout(LabComponent.FREE_FORM);
@@ -116,7 +114,7 @@ public class VaporPressure extends LabFrame {
 				timeGraduation, vaporPressureGraduation);
 		vaporPressureGraph.setOffset(450, 50);
 		vaporPressureGraph.setYLabelOffset(32);
-		vaporPressureMolarityTable = new DataTable<String>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY) {
+		vaporPressureMolarityTable = new DataTable<Double>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY) {
 			@Override
 			public String getString(Double value) {
 				return SigFig.sigfigalize(value, SIG_FIGS);
@@ -213,7 +211,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		vaporPressureTimeTableFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		vaporPressureTimeTable = new DataTable<String>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
+		vaporPressureTimeTable = new DataTable<Double>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
 		vaporPressureTimeTable.setColumnTitle(0, "Time (s)");
 		vaporPressureTimeTable.setColumnTitle(1, "VP (kPa) @ 20C");
 		vaporPressureTimeTable.setColumnTitle(2, "VP (kPa) @ 30C");
@@ -243,7 +241,7 @@ public class VaporPressure extends LabFrame {
 		resetSimulation();
 	}
 
-	//plot vapor pressure value for a given temperature value
+	// plot vapor pressure value for a given temperature value
 	private void plotTemperature() {
 		if (inputTemperature.hasInput()) {
 			double vp;
@@ -258,7 +256,7 @@ public class VaporPressure extends LabFrame {
 		}
 	}
 
-	//resets all simulation values
+	// resets all simulation values
 	private void resetSimulation() {
 		running = false;
 		molarity20 = new GraphDataSet("20C", true, true);
@@ -305,7 +303,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureGraph.addDataSet(vaporPressure60);
 	}
 
-	//advance simulation by one data point
+	// advance simulation by one data point
 	private void stepSimulation() {
 		if (time > 100) {
 			running = false;
@@ -316,15 +314,15 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-K[2] * time));
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
 			for (int i = 0; i < 4; i++) {
-				vaporPressureMolarityTable.setCell(i, 0, SigFig.sigfigalize(vaporPressure[i], SIG_FIGS));
-				vaporPressureMolarityTable.setCell(i, 1, SigFig.sigfigalize(molarity[i], SIG_FIGS));
+				vaporPressureMolarityTable.setCell(i, 0, vaporPressure[i]);
+				vaporPressureMolarityTable.setCell(i, 1, molarity[i]);
 			}
 			if (time % 10 == 0) {
 				vaporPressureTimeTable.setCell(0, time / 10, time);
-				vaporPressureTimeTable.setCell(1, time / 10, SigFig.sigfigalize(vaporPressure[0], SIG_FIGS));
-				vaporPressureTimeTable.setCell(2, time / 10, SigFig.sigfigalize(vaporPressure[1], SIG_FIGS));
-				vaporPressureTimeTable.setCell(3, time / 10, SigFig.sigfigalize(vaporPressure[2], SIG_FIGS));
-				vaporPressureTimeTable.setCell(4, time / 10, SigFig.sigfigalize(vaporPressure[3], SIG_FIGS));
+				vaporPressureTimeTable.setCell(1, time / 10, vaporPressure[0]);
+				vaporPressureTimeTable.setCell(2, time / 10, vaporPressure[1]);
+				vaporPressureTimeTable.setCell(3, time / 10, vaporPressure[2]);
+				vaporPressureTimeTable.setCell(4, time / 10, vaporPressure[3]);
 			}
 			molarity20.addPoint(time, molarity[0]);
 			molarity30.addPoint(time, molarity[1]);
@@ -338,7 +336,7 @@ public class VaporPressure extends LabFrame {
 
 	}
 
-	//set text for play button
+	// set text for play button
 	@Override
 	public void update() {
 		if (running) {
