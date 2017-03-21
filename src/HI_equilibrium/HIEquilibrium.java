@@ -1,5 +1,6 @@
 package HI_equilibrium;
 
+
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.container.Bulb;
