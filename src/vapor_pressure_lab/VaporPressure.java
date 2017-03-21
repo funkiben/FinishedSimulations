@@ -11,8 +11,9 @@ import lab.component.data.GraphDataSet;
 import lab.component.swing.Label;
 import lab.component.swing.ScrollLabel;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.TextField;
+import lab.component.swing.input.DoubleField;
 import lab.util.HorizontalGraduation;
+import lab.util.SigFig;
 import lab.util.VerticalGraduation;
 
 //Vapor pressure simulation lab from Ms. Lund Easy Java
@@ -25,7 +26,6 @@ public class VaporPressure extends LabFrame {
 	private LabFrame equipmentFrame;
 	private LabFrame instructionsFrame;
 	// initial values from simulation
-	private double temperature;
 	private int time;
 	private int dtime = 1;
 	private double[] vaporPressure = new double[4];
@@ -42,6 +42,7 @@ public class VaporPressure extends LabFrame {
 	private GraphDataSet vaporPressure30Set;
 	private GraphDataSet vaporPressure40Set;
 	private GraphDataSet vaporPressure60Set;
+	private GraphDataSet vptemp;
 
 	private Button play;
 	private Button step;
@@ -53,8 +54,9 @@ public class VaporPressure extends LabFrame {
 	private Button showEquipment;
 	private Button showPressureGraph;
 	private Button plot;
-	private TextField inputTemperature;
+	private DoubleField inputTemperature;
 	private Label outputVaporPressure;
+	private Label temperatureLabel;
 	private DataTable<Double> vaporPressureMolarityTable;
 	private DataTable<Double> vaporPressureTimeTable;
 	private ImageComponent equipment;
@@ -167,8 +169,10 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Vapor Pressure (kPa)",
 				"Temperature (C)", vaporPressureGraduation, temperatureGraduation);
 		vaporPressureTemperatureGraph.setYLabelOffset(40);
-		inputTemperature = new TextField(100, "Temperature");
-		inputTemperature.setOffset(110, 580);
+		temperatureLabel = new Label(100, 25, "Temperature");
+		temperatureLabel.setOffset(20, 565);
+		inputTemperature = new DoubleField(85, 0, 100, 5);
+		inputTemperature.setOffset(20, 585);
 		plot = new Button(100, 25, "Plot"){
 			@Override
 			public void doSomething() {
@@ -176,9 +180,9 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		plot.setOffset(230, 575);
-		outputVaporPressure = new Label(100, 25, "Vapor Pressure");
-		outputVaporPressure.setOffset(350, 575);
-		vaporPressureTemperatureGraphFrame.addComponent(vaporPressureTemperatureGraph, inputTemperature, plot, outputVaporPressure);
+		outputVaporPressure = new Label(300, 25, "Vapor Pressure: ");
+		outputVaporPressure.setOffset(340, 575);
+		vaporPressureTemperatureGraphFrame.addComponent(vaporPressureTemperatureGraph, inputTemperature, plot, outputVaporPressure, temperatureLabel);
 		vaporPressureTemperatureGraphFrame.start(30);
 		showPressureGraph = new Button(205, 25, "Show Pressure vs Temperature") {
 			@Override
@@ -227,14 +231,16 @@ public class VaporPressure extends LabFrame {
 	}
 
 	private void plotTemperature() {
-		double temp;
-		try{
-			temp = Double.parseDouble(inputTemperature.getText());
-			if(temp > 0.0 && temp < 100.0){
-
+		if(inputTemperature.hasInput()){
+			double vp;
+			double temperature = inputTemperature.getValue();
+			vp = 6.122 * Math.exp((17.62 * temperature / (243.12 + temperature))) / 10;
+			if(temperature > 99.3352){
+				vp = 101.325;
+				temperature = 100;
 			}
-		}catch(NumberFormatException e){
-			inputTemperature.setText("Temperature");
+			vptemp.addPoint(vp, temperature);
+			outputVaporPressure.setText("Vapor Pressure: " + SigFig.sigfigalize(vp, 5) + " kPa");
 		}
 	}
 	
@@ -244,7 +250,8 @@ public class VaporPressure extends LabFrame {
 		molarity30Set = new GraphDataSet("30C", true, true);
 		molarity40Set = new GraphDataSet("40C", true, true);
 		molarity60Set = new GraphDataSet("60C", true, true);
-
+		vptemp = new GraphDataSet("", false, false);
+		vaporPressureTemperatureGraph.addDataSet(vptemp);
 		vaporPressure20Set = new GraphDataSet("20C", true, true);
 		vaporPressure30Set = new GraphDataSet("30C", true, true);
 		vaporPressure40Set = new GraphDataSet("40C", true, true);
@@ -257,7 +264,6 @@ public class VaporPressure extends LabFrame {
 		molarity[2] = 55.0728;
 		molarity[3] = 54.5686;
 		time = 0;
-		temperature = 0;
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
 		vaporPressureTimeTable.setAll(null);
@@ -285,7 +291,7 @@ public class VaporPressure extends LabFrame {
 	}
 
 	private void stepSimulation() {
-		if (time > 100 || temperature > 101) {
+		if (time > 100) {
 			running = false;
 		} else {
 			time += dtime;
