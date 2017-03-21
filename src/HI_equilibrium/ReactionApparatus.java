@@ -35,15 +35,15 @@ public class ReactionApparatus extends LabComponent {
 		
 		
 		H2Bulb.setLabel("H2");
-		H2Bulb.setLabelOffset(35, 60);
+		H2Bulb.setOffset(35, 60);
 		H2Bulb.setLabelSize(20);
 		
 		I2Bulb.setLabel("I2");
-		I2Bulb.setLabelOffset(35, 60);
+		I2Bulb.setOffset(35, 60);
 		I2Bulb.setLabelSize(20);
 		
 		HIBulb.setLabel("HI");
-		HIBulb.setLabelOffset(35, 60);
+		HIBulb.setOffset(35, 60);
 		HIBulb.setLabelSize(20);
 		
 
