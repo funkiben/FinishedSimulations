@@ -1,0 +1,13 @@
+<html><body style='width:360px'><p style='text-align: center; font-size: 14pt'>Measuring the Vapor Pressure and Temperature of a Water Equilbrium System</p>
+<br /><p>In this simulation you will experiment with the properties of a closed system containing liquid water and water vapor at different temperatures. The properties of water you will measure include, vapor pressure, temperature, and molarity. Using your data, you will also be able to experimentally determine an average enthalpy of vaporization for water, the density of water at different temperatures, and the values for the equilibrium constants of the water equilibrium system at different temperatures.</p>
+<br /><p>This simulation assumes the following experimental conditions for generating the data. A flask with a total volume of vapor equal to 1.0  Liters, a temperature range for the experiment from 0°C to 100°C, a value for R of 8.314 kPa-L/mole-K, and an approximate surface area of liquid water in the system of 1 dm2.</p>
+<br /><p style='text-align: center; font-size: 14pt'>Some Suggestions for Using this Simulation</p>  
+<br /><p>1. When you open the simulation you will see a window with two graphs and a number of buttons and data windows.</p>
+<br /><p>2. Each time you hit the "Play" button the simulation will run for 100 seconds.</p>
+<br /><p>3. You can "Pause" the simulation at any time during this time frame, and you can hit "Reset" to run the simulation again.</p>
+<br /><p>4. The "Step" button will allow you to increase the time frame in increments of 1 second.</p>
+<br /><p>5. By clicking "showTank" you will open a new window with a series of "closed tanks" containing water at three different temperatures.</p>
+<br /><p>6. By clicking "showEquipment" you will open a window with an image of the equipment you would use in the laboratory to collect pressure and temperature data for water or other liquids, similar to the data presented in this simulation.</p>
+<br /><p>7. Finally, by clicking "Pressure vs. Temperature" you will open a window, which displays a graph and two data windows.</p>
+<br /><p>8. You can enter any value for temperature from 0°C to 100°C and a corresponding value for the Vapor Pressure of water will appear in the Pressure data box, along with a data point on the graph.</p></body></html>
+		
