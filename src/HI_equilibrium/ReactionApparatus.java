@@ -1,13 +1,17 @@
 package HI_equilibrium;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import lab.component.LabComponent;
 import lab.component.Tube;
 import lab.component.container.Bulb;
+import lab.component.container.ContentState;
 
 public class ReactionApparatus extends LabComponent {
-
+	
+	static final Color I2_COLOR = new Color(157, 0, 163, 127);
+	
 	private final Bulb reactionBulb, H2Bulb, I2Bulb, HIBulb;
 	private final Tube H2Tube, I2Tube, HITube;
 
@@ -20,6 +24,15 @@ public class ReactionApparatus extends LabComponent {
 		H2Bulb = new Bulb(100, 100);
 		I2Bulb = new Bulb(100, 100);
 		HIBulb = new Bulb(100, 100);
+		
+		I2Bulb.setContentState(ContentState.GAS);
+		I2Bulb.setContentColor(I2_COLOR);
+		I2Bulb.setValue(100);
+		
+		reactionBulb.setContentState(ContentState.GAS);
+		reactionBulb.setContentColor(I2_COLOR);
+		reactionBulb.setValue(0);
+		
 		
 		H2Bulb.setLabel("H2");
 		H2Bulb.setOffset(35, 60);
@@ -43,11 +56,15 @@ public class ReactionApparatus extends LabComponent {
 
 		Tube.setDiameter(6);
 
-		H2Tube = Tube.straight(95, 70, 300, 100);
+		H2Tube = Tube.straight(95, 70, 300, 110);
 		I2Tube = Tube.straight(99, 163, 270, 75);
-		HITube = Tube.straight(95, 253, 240, 100);
+		HITube = Tube.straight(95, 253, 240, 110);
 
+		I2Tube.setColor(I2_COLOR);
+		
 		addChild(H2Tube, I2Tube, HITube);
+		
+		reactionBulb.addChild(Tube.straight(115, 0, 180, 100));
 
 	}
 
@@ -77,6 +94,12 @@ public class ReactionApparatus extends LabComponent {
 
 	public Tube getHITube() {
 		return HITube;
+	}
+	
+	public void setReactionBulbSize(int size) {
+		reactionBulb.setOffset(reactionBulb.getOffsetX() + (reactionBulb.getWidth() - size) / 2, reactionBulb.getOffsetY() + (reactionBulb.getHeight() - size) / 2);
+		reactionBulb.setWidth(size);
+		reactionBulb.setHeight(size);
 	}
 
 	@Override
