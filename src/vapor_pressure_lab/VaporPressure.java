@@ -67,10 +67,12 @@ public class VaporPressure extends LabFrame {
 	private final Label temperatureLabel;
 	private final ScrollLabel instructions;
 
+	//start simulation
 	public static void main(String args[]) {
 		new VaporPressure("Vapor Pressure Lab", 800, 650);
 	}
 
+	//create windows and components
 	public VaporPressure(String name, int width, int height) {
 		super(name, width, height);
 		getRoot().setLayout(LabComponent.FREE_FORM);
@@ -241,6 +243,7 @@ public class VaporPressure extends LabFrame {
 		resetSimulation();
 	}
 
+	//plot vapor pressure value for a given temperature value
 	private void plotTemperature() {
 		if (inputTemperature.hasInput()) {
 			double vp;
@@ -255,6 +258,7 @@ public class VaporPressure extends LabFrame {
 		}
 	}
 
+	//resets all simulation values
 	private void resetSimulation() {
 		running = false;
 		molarity20 = new GraphDataSet("20C", true, true);
@@ -301,6 +305,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureGraph.addDataSet(vaporPressure60);
 	}
 
+	//advance simulation by one data point
 	private void stepSimulation() {
 		if (time > 100) {
 			running = false;
@@ -333,6 +338,7 @@ public class VaporPressure extends LabFrame {
 
 	}
 
+	//set text for play button
 	@Override
 	public void update() {
 		if (running) {
