@@ -61,8 +61,8 @@ public class VPEquilibrium extends LabFrame {
 		substances.add(ethanol);
 		substances.add(aceticAcid);
 
-		graph = new Graph(600, 200, "Partial Pressures of Gases", "Temperature (Celcius)", "Pressure (Torr)", vGrad,
-				hGrad);
+		graph = new Graph(600, 200, "Partial Pressures of Gases", "Temperature (Celcius)", "Pressure (Torr)", hGrad,
+				vGrad);
 		flask1 = new Bulb(150, 150);
 		flask2 = new Bulb(150, 150);
 		tempSlider = new LabeledDoubleSlider(200, 0.0f, 100.0f, 1f, 4, 1);

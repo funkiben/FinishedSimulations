@@ -91,7 +91,7 @@ public class HIEquilibriumLEGACY extends LabFrame {
 		VerticalGraduation vg = new VerticalGraduation(0, 1, 2, 0.5);
 		HorizontalGraduation hg = new HorizontalGraduation(0, 60, 60, 15);
 
-		graph = new Graph(400, 400, "Concentrations", "time (s)", "molarity (M)", vg, hg);
+		graph = new Graph(400, 400, "Concentrations", "time (s)", "molarity (M)", hg, vg);
 
 		graph.setDrawYLines(false);
 		

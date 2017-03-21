@@ -13,7 +13,7 @@ public class ReactionApparatus extends LabComponent {
 	static final Color I2_COLOR = new Color(157, 0, 163, 127);
 	
 	private final Bulb reactionBulb, H2Bulb, I2Bulb, HIBulb;
-	private final Tube H2Tube, I2Tube, HITube;
+	private final Tube reactionBulbTube, H2Tube, I2Tube, HITube;
 
 	public ReactionApparatus() {
 		super(370, 320);
@@ -63,6 +63,9 @@ public class ReactionApparatus extends LabComponent {
 		I2Tube.setColor(I2_COLOR);
 		
 		addChild(H2Tube, I2Tube, HITube);
+		
+		reactionBulbTube = Tube.straight(115, 0, 180, 100);
+		reactionBulb.addChild(reactionBulbTube);
 
 	}
 
@@ -96,6 +99,7 @@ public class ReactionApparatus extends LabComponent {
 	
 	public void setReactionBulbSize(int size) {
 		reactionBulb.setOffset(reactionBulb.getOffsetX() + (reactionBulb.getWidth() - size) / 2, reactionBulb.getOffsetY() + (reactionBulb.getHeight() - size) / 2);
+		reactionBulbTube.setOffset((size / 2) + 3, 0);
 		reactionBulb.setWidth(size);
 		reactionBulb.setHeight(size);
 	}
