@@ -31,7 +31,7 @@ public class VaporPressure extends LabFrame {
 	private double[] vaporPressure = new double[4];
 	private double[] molarity = new double[4];
 	// 20 30 40 60 120 130 140 160
-	private double[] k = { 0.0693, 0.077, 0.086625, 0.1155, 1.197833E-6, 2.341675E-6, 4.4528E-6, 1.5284E-5 };
+	private final double[] k = { 0.0693, 0.077, 0.086625, 0.1155, 1.197833E-6, 2.341675E-6, 4.4528E-6, 1.5284E-5 };
 	private boolean running = false;
 	private DecimalFormat round = new DecimalFormat("#.####");
 	private GraphDataSet molarity20Set;
@@ -100,13 +100,13 @@ public class VaporPressure extends LabFrame {
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
-		molarityGraph = new Graph(275, 400, "Molarity vs Time", "Time (s)", "Molarity H2O (mol/L)", molarityGraduation,
-				timeGraduation);
+		molarityGraph = new Graph(275, 400, "Molarity vs Time", "Time (s)", "Molarity H2O (mol/L)", timeGraduation,
+				molarityGraduation);
 		molarityGraph.setOffset(60, 50);
 		molarityGraph.setYLabelOffset(32);
 		molarityGraduation.setTextOffset(-32);
 		vaporPressureGraph = new Graph(275, 400, "Vapor Pressure vs Time", "Time (s)", "Vapor Pressure (kPa)",
-				vaporPressureGraduation, timeGraduation);
+				timeGraduation, vaporPressureGraduation);
 		vaporPressureGraph.setOffset(450, 50);
 		vaporPressureGraph.setYLabelOffset(32);
 		vaporPressureMolarityTable = new DataTable<Double>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY);
@@ -166,9 +166,9 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTemperatureGraphFrame.getRoot().setLayout(LabComponent.FREE_FORM);
 		vaporPressureGraduation =  new VerticalGraduation(0, 105, 10, 5);
 		HorizontalGraduation temperatureGraduation = new HorizontalGraduation(0, 100, 20, 10);
-		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Vapor Pressure (kPa)",
-				"Temperature (C)", vaporPressureGraduation, temperatureGraduation);
-		vaporPressureTemperatureGraph.setYLabelOffset(40);
+		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Temperature (C)",
+				"Vapor Pressure (kPa)", temperatureGraduation, vaporPressureGraduation);
+		vaporPressureTemperatureGraph.setYLabelOffset(70);
 		temperatureLabel = new Label(100, 25, "Temperature");
 		temperatureLabel.setOffset(20, 565);
 		inputTemperature = new DoubleField(85, 0, 100, 5);
