@@ -54,8 +54,8 @@ public class VaporPressure extends LabFrame {
 	private final Button showEquipment;
 	private final Button showPressureGraph;
 	private final Button plot;
-	private DataTable<Double> vaporPressureMolarityTable;
-	private DataTable<Double> vaporPressureTimeTable;
+	private final DataTable<Double> vaporPressureMolarityTable;
+	private final DataTable<Double> vaporPressureTimeTable;
 	private final DoubleField inputTemperature;
 	private final Graph molarityGraph;
 	private final Graph vaporPressureGraph;
@@ -86,6 +86,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		play.setOffset(30, 500);
+		
 		step = new Button(100, 25, "Step") {
 			@Override
 			public void doSomething() {
@@ -95,6 +96,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		step.setOffset(130, 500);
+		
 		reset = new Button(100, 25, "Reset") {
 			@Override
 			public void doSomething() {
@@ -102,6 +104,7 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		reset.setOffset(230, 500);
+		
 		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
