@@ -324,11 +324,11 @@ public class HIEquilibrium extends LabFrame{
 		
 		Tube tube;
 		
-		tube = Tube.straight(3, 80, 75, 100);
+		tube = Tube.straight(3, 80, 70, 110);
 		tube.setZOrder(-1);
 		H2PressureReader.addChild(tube);
 		
-		tube = Tube.straight(3, 70, 105, 100);
+		tube = Tube.straight(3, 70, 110, 110);
 		tube.setZOrder(-1);
 		I2PressureReader.addChild(tube);
 		
@@ -365,7 +365,7 @@ public class HIEquilibrium extends LabFrame{
 
 		vg.setRemovePointZero(false);
 		
-		graph = new Graph(600, 255, "Pressures", "time (s)", "pressure (atm)", vg, hg);
+		graph = new Graph(600, 255, "Pressures", "time (s)", "pressure (atm)", hg, vg);
 		
 		graph.setYLabelOffset(30);
 		graph.getvGraduation().setTextOffset(-30);
