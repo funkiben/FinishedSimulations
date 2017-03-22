@@ -54,16 +54,20 @@ public class VaporPressure extends LabFrame {
 	private final Button showEquipment;
 	private final Button showPressureGraph;
 	private final Button plot;
-	private DataTable<Double> vaporPressureMolarityTable;
-	private DataTable<Double> vaporPressureTimeTable;
+	private final DataTable<Double> vaporPressureMolarityTable;
+	private final DataTable<Double> vaporPressureTimeTable;
 	private final DoubleField inputTemperature;
 	private final Graph molarityGraph;
 	private final Graph vaporPressureGraph;
 	private final Graph vaporPressureTemperatureGraph;
+	private final HorizontalGraduation timeGraduation;
+	private final HorizontalGraduation temperatureGraduation;
 	private final ImageComponent equipment;
 	private final Label outputVaporPressure;
 	private final Label temperatureLabel;
 	private final ScrollLabel instructions;
+	private final VerticalGraduation molarityGraduation;
+	private VerticalGraduation vaporPressureGraduation;
 
 	// start simulation
 	public static void main(String args[]) {
@@ -75,6 +79,7 @@ public class VaporPressure extends LabFrame {
 		super(name, width, height);
 		getRoot().setLayout(LabComponent.FREE_FORM);
 
+		// play button
 		play = new Button(100, 25, "Play") {
 			@Override
 			public void doSomething() {
@@ -86,6 +91,8 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		play.setOffset(30, 500);
+
+		// step button
 		step = new Button(100, 25, "Step") {
 			@Override
 			public void doSomething() {
@@ -95,6 +102,8 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		step.setOffset(130, 500);
+
+		// reset button
 		reset = new Button(100, 25, "Reset") {
 			@Override
 			public void doSomething() {
@@ -102,18 +111,24 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		reset.setOffset(230, 500);
-		HorizontalGraduation timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
-		VerticalGraduation molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
-		VerticalGraduation vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
+
+		// create molarity vs time graph
+		timeGraduation = new HorizontalGraduation(0, 100, 20, 10);
+		molarityGraduation = new VerticalGraduation(54, 55.6, .2, .1);
 		molarityGraph = new Graph(275, 400, "Molarity vs Time", "Time (s)", "Molarity H2O (mol/L)", timeGraduation,
 				molarityGraduation);
 		molarityGraph.setOffset(60, 50);
 		molarityGraph.setYLabelOffset(32);
 		molarityGraduation.setTextOffset(-32);
+
+		// create vapor pressure vs time graph
+		vaporPressureGraduation = new VerticalGraduation(0, 25, 5, 2.5);
 		vaporPressureGraph = new Graph(275, 400, "Vapor Pressure vs Time", "Time (s)", "Vapor Pressure (kPa)",
 				timeGraduation, vaporPressureGraduation);
 		vaporPressureGraph.setOffset(450, 50);
 		vaporPressureGraph.setYLabelOffset(32);
+
+		// create vapor pressure molarity table
 		vaporPressureMolarityTable = new DataTable<Double>(700, 75, 2, 4, DataTable.ROW_TITLES_ONLY) {
 			@Override
 			public String getString(Double value) {
@@ -123,6 +138,8 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setOffset(30, 550);
 		vaporPressureMolarityTable.setRowTitle(0, "Vapor Pressure");
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
+
+		// create tank frame
 		tankFrame = new LabFrame("Tank", 400, 300, false) {
 			private static final long serialVersionUID = 1L;
 
@@ -142,6 +159,7 @@ public class VaporPressure extends LabFrame {
 		};
 		showTank.setOffset(345, 500);
 
+		// create equipment frame
 		equipmentFrame = new LabFrame("Equipment", 400, 300, false) {
 			private static final long serialVersionUID = 1L;
 
@@ -162,8 +180,9 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		showEquipment.setOffset(435, 500);
-		vaporPressureTemperatureGraphFrame = new LabFrame("Vapor Pressure vs Temperature Graph", 550, 630, false) {
 
+		// create vapor pressure vs temperature frame
+		vaporPressureTemperatureGraphFrame = new LabFrame("Vapor Pressure vs Temperature Graph", 550, 630, false) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -175,7 +194,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTemperatureGraphFrame.setVisible(false);
 		vaporPressureTemperatureGraphFrame.getRoot().setLayout(LabComponent.FREE_FORM);
 		vaporPressureGraduation = new VerticalGraduation(0, 105, 10, 5);
-		HorizontalGraduation temperatureGraduation = new HorizontalGraduation(0, 100, 20, 10);
+		temperatureGraduation = new HorizontalGraduation(0, 100, 20, 10);
 		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Temperature (C)",
 				"Vapor Pressure (kPa)", temperatureGraduation, vaporPressureGraduation);
 		vaporPressureTemperatureGraph.setYLabelOffset(70);
@@ -202,6 +221,8 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		showPressureGraph.setOffset(560, 500);
+		
+		//create vapor pressure time table frame
 		vaporPressureTimeTableFrame = new LabFrame("Vapor Pressure vs Time Table", 600, 375, true) {
 			private static final long serialVersionUID = 1L;
 
@@ -211,7 +232,12 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		vaporPressureTimeTableFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		vaporPressureTimeTable = new DataTable<Double>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY);
+		vaporPressureTimeTable = new DataTable<Double>(600, 375, 11, 5, DataTable.COLUMN_TITLES_ONLY){
+			@Override
+			public String getString(Double value) {
+				return SigFig.sigfigalize(value, SIG_FIGS);
+			}
+		};
 		vaporPressureTimeTable.setColumnTitle(0, "Time (s)");
 		vaporPressureTimeTable.setColumnTitle(1, "VP (kPa) @ 20C");
 		vaporPressureTimeTable.setColumnTitle(2, "VP (kPa) @ 30C");
@@ -219,6 +245,8 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTimeTable.setColumnTitle(4, "VP (kPa) @ 60C");
 		vaporPressureTimeTableFrame.addComponent(vaporPressureTimeTable);
 		vaporPressureTimeTableFrame.start(30);
+		
+		//create instructions frame
 		instructionsFrame = new LabFrame("Instructions", 500, 350, true) {
 			private static final long serialVersionUID = 1L;
 
@@ -235,6 +263,7 @@ public class VaporPressure extends LabFrame {
 		instructionsFrame.addComponent(instructions);
 		instructionsFrame.start(0);
 
+		//create main frame and set up simulation
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
 				showEquipment, showPressureGraph);
 		start(30);
@@ -280,7 +309,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
 		vaporPressureTimeTable.setAll(null);
-		vaporPressureTimeTable.setCell(0, 0, time);
+		vaporPressureTimeTable.setCell(0, 0, (double) time);
 		vaporPressureTimeTable.setCell(1, 0, vaporPressure[0]);
 		vaporPressureTimeTable.setCell(2, 0, vaporPressure[1]);
 		vaporPressureTimeTable.setCell(3, 0, vaporPressure[2]);
@@ -318,7 +347,7 @@ public class VaporPressure extends LabFrame {
 				vaporPressureMolarityTable.setCell(i, 1, molarity[i]);
 			}
 			if (time % 10 == 0) {
-				vaporPressureTimeTable.setCell(0, time / 10, time);
+				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
 				vaporPressureTimeTable.setCell(1, time / 10, vaporPressure[0]);
 				vaporPressureTimeTable.setCell(2, time / 10, vaporPressure[1]);
 				vaporPressureTimeTable.setCell(3, time / 10, vaporPressure[2]);
