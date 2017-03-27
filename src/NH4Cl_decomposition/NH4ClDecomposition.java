@@ -42,7 +42,6 @@ public class NH4ClDecomposition extends LabFrame {
 	
 	private final ReactionCondition[] reactionConditions;
 	
-	//private final Manometer manometer;
 	private final PressureGauge pressureGauge;
 	private final Bulb bulb;
 	private final Thermometer thermometer;
