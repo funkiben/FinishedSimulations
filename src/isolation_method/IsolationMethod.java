@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import lab.LabFrame;
 import lab.component.EmptyComponent;
-import lab.component.LabComponent;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;

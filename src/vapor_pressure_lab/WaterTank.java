@@ -9,7 +9,6 @@ import lab.component.fx.ParticleShape;
 import lab.component.fx.ParticleSystem;
 import lab.component.fx.RandomVector2Generator;
 import lab.component.fx.Vector2DistributionType;
-
 public class WaterTank extends Tank {
 
 	
@@ -58,7 +57,14 @@ public class WaterTank extends Tank {
 		gasParticles.addCollidableEdge(0, 0, 0, height / 2); // left
 		gasParticles.addCollidableEdge(width, 0, width, height / 2); // right
 		gasParticles.addCollidableEdge(0, height / 2, width, height / 2); // bottom
-
+		
+		/*
+		gasParticles.addCollidableEdge(-2, 10, 10, -2);
+		gasParticles.addCollidableEdge(gasParticles.getWidth() + 2, 10, gasParticles.getWidth() - 10, -2);
+		gasParticles.addCollidableEdge(-2, gasParticles.getHeight() - 10, 10, gasParticles.getHeight() + 2);
+		gasParticles.addCollidableEdge(gasParticles.getWidth() + 2, gasParticles.getHeight() - 10, gasParticles.getWidth() - 10, gasParticles.getHeight() + 2);
+		*/
+		
 		
 		gasParticles.start();
 
@@ -81,7 +87,7 @@ public class WaterTank extends Tank {
 		liquidParticles.addCollidableEdge(0, height / 2, width, height / 2); // bottom
 		
 		
-		liquidParticles.start();
+		//liquidParticles.start();
 		
 		for (int i = 0; i < gasParticleAmount; i++) {
 			gasParticles.spawnParticle();
