@@ -25,7 +25,7 @@ public class WaterTank extends Tank {
 			
 		};
 		
-		WaterTank tank = new WaterTank(200, 200, 100, 100, 10, 10);
+		WaterTank tank = new WaterTank(200, 200, 100, 20, 0.5, 2);
 		tank.setOffset(100, 100);
 		
 		lf.addComponent(tank);
@@ -58,7 +58,6 @@ public class WaterTank extends Tank {
 		gasParticles.addCollidableEdge(0, 0, 0, height / 2); // left
 		gasParticles.addCollidableEdge(width, 0, width, height / 2); // right
 		gasParticles.addCollidableEdge(0, height / 2, width, height / 2); // bottom
-
 		
 		gasParticles.start();
 
@@ -82,6 +81,7 @@ public class WaterTank extends Tank {
 		
 		
 		liquidParticles.start();
+		
 		
 		for (int i = 0; i < gasParticleAmount; i++) {
 			gasParticles.spawnParticle();
