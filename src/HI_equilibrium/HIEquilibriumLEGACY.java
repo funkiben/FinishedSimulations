@@ -8,11 +8,11 @@ import lab.component.container.ContentState;
 import lab.component.data.GraphDataSet;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.LabeledDoubleSlider;
+import lab.component.swing.input.slider.DoubleSlider;
+import lab.component.swing.input.slider.LabeledDoubleSlider;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
-import lab.component.swing.input.DoubleSlider;
 import lab.component.data.Graph;
 
 public class HIEquilibriumLEGACY extends LabFrame {
