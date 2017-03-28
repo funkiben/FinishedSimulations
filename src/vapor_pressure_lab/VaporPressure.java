@@ -334,12 +334,25 @@ public class VaporPressure extends LabFrame {
 			}
 		});
 		menu.addMenu("Help");
-		menu.addMenuItem("Instructions", "Help", new ActionListener(){
+		menu.addMenuItem("Instructions", "Help", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				instructionsFrame.setVisible(true);
 			}
 		});
+		
+		molarity20 = new GraphDataSet("20C", true, true);
+		molarity30 = new GraphDataSet("30C", true, true);
+		molarity40 = new GraphDataSet("40C", true, true);
+		molarity60 = new GraphDataSet("60C", true, true);
+		vaporPressureTemperature = new GraphDataSet("", false, false);
+		vaporPressureTemperatureGraph.addDataSet(vaporPressureTemperature);
+		vaporPressure20 = new GraphDataSet("20C", true, true);
+		vaporPressure30 = new GraphDataSet("30C", true, true);
+		vaporPressure40 = new GraphDataSet("40C", true, true);
+		vaporPressure60 = new GraphDataSet("60C", true, true);
+		molarityGraph.addDataSet(molarity20, molarity30, molarity40, molarity60);
+		vaporPressureGraph.addDataSet(vaporPressure20, vaporPressure30, vaporPressure40, vaporPressure60);
 
 		// create main frame and set up simulation
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
@@ -366,16 +379,11 @@ public class VaporPressure extends LabFrame {
 	// resets all simulation values
 	private void resetSimulation() {
 		running = false;
-		molarity20 = new GraphDataSet("20C", true, true);
-		molarity30 = new GraphDataSet("30C", true, true);
-		molarity40 = new GraphDataSet("40C", true, true);
-		molarity60 = new GraphDataSet("60C", true, true);
-		vaporPressureTemperature = new GraphDataSet("", false, false);
-		vaporPressureTemperatureGraph.addDataSet(vaporPressureTemperature);
-		vaporPressure20 = new GraphDataSet("20C", true, true);
-		vaporPressure30 = new GraphDataSet("30C", true, true);
-		vaporPressure40 = new GraphDataSet("40C", true, true);
-		vaporPressure60 = new GraphDataSet("60C", true, true);
+		molarity20.clearPoints();
+		
+		//add more clear
+		//add more clear
+		
 		for (int i = 0; i < vaporPressure.length; i++) {
 			vaporPressure[i] = 0;
 		}
@@ -392,22 +400,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTimeTable.setCell(2, 0, vaporPressure[1]);
 		vaporPressureTimeTable.setCell(3, 0, vaporPressure[2]);
 		vaporPressureTimeTable.setCell(4, 0, vaporPressure[3]);
-		molarityGraph.removeDataSet(molarity20.getName());
-		molarityGraph.removeDataSet(molarity30.getName());
-		molarityGraph.removeDataSet(molarity40.getName());
-		molarityGraph.removeDataSet(molarity60.getName());
-		vaporPressureGraph.removeDataSet(vaporPressure20.getName());
-		vaporPressureGraph.removeDataSet(vaporPressure30.getName());
-		vaporPressureGraph.removeDataSet(vaporPressure40.getName());
-		vaporPressureGraph.removeDataSet(vaporPressure60.getName());
-		molarityGraph.addDataSet(molarity20);
-		molarityGraph.addDataSet(molarity30);
-		molarityGraph.addDataSet(molarity40);
-		molarityGraph.addDataSet(molarity60);
-		vaporPressureGraph.addDataSet(vaporPressure20);
-		vaporPressureGraph.addDataSet(vaporPressure30);
-		vaporPressureGraph.addDataSet(vaporPressure40);
-		vaporPressureGraph.addDataSet(vaporPressure60);
+		
 	}
 
 	// advance simulation by one data point
@@ -440,7 +433,6 @@ public class VaporPressure extends LabFrame {
 			vaporPressure40.addPoint(time, vaporPressure[2]);
 			vaporPressure60.addPoint(time, vaporPressure[3]);
 		}
-
 	}
 
 	// set text for play button
