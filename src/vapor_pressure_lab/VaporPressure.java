@@ -12,8 +12,8 @@ import lab.component.data.GraphDataSet;
 import lab.component.swing.Label;
 import lab.component.swing.ScrollLabel;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.DoubleField;
 import lab.component.swing.input.MenuComponent;
+import lab.component.swing.input.field.DoubleField;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
@@ -410,7 +410,7 @@ public class VaporPressure extends LabFrame {
 	// set text for play button
 	@Override
 	public void update() {
-		if (vaporPressureTimeTable.isVisible()){
+		if (vaporPressureTimeTableFrame.isVisible()){
 			menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", true);
 		}else{
 			menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", false);
