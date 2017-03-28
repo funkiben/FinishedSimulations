@@ -257,7 +257,7 @@ public class VaporPressure extends LabFrame {
 
 			}
 		};
-		instructionsFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		instructionsFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		instructionsFrame.setResizable(false);
 		instructions = new ScrollLabel(500, 350, "/vapor_pressure_lab/instructions.txt");
 		instructions.setHoriztonalScrollBarPolicy(ScrollLabel.HORIZONTAL_SCROLLBAR_NEVER);
@@ -293,17 +293,53 @@ public class VaporPressure extends LabFrame {
 			}
 		});
 		menu.addMenu("View");
-		menu.addRadioButtonMenuItem("Show Vapor Pressure vs Time Table", "View", true, new ActionListener(){
+		menu.addRadioButtonMenuItem("Show Vapor Pressure vs Time Table", "View", true, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(vaporPressureTimeTableFrame.isVisible()){
+				if (vaporPressureTimeTableFrame.isVisible()) {
 					vaporPressureTimeTableFrame.dispose();
-				}else{
+				} else {
 					vaporPressureTimeTableFrame.setVisible(true);
 				}
 			}
 		});
+		menu.addRadioButtonMenuItem("Show Tank", "View", false, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (tankFrame.isVisible()) {
+					tankFrame.dispose();
+				} else {
+					tankFrame.setVisible(true);
+				}
+			}
+		});
+		menu.addRadioButtonMenuItem("Show Equipment", "View", false, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (equipmentFrame.isVisible()) {
+					equipmentFrame.dispose();
+				} else {
+					equipmentFrame.setVisible(true);
+				}
+			}
+		});
+		menu.addRadioButtonMenuItem("Show Pressure vs Temperature", "View", false, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (vaporPressureTemperatureGraphFrame.isVisible()) {
+					vaporPressureTemperatureGraphFrame.dispose();
+				} else {
+					vaporPressureTemperatureGraphFrame.setVisible(true);
+				}
+			}
+		});
 		menu.addMenu("Help");
+		menu.addMenuItem("Instructions", "Help", new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				instructionsFrame.setVisible(true);
+			}
+		});
 
 		// create main frame and set up simulation
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
@@ -410,11 +446,10 @@ public class VaporPressure extends LabFrame {
 	// set text for play button
 	@Override
 	public void update() {
-		if (vaporPressureTimeTableFrame.isVisible()){
-			menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", true);
-		}else{
-			menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", false);
-		}
+		menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", vaporPressureTimeTableFrame.isVisible());
+		menu.setRadioButtonSelected("Show Tank", tankFrame.isVisible());
+		menu.setRadioButtonSelected("Show Equipment", equipmentFrame.isVisible());
+		menu.setRadioButtonSelected("Show Pressure vs Temperature", vaporPressureTemperatureGraphFrame.isVisible());
 		if (running) {
 			play.setText("Pause");
 			menu.setMenuItemText("Play", "Pause");
