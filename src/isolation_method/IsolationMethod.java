@@ -7,7 +7,7 @@ import lab.component.EmptyComponent;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.DoubleField;
+import lab.component.swing.input.field.DoubleField;
 
 public class IsolationMethod extends LabFrame {
 
