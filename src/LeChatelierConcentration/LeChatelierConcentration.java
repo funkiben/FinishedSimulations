@@ -6,7 +6,7 @@ import lab.component.container.Bulb;
 import lab.component.data.Graph;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
-import lab.component.swing.input.LabeledDoubleSlider;
+import lab.component.swing.input.slider.LabeledDoubleSlider;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
@@ -20,6 +20,9 @@ public class LeChatelierConcentration extends LabFrame{
 	private LabeledDoubleSlider h2oSlider;
 	private LabeledDoubleSlider coSlider;
 	private LabeledDoubleSlider h2Slider;
+	
+	private VerticalGraduation vGrad;
+	private HorizontalGraduation hGrad;
 	
 	private Label cLabel;
 	private Label h2oLabel;
@@ -86,8 +89,12 @@ public class LeChatelierConcentration extends LabFrame{
 		
 		addComponent(sliderHolder);
 		
-		graph = new Graph(250,250,"Moles of Substances","time (s)","moles",new HorizontalGraduation(0,100,10,5),new VerticalGraduation(0,.00250,.0005,.00025));
+		hGrad = new HorizontalGraduation(0,100,10,5);
+		vGrad = new VerticalGraduation(0,.00250,.0005,.00025);
+		
+		graph = new Graph(250,250,"Moles of Substances","time (s)","moles",hGrad,vGrad);
 		graph.setOffsetX(100);
+		vGrad.setTextOffset(-40);
 		addComponent(graph);
 		
 		EmptyComponent labelHolder = new EmptyComponent(800,200);
@@ -95,7 +102,7 @@ public class LeChatelierConcentration extends LabFrame{
 		cLabel = new Label(200,100,"C - " + cSlider.getValue() + " moles");
 		labelHolder.addChild(cLabel);
 		
-		labelHolder.setOffsetX(-500);
+		labelHolder.setOffsetX(0);
 		labelHolder.setOffsetY(600);
 		addComponent(labelHolder);
 		
