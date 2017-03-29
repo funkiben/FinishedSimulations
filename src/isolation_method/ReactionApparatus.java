@@ -27,6 +27,7 @@ public class ReactionApparatus extends LabComponent {
 		O2Piston.setOffset(10, 10);
 		O2Piston.setGasColor(null);
 		O2Piston.setCanDrag(false);
+		O2Piston.setValue(10);
 		
 		NOPiston = new Piston(50, 240);
 		NOPiston.setGraduation(new VerticalGraduation(0, 10, 1, 1));
@@ -34,24 +35,27 @@ public class ReactionApparatus extends LabComponent {
 		NOPiston.setOffset(100, 10);
 		NOPiston.setGasColor(null);
 		NOPiston.setCanDrag(false);
+		NOPiston.setValue(10);
 		
 		Tube tube;
 		
-		tube = Tube.straight(O2Piston.getWidth() / 2 - 5, O2Piston.getHeight() + 5, 0, 40);
+		tube = Tube.straight(O2Piston.getWidth() / 2 - 5, O2Piston.getHeight(), 0, 40);
+		tube.setZOrder(-1);
 		tube.addChild(Tube.angle90(0, 60, -90, 20));
 		
 		O2Piston.addChild(tube);
 		
-		tube = Tube.straight(NOPiston.getWidth() / 2 - 5, NOPiston.getHeight() + 5, 0, 40);
+		tube = Tube.straight(NOPiston.getWidth() / 2 - 5, NOPiston.getHeight(), 0, 40);
+		tube.setZOrder(-1);
 		tube.addChild(Tube.angle90(10, 30, 180, 20));
 		
 		NOPiston.addChild(tube);
 		
 		
-		tank = new Tank(60, 80);
-		tank.setOffset(50, 270);
+		tank = new Tank(66, 80);
+		tank.setOffset(47, 270);
 		
-		Rectangle spectrometerLaser = new Rectangle(0, 60, 60, 5);
+		Rectangle spectrometerLaser = new Rectangle(0, 60, 66, 5);
 		spectrometerLaser.setFillColor(Color.red);
 		spectrometerLaser.setStroke(false);
 		
