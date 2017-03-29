@@ -423,6 +423,7 @@ public class VaporPressure extends LabFrame {
 				}
 			}
 			if( time == 50){
+				System.out.println("trigger");
 				spawnGasParticle(0);
 			}else if (time == 100){
 				spawnGasParticle(0);
