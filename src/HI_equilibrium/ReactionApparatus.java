@@ -99,7 +99,7 @@ public class ReactionApparatus extends LabComponent {
 	
 	public void setReactionBulbSize(int size) {
 		reactionBulb.setOffset(reactionBulb.getOffsetX() + (reactionBulb.getWidth() - size) / 2, reactionBulb.getOffsetY() + (reactionBulb.getHeight() - size) / 2);
-		reactionBulbTube.setOffset((size / 2) + 3, 0);
+		reactionBulbTube.setOffset((size / 2) + 4, 0);
 		reactionBulb.setWidth(size);
 		reactionBulb.setHeight(size);
 	}
