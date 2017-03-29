@@ -381,27 +381,24 @@ public class VaporPressure extends LabFrame {
 			set.clearPoints();
 		}
 		vaporPressureTemperature.clearPoints();
+		time = 0;
+		vaporPressureTimeTable.setAll(null);
+		vaporPressureTimeTable.setCell(0, 0, (double) time);
 		for (int i = 0; i < vaporPressure.length; i++) {
 			vaporPressure[i] = 0;
+			vaporPressureTimeTable.setCell(i + 1, 0, vaporPressure[i]);
 		}
 		molarity[0] = 55.4082;
 		molarity[1] = 55.2661;
 		molarity[2] = 55.0728;
 		molarity[3] = 54.5686;
-		time = 0;
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
-		vaporPressureTimeTable.setAll(null);
-		vaporPressureTimeTable.setCell(0, 0, (double) time);
-		for (int i = 0; i < vaporPressure.length; i++) {
-			vaporPressureTimeTable.setCell(i + 1, 0, vaporPressure[i]);
-		}
-
 	}
 
 	// advance simulation by one data point
 	private void stepSimulation() {
-		if (time > 100) {
+		if (time >= 100) {
 			running = false;
 		} else {
 			time += CHANGE_IN_TIME;
@@ -411,10 +408,9 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
 			if (time % 10 == 0) {
 				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
-				vaporPressureTimeTable.setCell(1, time / 10, vaporPressure[0]);
-				vaporPressureTimeTable.setCell(2, time / 10, vaporPressure[1]);
-				vaporPressureTimeTable.setCell(3, time / 10, vaporPressure[2]);
-				vaporPressureTimeTable.setCell(4, time / 10, vaporPressure[3]);
+				for (int i = 0; i < vaporPressure.length; i++){
+					vaporPressureTimeTable.setCell(i + 1, time / 10, vaporPressure[i]);
+				}
 			}
 			for (int i = 0; i < molaritySet.length; i++) {
 				molaritySet[i].addPoint(time, molarity[i]);
