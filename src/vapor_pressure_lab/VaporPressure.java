@@ -63,10 +63,13 @@ public class VaporPressure extends LabFrame {
 	private final ImageComponent equipment;
 	private final Label outputVaporPressure;
 	private final Label temperatureLabel;
+	private final Label[] tankTemp = { new Label(30, 20, "20C"), new Label(30, 20, "30C"), new Label(30, 20, "40C"),
+			new Label(30, 20, "60C") };
 	private final MenuComponent menu;
 	private final ScrollLabel instructions;
 	private final VerticalGraduation molarityGraduation;
 	private VerticalGraduation vaporPressureGraduation;
+	private final WaterTank[] waterTank = new WaterTank[4];
 
 	// start simulation
 	public static void main(String args[]) {
@@ -139,7 +142,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
 
 		// create tank frame
-		tankFrame = new LabFrame("Tank", 400, 300, false) {
+		tankFrame = new LabFrame("Tanks", 250, 720, false) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -148,6 +151,13 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		tankFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		tankFrame.getRoot().setLayout(LabComponent.FREE_FORM);
+		for (int i = 0; i < waterTank.length; i++) {
+			waterTank[i] = new WaterTank(175, 175, 30, 0, .5, 2);
+			waterTank[i].setOffset(60, 180 * i);
+			tankTemp[i].setOffset(15, 180 * i + (175 / 2));
+			tankFrame.addComponent(waterTank[i], tankTemp[i]);
+		}
 		tankFrame.start(30);
 		showTank = new Button(90, 25, "Show Tank") {
 			@Override
@@ -335,7 +345,7 @@ public class VaporPressure extends LabFrame {
 			}
 		});
 
-		//create and add data sets for graphs
+		// create and add data sets for graphs
 		molaritySet[0] = new GraphDataSet("20C", true, true);
 		molaritySet[1] = new GraphDataSet("30C", true, true);
 		molaritySet[2] = new GraphDataSet("40C", true, true);
@@ -408,9 +418,14 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
 			if (time % 10 == 0) {
 				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
-				for (int i = 0; i < vaporPressure.length; i++){
+				for (int i = 0; i < vaporPressure.length; i++) {
 					vaporPressureTimeTable.setCell(i + 1, time / 10, vaporPressure[i]);
 				}
+			}
+			if( time == 50){
+				spawnGasParticle(0);
+			}else if (time == 100){
+				spawnGasParticle(0);
 			}
 			for (int i = 0; i < molaritySet.length; i++) {
 				molaritySet[i].addPoint(time, molarity[i]);
@@ -419,6 +434,10 @@ public class VaporPressure extends LabFrame {
 				vaporPressureMolarityTable.setCell(i, 1, molarity[i]);
 			}
 		}
+	}
+	
+	private void spawnGasParticle(int i){
+		waterTank[i].getGasParticleSystem().spawnParticle();
 	}
 
 	// set text for play button
