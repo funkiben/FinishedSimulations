@@ -43,6 +43,7 @@ public class VaporPressure extends LabFrame {
 	private GraphDataSet[] molaritySet = new GraphDataSet[4];
 	private GraphDataSet[] vaporPressureSet = new GraphDataSet[4];
 	private GraphDataSet vaporPressureTemperature;
+	private int k;
 
 	// components
 	private final Button play;
@@ -153,7 +154,7 @@ public class VaporPressure extends LabFrame {
 		tankFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		tankFrame.getRoot().setLayout(LabComponent.FREE_FORM);
 		for (int i = 0; i < waterTank.length; i++) {
-			waterTank[i] = new WaterTank(175, 175, 30, 0, .5, 2);
+			waterTank[i] = new WaterTank(175, 175, 30, 14, .5, 2);
 			waterTank[i].setOffset(60, 180 * i);
 			tankTemp[i].setOffset(15, 180 * i + (175 / 2));
 			tankFrame.addComponent(waterTank[i], tankTemp[i]);
@@ -404,6 +405,13 @@ public class VaporPressure extends LabFrame {
 		molarity[3] = 54.5686;
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
+		for(int i = 0; i < waterTank.length; i++){
+			k = waterTank[i].getLiquidParticleSystem().getActiveParticles();
+			for(int j = 0; j < (30 - k); j++){
+				waterTank[i].getLiquidParticleSystem().spawnParticle();
+				waterTank[i].getGasParticleSystem().removeParticle();
+			}
+		}
 	}
 
 	// advance simulation by one data point
@@ -422,11 +430,13 @@ public class VaporPressure extends LabFrame {
 					vaporPressureTimeTable.setCell(i + 1, time / 10, vaporPressure[i]);
 				}
 			}
-			if( time == 50){
-				System.out.println("trigger");
-				spawnGasParticle(0);
-			}else if (time == 100){
-				spawnGasParticle(0);
+			for (int i = 1; i < 4; i++) {
+				if (time % (100 / (i * 2)) == 0) {
+					spawnGasParticle(i - 1);
+				}
+			}
+			if (time % (100 / 14) == 0) {
+				spawnGasParticle(3);
 			}
 			for (int i = 0; i < molaritySet.length; i++) {
 				molaritySet[i].addPoint(time, molarity[i]);
@@ -436,9 +446,12 @@ public class VaporPressure extends LabFrame {
 			}
 		}
 	}
-	
-	private void spawnGasParticle(int i){
-		waterTank[i].getGasParticleSystem().spawnParticle();
+
+	private void spawnGasParticle(int... i) {
+		for (int j : i) {
+			waterTank[j].getGasParticleSystem().spawnParticle();
+			waterTank[j].getLiquidParticleSystem().removeParticle();
+		}
 	}
 
 	// set text for play button
