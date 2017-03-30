@@ -2,6 +2,9 @@ package NH4Cl_decomposition;
 
 import java.awt.Color;
 
+import draw.animation.DoubleLerpAnimation;
+import draw.animation.DoubleLinearAnimation;
+import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
@@ -21,9 +24,6 @@ import lab.component.swing.input.Dropdown;
 import lab.util.SigFig;
 import lab.util.Vector2;
 import lab.util.VerticalGraduation;
-import lab.util.animation.DoubleLerpAnimation;
-import lab.util.animation.DoubleLinearAnimation;
-import lab.util.animation.IntegerLinearAnimation;
 
 public class NH4ClDecomposition extends LabFrame {
 

@@ -2,6 +2,7 @@ package isolation_method;
 
 import java.awt.Color;
 
+import draw.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.data.Graph;
@@ -13,7 +14,6 @@ import lab.component.swing.input.field.DoubleField;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
-import lab.util.animation.DoubleLinearAnimation;
 
 public class IsolationMethod extends LabFrame {
 
@@ -46,19 +46,19 @@ public class IsolationMethod extends LabFrame {
 		addComponent(reactionApparatus);
 		
 		
-		Rectangle controlArea = new Rectangle(190, 140);
+		Rectangle controlArea = new Rectangle(170, 140);
 		controlArea.setFill(false);
 		controlArea.setStrokeColor(Color.LIGHT_GRAY);
 		
 		Label O2MLabel, NOMLabel;
 		
-		O2MLabel = new Label(190, 20, "O2 Molarity: " + O2Concentration + "mol/L");
+		O2MLabel = new Label(170, 20, "O2 Molarity: " + O2Concentration + "mol/L");
 		O2MLabel.setOffsetX(5);
 		
-		NOMLabel = new Label(190, 20, "NO Molarity: " + SigFig.sigfigalize(NOConcentration, 3) + "mol/L");
+		NOMLabel = new Label(170, 20, "NO Molarity: " + SigFig.sigfigalize(NOConcentration, 3) + "mol/L");
 		NOMLabel.setOffsetX(5);
 		
-		volumeLabel = new Label(190, 20, "Volume: 2mL");
+		volumeLabel = new Label(170, 20, "Volume: 2mL");
 		volumeLabel.setOffsetX(5);
 		
 		controlArea.addChild(O2MLabel, NOMLabel, volumeLabel);
@@ -92,7 +92,7 @@ public class IsolationMethod extends LabFrame {
 		
 		controlArea.addChild(new EmptyComponent(5, 0), new Label(60, 20, "O2 (mL): "), O2Amount, new EmptyComponent(10000, 0), new EmptyComponent(5, 0), new Label(60, 20, "NO (mL): "), NOAmount, new EmptyComponent(1000, 5), start, stop, reset);
 		
-		controlArea.setOffset(-10, 380);
+		controlArea.setOffsetY(380);
 		
 		reactionApparatus.addChild(controlArea);
 		
@@ -106,8 +106,9 @@ public class IsolationMethod extends LabFrame {
 
 		hg.setShowLabels(false);
 		
-		zeroOrderGraph = new Graph(200, 200, "[NO2] vs. t", "t (s)", "mol/L", hg, vg);
+		zeroOrderGraph = new Graph(200, 200, "[NO2] vs. t", "t (s)", "[NO2] mol/L", hg, vg);
 		zeroOrderGraph.setOffsetX(60);
+		zeroOrderGraph.setYLabelOffset(15);
 		addComponent(zeroOrderGraph);
 		
 		zeroOrderData = new GraphDataSet("NO2", false, false);
@@ -118,8 +119,9 @@ public class IsolationMethod extends LabFrame {
 		
 		hg.setShowLabels(false);
 		
-		firstOrderGraph  = new Graph(200, 200, "ln[NO2] vs. t", "t (s)", "mol/L", hg, vg);
+		firstOrderGraph  = new Graph(200, 200, "ln[NO2] vs. t", "t (s)", "ln([NO2]) mol/L", hg, vg);
 		firstOrderGraph.setOffsetX(60);
+		firstOrderGraph.setYLabelOffset(20);
 		addComponent(firstOrderGraph);
 		
 		firstOrderData = new GraphDataSet("NO2", false, false);
@@ -130,8 +132,9 @@ public class IsolationMethod extends LabFrame {
 		
 		hg.setShowLabels(false);
 		
-		secondOrderGraph  = new Graph(200, 200, "1/[NO2] vs. t", "t (s)", "mol/L", hg, vg);
+		secondOrderGraph  = new Graph(200, 200, "1/[NO2] vs. t", "t (s)", "1/[NO2] mol/L", hg, vg);
 		secondOrderGraph.setOffsetX(60);
+		secondOrderGraph.setYLabelOffset(15);
 		addComponent(secondOrderGraph);
 		
 		secondOrderData = new GraphDataSet("NO2", false, false);
@@ -143,12 +146,6 @@ public class IsolationMethod extends LabFrame {
 	
 	private void reset() {
 		time = 0;
-		NO2Moles = 0;
-		
-		reactionApparatus.getNOPiston().setValue(10);
-		reactionApparatus.getO2Piston().setValue(10);
-		
-		
 	}
 	
 	private void start() {
@@ -183,7 +180,7 @@ public class IsolationMethod extends LabFrame {
 	}
 	
 	private void step() {
-		time++;
+		time ++;
 		
 		
 	}
