@@ -25,7 +25,8 @@ public class IsolationMethod extends LabFrame {
 
 	private final double NOConcentration = 4.09E-4;
 	private final double O2Concentration = 0.0409;
-
+	private final double rateConstant = 201.95;
+	
 	private final ReactionApparatus reactionApparatus;
 	private final Button start, stop, reset;
 	private final DoubleField O2Amount, NOAmount;
@@ -37,6 +38,9 @@ public class IsolationMethod extends LabFrame {
 
 	private int time = 0;
 	private double NO2Moles = 0;
+	private double O2Moles = 0;
+	private double NOMoles = 0;
+	private double totalVolume;
 
 	public IsolationMethod() {
 		super("Isolation Method", 1000, 650);
@@ -149,16 +153,10 @@ public class IsolationMethod extends LabFrame {
 
 	}
 
-	private void reset() {
-		time = 0;
-		NO2Moles = 0;
-		
-		reactionApparatus.getO2Piston().setValue(10);
-		reactionApparatus.getNOPiston().setValue(10);
-	}
-
 	private void start() {
 
+		totalVolume = reactionApparatus.getNOPiston().getValue() + reactionApparatus.getO2Piston().getValue();
+		
 		getAnimator().addAnimation("NOPiston", new DoubleLinearAnimation(10 - NOAmount.getValue(), 0.1) {
 			@Override
 			public Double getValue() {
@@ -182,15 +180,30 @@ public class IsolationMethod extends LabFrame {
 		});
 
 	}
-
-	private void stop() {
+	
+	private void reset() {
+		time = 0;
+		NO2Moles = 0;
+		O2Moles = 0;
+		NOMoles = 0;
+		
 		reactionApparatus.getO2Piston().setValue(10);
 		reactionApparatus.getNOPiston().setValue(10);
+	}
+	
+	private void stop() {
+		
 	}
 
 	private void step() {
 		time++;
 
+		// rate = k[NO]^2[O2]
+		
+		
+		NO2Moles += 1.0 / (rateConstant * time);
+		
+		
 	}
 
 	@Override
