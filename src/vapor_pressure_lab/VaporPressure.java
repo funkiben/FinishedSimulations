@@ -447,6 +447,7 @@ public class VaporPressure extends LabFrame {
 		}
 	}
 
+	//Create gas particles and remove liquid ones
 	private void spawnGasParticle(int... i) {
 		for (int j : i) {
 			waterTank[j].getGasParticleSystem().spawnParticle();

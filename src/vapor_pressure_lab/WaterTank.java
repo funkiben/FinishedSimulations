@@ -2,7 +2,6 @@ package vapor_pressure_lab;
 
 import java.awt.Color;
 
-import lab.LabFrame;
 import lab.component.container.ContentState;
 import lab.component.container.Tank;
 import lab.component.fx.ParticleShape;
@@ -12,30 +11,6 @@ import lab.component.fx.Vector2DistributionType;
 
 public class WaterTank extends Tank {
 
-	
-	public static void main(String[] args) {
-		LabFrame lf = new LabFrame("Water Tank Test", 800, 800) {
-			
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void update() {
-				
-			}
-			
-		};
-		
-		WaterTank tank = new WaterTank(200, 200, 100, 20, 0.5, 2);
-		tank.setOffset(100, 100);
-		
-		lf.addComponent(tank);
-		
-		lf.start(30);
-	}
-	
-	
-	
-	
 	private final ParticleSystem liquidParticles;
 	private final ParticleSystem gasParticles;
 	
