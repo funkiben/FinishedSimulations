@@ -2,8 +2,6 @@ package HI_equilibrium;
 
 import java.awt.Color;
 
-import draw.animation.ColorLinearAnimation;
-import draw.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.LabComponent;
@@ -19,6 +17,8 @@ import lab.component.swing.input.Dropdown;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
+import lab.util.animation.ColorLinearAnimation;
+import lab.util.animation.DoubleLinearAnimation;
 
 public class HIEquilibrium extends LabFrame{
 	

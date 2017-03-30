@@ -6,9 +6,6 @@ import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import draw.animation.DoubleLerpAnimation;
-import draw.animation.DoubleLinearAnimation;
-import draw.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
@@ -25,6 +22,9 @@ import lab.component.swing.input.Button;
 import lab.util.SigFig;
 import lab.util.Vector2;
 import lab.util.VerticalGraduation;
+import lab.util.animation.DoubleLerpAnimation;
+import lab.util.animation.DoubleLinearAnimation;
+import lab.util.animation.IntegerLinearAnimation;
 
 public class NaHCO3Decomposition extends LabFrame {
 
