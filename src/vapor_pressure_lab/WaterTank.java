@@ -82,11 +82,6 @@ public class WaterTank extends Tank {
 		
 		liquidParticles.start();
 		
-		
-		for (int i = 0; i < gasParticleAmount; i++) {
-			gasParticles.spawnParticle();
-		}
-		
 		for (int i = 0; i < liquidParticleAmount; i++) {
 			liquidParticles.spawnParticle();
 		}
