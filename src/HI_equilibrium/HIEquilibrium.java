@@ -2,8 +2,8 @@ package HI_equilibrium;
 
 import java.awt.Color;
 
-import draw.animation.ColorLinearAnimation;
-import draw.animation.DoubleLinearAnimation;
+import lab.util.animation.ColorLinearAnimation;
+import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.LabComponent;

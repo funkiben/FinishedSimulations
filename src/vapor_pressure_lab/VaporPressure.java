@@ -35,19 +35,13 @@ public class VaporPressure extends LabFrame {
 	private final LabFrame equipmentFrame;
 	private final LabFrame instructionsFrame;
 
-	// initial values from simulation
+	// create variables for calculation
 	private int time;
 	private double[] vaporPressure = new double[4];
 	private double[] molarity = new double[4];
 	private boolean running = false;
-	private GraphDataSet molarity20;
-	private GraphDataSet molarity30;
-	private GraphDataSet molarity40;
-	private GraphDataSet molarity60;
-	private GraphDataSet vaporPressure20;
-	private GraphDataSet vaporPressure30;
-	private GraphDataSet vaporPressure40;
-	private GraphDataSet vaporPressure60;
+	private GraphDataSet[] molaritySet = new GraphDataSet[4];
+	private GraphDataSet[] vaporPressureSet = new GraphDataSet[4];
 	private GraphDataSet vaporPressureTemperature;
 
 	// components
@@ -69,10 +63,13 @@ public class VaporPressure extends LabFrame {
 	private final ImageComponent equipment;
 	private final Label outputVaporPressure;
 	private final Label temperatureLabel;
+	private final Label[] tankTemp = { new Label(30, 20, "20C"), new Label(30, 20, "30C"), new Label(30, 20, "40C"),
+			new Label(30, 20, "60C") };
 	private final MenuComponent menu;
 	private final ScrollLabel instructions;
 	private final VerticalGraduation molarityGraduation;
 	private VerticalGraduation vaporPressureGraduation;
+	private final WaterTank[] waterTank = new WaterTank[4];
 
 	// start simulation
 	public static void main(String args[]) {
@@ -145,7 +142,7 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
 
 		// create tank frame
-		tankFrame = new LabFrame("Tank", 400, 300, false) {
+		tankFrame = new LabFrame("Tanks", 250, 720, false) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -154,6 +151,13 @@ public class VaporPressure extends LabFrame {
 			}
 		};
 		tankFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		tankFrame.getRoot().setLayout(LabComponent.FREE_FORM);
+		for (int i = 0; i < waterTank.length; i++) {
+			waterTank[i] = new WaterTank(175, 175, 30, 0, .5, 2);
+			waterTank[i].setOffset(60, 180 * i);
+			tankTemp[i].setOffset(15, 180 * i + (175 / 2));
+			tankFrame.addComponent(waterTank[i], tankTemp[i]);
+		}
 		tankFrame.start(30);
 		showTank = new Button(90, 25, "Show Tank") {
 			@Override
@@ -340,19 +344,20 @@ public class VaporPressure extends LabFrame {
 				instructionsFrame.setVisible(true);
 			}
 		});
-		
-		molarity20 = new GraphDataSet("20C", true, true);
-		molarity30 = new GraphDataSet("30C", true, true);
-		molarity40 = new GraphDataSet("40C", true, true);
-		molarity60 = new GraphDataSet("60C", true, true);
+
+		// create and add data sets for graphs
+		molaritySet[0] = new GraphDataSet("20C", true, true);
+		molaritySet[1] = new GraphDataSet("30C", true, true);
+		molaritySet[2] = new GraphDataSet("40C", true, true);
+		molaritySet[3] = new GraphDataSet("60C", true, true);
+		molarityGraph.addDataSet(molaritySet);
+		vaporPressureSet[0] = new GraphDataSet("20C", true, true);
+		vaporPressureSet[1] = new GraphDataSet("30C", true, true);
+		vaporPressureSet[2] = new GraphDataSet("40C", true, true);
+		vaporPressureSet[3] = new GraphDataSet("60C", true, true);
+		vaporPressureGraph.addDataSet(vaporPressureSet);
 		vaporPressureTemperature = new GraphDataSet("", false, false);
 		vaporPressureTemperatureGraph.addDataSet(vaporPressureTemperature);
-		vaporPressure20 = new GraphDataSet("20C", true, true);
-		vaporPressure30 = new GraphDataSet("30C", true, true);
-		vaporPressure40 = new GraphDataSet("40C", true, true);
-		vaporPressure60 = new GraphDataSet("60C", true, true);
-		molarityGraph.addDataSet(molarity20, molarity30, molarity40, molarity60);
-		vaporPressureGraph.addDataSet(vaporPressure20, vaporPressure30, vaporPressure40, vaporPressure60);
 
 		// create main frame and set up simulation
 		addComponent(molarityGraph, vaporPressureGraph, play, step, reset, vaporPressureMolarityTable, showTank,
@@ -379,33 +384,31 @@ public class VaporPressure extends LabFrame {
 	// resets all simulation values
 	private void resetSimulation() {
 		running = false;
-		molarity20.clearPoints();
-		
-		//add more clear
-		//add more clear
-		
+		for (GraphDataSet set : molaritySet) {
+			set.clearPoints();
+		}
+		for (GraphDataSet set : vaporPressureSet) {
+			set.clearPoints();
+		}
+		vaporPressureTemperature.clearPoints();
+		time = 0;
+		vaporPressureTimeTable.setAll(null);
+		vaporPressureTimeTable.setCell(0, 0, (double) time);
 		for (int i = 0; i < vaporPressure.length; i++) {
 			vaporPressure[i] = 0;
+			vaporPressureTimeTable.setCell(i + 1, 0, vaporPressure[i]);
 		}
 		molarity[0] = 55.4082;
 		molarity[1] = 55.2661;
 		molarity[2] = 55.0728;
 		molarity[3] = 54.5686;
-		time = 0;
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
 		vaporPressureMolarityTable.setRow(1, molarity);
-		vaporPressureTimeTable.setAll(null);
-		vaporPressureTimeTable.setCell(0, 0, (double) time);
-		vaporPressureTimeTable.setCell(1, 0, vaporPressure[0]);
-		vaporPressureTimeTable.setCell(2, 0, vaporPressure[1]);
-		vaporPressureTimeTable.setCell(3, 0, vaporPressure[2]);
-		vaporPressureTimeTable.setCell(4, 0, vaporPressure[3]);
-		
 	}
 
 	// advance simulation by one data point
 	private void stepSimulation() {
-		if (time > 100) {
+		if (time >= 100) {
 			running = false;
 		} else {
 			time += CHANGE_IN_TIME;
@@ -413,26 +416,29 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[1] = (4.234 - 4.234 * Math.exp(-K[1] * time));
 			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-K[2] * time));
 			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
-			for (int i = 0; i < 4; i++) {
+			if (time % 10 == 0) {
+				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
+				for (int i = 0; i < vaporPressure.length; i++) {
+					vaporPressureTimeTable.setCell(i + 1, time / 10, vaporPressure[i]);
+				}
+			}
+			if( time == 50){
+				System.out.println("trigger");
+				spawnGasParticle(0);
+			}else if (time == 100){
+				spawnGasParticle(0);
+			}
+			for (int i = 0; i < molaritySet.length; i++) {
+				molaritySet[i].addPoint(time, molarity[i]);
+				vaporPressureSet[i].addPoint(time, vaporPressure[i]);
 				vaporPressureMolarityTable.setCell(i, 0, vaporPressure[i]);
 				vaporPressureMolarityTable.setCell(i, 1, molarity[i]);
 			}
-			if (time % 10 == 0) {
-				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
-				vaporPressureTimeTable.setCell(1, time / 10, vaporPressure[0]);
-				vaporPressureTimeTable.setCell(2, time / 10, vaporPressure[1]);
-				vaporPressureTimeTable.setCell(3, time / 10, vaporPressure[2]);
-				vaporPressureTimeTable.setCell(4, time / 10, vaporPressure[3]);
-			}
-			molarity20.addPoint(time, molarity[0]);
-			molarity30.addPoint(time, molarity[1]);
-			molarity40.addPoint(time, molarity[2]);
-			molarity60.addPoint(time, molarity[3]);
-			vaporPressure20.addPoint(time, vaporPressure[0]);
-			vaporPressure30.addPoint(time, vaporPressure[1]);
-			vaporPressure40.addPoint(time, vaporPressure[2]);
-			vaporPressure60.addPoint(time, vaporPressure[3]);
 		}
+	}
+	
+	private void spawnGasParticle(int i){
+		waterTank[i].getGasParticleSystem().spawnParticle();
 	}
 
 	// set text for play button

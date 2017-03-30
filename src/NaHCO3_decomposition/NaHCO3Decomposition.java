@@ -6,9 +6,9 @@ import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import draw.animation.DoubleLerpAnimation;
-import draw.animation.DoubleLinearAnimation;
-import draw.animation.IntegerLinearAnimation;
+import lab.util.animation.DoubleLerpAnimation;
+import lab.util.animation.DoubleLinearAnimation;
+import lab.util.animation.IntegerLinearAnimation;
 import lab.LabFrame;
 import lab.component.BunsenBurner;
 import lab.component.EmptyComponent;
