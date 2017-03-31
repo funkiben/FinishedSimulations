@@ -9,7 +9,7 @@ import lab.component.container.Bulb;
 import lab.component.data.GraphDataSet;
 import lab.component.data.Graph;
 import lab.component.swing.input.Dropdown;
-import lab.component.swing.input.LabeledDoubleSlider;
+import lab.component.swing.input.slider.LabeledDoubleSlider;
 import lab.component.swing.Label;
 import lab.substance.Substance;
 import lab.util.HorizontalGraduation;
