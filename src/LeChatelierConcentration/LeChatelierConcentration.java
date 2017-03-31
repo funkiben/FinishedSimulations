@@ -31,15 +31,18 @@ public class LeChatelierConcentration extends LabFrame{
 	
 	private Button resetButton;
 	
+	private double globalTime;
+	
 	private Graph graph;
 	
 	public static void main(String[] args) {
-		new LeChatelierConcentration("LeChatelier",1000,800);
+		new LeChatelierConcentration("LeChatelier",1920,1000);
 	}
 	
 	public LeChatelierConcentration(String name,int width, int height) {
 		super(name,width,height);
 		
+		globalTime = 0;
 		bulb = new Bulb(250,250);
 		addComponent(bulb);
 		
@@ -98,13 +101,32 @@ public class LeChatelierConcentration extends LabFrame{
 		addComponent(graph);
 		
 		EmptyComponent labelHolder = new EmptyComponent(800,200);
-		labelHolder.addChild(new Label(800,100,"Measured Amounts of Material in the Glass Bulb"));
-		cLabel = new Label(200,100,"C - " + cSlider.getValue() + " moles");
+		Label titleLabel = new Label(800,100,"Measured Amounts of Material in the Glass Bulb");
+		titleLabel.setFontSize(14f);
+		labelHolder.addChild(titleLabel);
+		cLabel = new Label(200,100,"C: " + cSlider.getValue() + " moles");
+		cLabel.setOffsetY(-25);
 		labelHolder.addChild(cLabel);
+		h2oLabel = new Label(200,100,"H2O: " + h2oSlider.getValue() + " moles");
+		h2oLabel.setOffsetY(-25);
+		labelHolder.addChild(h2oLabel);
+		coLabel = new Label(200,100,"CO: " + coSlider.getValue() + " moles");
+		coLabel.setOffsetX(-400);
+		labelHolder.addChild(coLabel);
+		h2Label = new Label(200,100,"H2: " + h2Slider.getValue() + " moles");
+		labelHolder.addChild(h2Label);
 		
-		labelHolder.setOffsetX(0);
-		labelHolder.setOffsetY(600);
+		labelHolder.setOffsetX(-700);
+		labelHolder.setOffsetY(450);
 		addComponent(labelHolder);
+		
+		resetButton = new Button(400,100,"Reset Simulation") {
+
+			@Override
+			public void doSomething() {
+				// TODO Auto-generated method stub
+				globalTime = 0;
+			}};
 		
 		
 		start(60);
@@ -114,7 +136,7 @@ public class LeChatelierConcentration extends LabFrame{
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		
+		globalTime++;
 	}
 	
 }
