@@ -1,6 +1,6 @@
-http://www.chm.davidson.edu/vce/Equilibria/LeChatelier.html
+http://www.chm.davidson.edu/vce/Equilibria/LeChatelier.html - wip by dan
 
-http://www.chm.davidson.edu/vce/Equilibria/Temperature.html - Done by Dan
+http://www.chm.davidson.edu/vce/Equilibria/Temperature.html - done by dan
 
 http://www.chm.davidson.edu/vce/Equilibria/Volume.html
 
@@ -12,6 +12,6 @@ http://www.chm.davidson.edu/vce/Kinetics/Half-life.html
 
 http://www.chm.davidson.edu/vce/kinetics/reactionrates.html
 
-http://www.chm.davidson.edu/vce/Kinetics/IsolationMethod.html
+http://www.chm.davidson.edu/vce/Kinetics/IsolationMethod.html - wip by ben
 
-HI reaction equilibrium
+HI reaction equilibrium - done by ben
