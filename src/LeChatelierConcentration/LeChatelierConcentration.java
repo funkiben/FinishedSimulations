@@ -29,8 +29,18 @@ public class LeChatelierConcentration extends LabFrame{
 	private Label coLabel;
 	private Label h2Label;
 	
+	private double cMolesEquilibrium;
+	private double h2oMolesEquilibrium;
+	private double coMolesEquilibrium;
+	private double h2MolesEquilibrium;
+	
+	private final double EQUILIBRIUM_CONSTANT = 27.5625;
+	
 	private Button resetButton;
 	
+	private int increasing = 0;
+	
+	private double moleIncrement = .1;
 	private double globalTime;
 	
 	private Graph graph;
@@ -100,20 +110,31 @@ public class LeChatelierConcentration extends LabFrame{
 		vGrad.setTextOffset(-40);
 		addComponent(graph);
 		
+		cSlider.setValue(.99);
+		coSlider.setValue(.99);
+		h2Slider.setValue(.99);
+		h2oSlider.setValue(.99);
+		
+		
+		cMolesEquilibrium = cSlider.getValue();
+		h2oMolesEquilibrium = h2oSlider.getValue();
+		coMolesEquilibrium = coSlider.getValue();
+		h2MolesEquilibrium = h2Slider.getValue();
+		
 		EmptyComponent labelHolder = new EmptyComponent(800,200);
 		Label titleLabel = new Label(800,100,"Measured Amounts of Material in the Glass Bulb");
 		titleLabel.setFontSize(14f);
 		labelHolder.addChild(titleLabel);
-		cLabel = new Label(200,100,"C: " + cSlider.getValue() + " moles");
+		cLabel = new Label(200,100,"C: " + cMolesEquilibrium + " moles");
 		cLabel.setOffsetY(-25);
 		labelHolder.addChild(cLabel);
-		h2oLabel = new Label(200,100,"H2O: " + h2oSlider.getValue() + " moles");
+		h2oLabel = new Label(200,100,"H2O: " + h2oMolesEquilibrium + " moles");
 		h2oLabel.setOffsetY(-25);
 		labelHolder.addChild(h2oLabel);
-		coLabel = new Label(200,100,"CO: " + coSlider.getValue() + " moles");
+		coLabel = new Label(200,100,"CO: " + coMolesEquilibrium + " moles");
 		coLabel.setOffsetX(-400);
 		labelHolder.addChild(coLabel);
-		h2Label = new Label(200,100,"H2: " + h2Slider.getValue() + " moles");
+		h2Label = new Label(200,100,"H2: " + h2MolesEquilibrium + " moles");
 		labelHolder.addChild(h2Label);
 		
 		labelHolder.setOffsetX(-700);
@@ -129,14 +150,53 @@ public class LeChatelierConcentration extends LabFrame{
 			}};
 		
 		
+		
 		start(60);
 		
 	}
 
+	public double calculatePressure(double currentMoles) {
+		double R = 8.314;
+		double temperature = 1000;
+		double volume = 10;
+		return (currentMoles*R*temperature)/volume;
+	}
+	
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
 		globalTime++;
+		
+		double tempQ;
+		tempQ = (calculatePressure(coMolesEquilibrium)*calculatePressure(h2MolesEquilibrium))/(calculatePressure(cMolesEquilibrium)*calculatePressure(h2oMolesEquilibrium));
+		
+		if ((float)tempQ < (float)EQUILIBRIUM_CONSTANT) {
+			if(increasing == -1) {
+				moleIncrement/=10;
+			}
+			increasing = 1;
+			coMolesEquilibrium+=moleIncrement;
+			h2MolesEquilibrium+=moleIncrement;
+			cMolesEquilibrium-=moleIncrement;
+			h2oMolesEquilibrium-=moleIncrement;
+		} else if((float)tempQ > (float)EQUILIBRIUM_CONSTANT) {
+			if(increasing == 1) {
+				moleIncrement/=10;
+			}
+			increasing = -1;
+			coMolesEquilibrium-=moleIncrement;
+			h2MolesEquilibrium-=moleIncrement;
+			cMolesEquilibrium+=moleIncrement;
+			h2oMolesEquilibrium+=moleIncrement;
+		}
+		
+		cLabel.setText("C: " + (float)cMolesEquilibrium + " moles");
+		h2oLabel.setText("H2O: " + (float)h2oMolesEquilibrium + " moles");
+		coLabel.setText("CO: " + (float)coMolesEquilibrium + " moles");
+		h2Label.setText("H2: " + (float)h2MolesEquilibrium + " moles");
+		
+		
+		System.out.println((float)tempQ==(float)EQUILIBRIUM_CONSTANT);
 	}
 	
 }
