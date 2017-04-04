@@ -65,9 +65,8 @@ public class WaterTank extends Tank {
 		liquidParticles.start();
 
 		// spawn liquid particles immediately
-		for (int i = 0; i < liquidParticleAmount; i++) {
+		for (int i = 0; i < liquidParticleAmount; i++)
 			liquidParticles.spawnParticle();
-		}
 		addChild(gasParticles, liquidParticles);
 		setContentState(ContentState.LIQUID);
 		setContentColor(new Color(42, 157, 183));
@@ -81,5 +80,5 @@ public class WaterTank extends Tank {
 	public ParticleSystem getGasParticleSystem() {
 		return gasParticles;
 	}
-	
+
 }
