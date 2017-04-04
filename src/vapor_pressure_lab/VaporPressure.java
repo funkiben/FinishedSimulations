@@ -220,7 +220,8 @@ public class VaporPressure extends LabFrame {
 				if (inputTemperature.hasInput()) {
 					// calculate point
 					double temperature = inputTemperature.getValue();
-					double vp = TETEN_CONSTANT[0] * Math.exp((TETEN_CONSTANT[1] * temperature / (TETEN_CONSTANT[2] + temperature))) / 10;
+					double vp = TETEN_CONSTANT[0]
+							* Math.exp((TETEN_CONSTANT[1] * temperature / (TETEN_CONSTANT[2] + temperature))) / 10;
 					if (temperature > 99.3352) {
 						vp = 101.325;
 						temperature = 100;
@@ -438,7 +439,7 @@ public class VaporPressure extends LabFrame {
 		else {
 			// calculate values
 			time += CHANGE_IN_TIME;
-			for(int i = 0; i < vaporPressure.length; i++){
+			for (int i = 0; i < vaporPressure.length; i++) {
 				vaporPressure[i] = WATER_VP[i] - WATER_VP[i] * Math.exp(-K[i] * time);
 			}
 			// display values in table
@@ -447,13 +448,13 @@ public class VaporPressure extends LabFrame {
 				for (int i = 0; i < vaporPressure.length; i++)
 					vaporPressureTimeTable.setCell(i + 1, time / 10, vaporPressure[i]);
 			}
-			//spawn gas particles in water tanks
+			// spawn gas particles in water tanks
 			for (int i = 1; i < 4; i++)
 				if (time % (100 / (i * 2)) == 0)
 					spawnGasParticle(i - 1);
 			if (time % (100 / 14) == 0)
 				spawnGasParticle(3);
-			//set cells and plot points
+			// set cells and plot points
 			for (int i = 0; i < molaritySet.length; i++) {
 				molaritySet[i].addPoint(time, molarity[i]);
 				vaporPressureSet[i].addPoint(time, vaporPressure[i]);
@@ -465,11 +466,12 @@ public class VaporPressure extends LabFrame {
 
 	// Create gas particles and remove liquid ones
 	private void spawnGasParticle(int i) {
-			waterTank[i].getGasParticleSystem().spawnParticle();
-			waterTank[i].getLiquidParticleSystem().removeParticle();
+		waterTank[i].getGasParticleSystem().spawnParticle();
+		waterTank[i].getLiquidParticleSystem().removeParticle();
 	}
 
-	// set text for play button and make sure windows correspond to radio buttons
+	// set text for play button and make sure windows correspond to radio
+	// buttons
 	@Override
 	public void update() {
 		menu.setRadioButtonSelected("Show Vapor Pressure vs Time Table", vaporPressureTimeTableFrame.isVisible());
