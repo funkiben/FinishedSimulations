@@ -2,6 +2,8 @@ package isolation_method;
 
 import java.awt.Color;
 
+import lab.util.animation.ColorLerpAnimation;
+import lab.util.animation.DoubleLerpAnimation;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
@@ -22,9 +24,9 @@ public class IsolationMethod extends LabFrame {
 	public static void main(String[] args) {
 		new IsolationMethod();
 	}
-
-	private final double NOConcentration = 4.09E-4;
-	private final double O2Concentration = 0.0409;
+	
+	private final double NOPistonMolarity = 4.09E-4;
+	private final double O2PistonMolarity = 0.0409;
 	private final double rateConstant = 201.95;
 	
 	private final ReactionApparatus reactionApparatus;
@@ -36,11 +38,14 @@ public class IsolationMethod extends LabFrame {
 
 	private final Label volumeLabel;
 
-	private int time = 0;
-	private double NO2Moles = 0;
-	private double O2Moles = 0;
-	private double NOMoles = 0;
-	private double totalVolume;
+	private double time = 0;
+	private double O2Molarity = 0;
+	private double initialO2Molarity = 0;
+	private double NOMolarity = 0;
+	private double initialNOMolarity = 0;
+	private double NO2Molarity = 0;
+	private double totalVolume = 2.0;
+	private boolean reactionOccuring = false;
 
 	public IsolationMethod() {
 		super("Isolation Method", 1000, 650);
@@ -55,10 +60,10 @@ public class IsolationMethod extends LabFrame {
 
 		Label O2MLabel, NOMLabel;
 
-		O2MLabel = new Label(190, 20, "O2 Molarity: " + O2Concentration + "mol/L");
+		O2MLabel = new Label(190, 20, "O2 Molarity: " + O2PistonMolarity + "mol/L");
 		O2MLabel.setOffsetX(5);
 
-		NOMLabel = new Label(190, 20, "NO Molarity: " + SigFig.sigfigalize(NOConcentration, 3) + "mol/L");
+		NOMLabel = new Label(190, 20, "NO Molarity: " + SigFig.sigfigalize(O2PistonMolarity, 3) + "mol/L");
 		NOMLabel.setOffsetX(5);
 
 		volumeLabel = new Label(190, 20, "Total Volume: 2mL");
@@ -104,38 +109,38 @@ public class IsolationMethod extends LabFrame {
 		HorizontalGraduation hg;
 		VerticalGraduation vg;
 
-		hg = new HorizontalGraduation(0, 1, 1, 0.1);
-		vg = new VerticalGraduation(0, 1, 1, 0.1);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
 		hg.setShowLabels(false);
 
 		zeroOrderGraph = new Graph(200, 200, "[NO2] vs. t", "t (s)", "[NO2] mol/L", hg, vg);
 		zeroOrderGraph.setOffsetX(60);
 		zeroOrderGraph.setYLabelOffset(15);
-		vg.setTextOffset(-26);
+		vg.setTextOffset(-45);
 		vg.setRemovePointZero(false);
 		addComponent(zeroOrderGraph);
 
 		zeroOrderData = new GraphDataSet("NO2", false, false);
 		zeroOrderGraph.addDataSet(zeroOrderData);
 
-		hg = new HorizontalGraduation(0, 1, 1, 0.1);
-		vg = new VerticalGraduation(0, 1, 1, 0.1);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(-12, -6, 2, 1);
 
 		hg.setShowLabels(false);
 
 		firstOrderGraph = new Graph(200, 200, "ln[NO2] vs. t", "t (s)", "ln([NO2]) mol/L", hg, vg);
 		firstOrderGraph.setOffsetX(60);
 		firstOrderGraph.setYLabelOffset(20);
-		vg.setTextOffset(-26);
+		vg.setTextOffset(-30);
 		vg.setRemovePointZero(false);
 		addComponent(firstOrderGraph);
 
 		firstOrderData = new GraphDataSet("NO2", false, false);
 		firstOrderGraph.addDataSet(firstOrderData);
 
-		hg = new HorizontalGraduation(0, 1, 1, 0.1);
-		vg = new VerticalGraduation(0, 1, 1, 0.1);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(0, 0.0001, 2, 1);
 
 		hg.setShowLabels(false);
 
@@ -155,7 +160,13 @@ public class IsolationMethod extends LabFrame {
 
 	private void start() {
 
-		totalVolume = reactionApparatus.getNOPiston().getValue() + reactionApparatus.getO2Piston().getValue();
+		totalVolume = NOAmount.getValue() + O2Amount.getValue();
+		
+		NOMolarity = NOAmount.getValue() * NOPistonMolarity / totalVolume;
+		O2Molarity = O2Amount.getValue() * O2PistonMolarity / totalVolume;
+		
+		initialNOMolarity = NOMolarity;
+		initialO2Molarity = O2Molarity;
 		
 		getAnimator().addAnimation("NOPiston", new DoubleLinearAnimation(10 - NOAmount.getValue(), 0.1) {
 			@Override
@@ -178,36 +189,78 @@ public class IsolationMethod extends LabFrame {
 				reactionApparatus.getO2Piston().setValue(v);
 			}
 		});
+		
+		getAnimator().addAnimation("ReactionVesselColor", new DoubleLerpAnimation(128.0, 0.05f, 1.0) {
+			@Override
+			public Double getValue() {
+				return reactionApparatus.getTank().getValue();
+			}
 
+			public void setValue(Double v) {
+				reactionApparatus.getTank().setValue(v);
+			}
+		});
+
+		reactionOccuring = true;
+		
 	}
 	
 	private void reset() {
 		time = 0;
-		NO2Moles = 0;
-		O2Moles = 0;
-		NOMoles = 0;
+		O2Molarity = 0;
+		NOMolarity = 0;
+		NO2Molarity = 0;
 		
 		reactionApparatus.getO2Piston().setValue(10);
 		reactionApparatus.getNOPiston().setValue(10);
+		
+		reactionApparatus.getTank().setValue(0);
+		
+		zeroOrderData.clearPoints();
+		firstOrderData.clearPoints();
+		secondOrderData.clearPoints();
+		
+		reactionOccuring = false;
+		
+		getAnimator().cancelAll();
 	}
 	
 	private void stop() {
-		
+		reactionOccuring = false;
 	}
 
 	private void step() {
-		time++;
-
-		// rate = k[NO]^2[O2]
-		
-		
-		NO2Moles += 1.0 / (rateConstant * time);
+		if (reactionOccuring) {
+			time += 500;
+	
+			// rate = k[NO]^2[O2]
+			
+			NOMolarity = 1.0 / (1.0 / initialNOMolarity + rateConstant * O2Molarity * time);
+			NO2Molarity = initialNOMolarity - NOMolarity;
+			
+			zeroOrderData.addPoint(time, NO2Molarity);
+			
+			if (NO2Molarity > zeroOrderGraph.getvGraduation().getEnd()) {
+				zeroOrderGraph.getvGraduation().setEnd(((int) (NO2Molarity / 25E-6) + 1) * 25E-6);
+			}
+			
+			
+			double lnNO2Molarity = Math.log(NOMolarity);
+			firstOrderData.addPoint(time, lnNO2Molarity);
+			
+			if (lnNO2Molarity < firstOrderGraph.getvGraduation().getStart()) {
+				firstOrderGraph.getvGraduation().setStart((int) (lnNO2Molarity / 2 - 1) * 2);
+			}
+			
+		}
 		
 		
 	}
 
 	@Override
 	public void update() {
+		
+		step();
 
 		if (O2Amount.hasInput() && NOAmount.hasInput()) {
 			volumeLabel.setText("Total Volume: " + SigFig.sigfigalize(NOAmount.getValue() + O2Amount.getValue(), 3) + "mL");
