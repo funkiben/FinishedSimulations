@@ -25,6 +25,8 @@ public class VaporPressure extends LabFrame {
 	// constant values that are used throughout the simulation
 	private static final double[] K = { 0.0693, 0.077, 0.086625, 0.1155, 1.197833E-6, 2.341675E-6, 4.4528E-6,
 			1.5284E-5 };
+	private static final double[] WATER_VP = { 2.333, 4.234, 7.367, 19.993 };
+	private static final double[] TETEN_CONSTANT = { 6.122, 17.62, 243.12 };
 	private static final int CHANGE_IN_TIME = 1;
 	private static final int SIG_FIGS = 5;
 
@@ -202,7 +204,7 @@ public class VaporPressure extends LabFrame {
 
 		// create vapor pressure vs temperature graph
 		vaporPressureTemperatureGraph = new Graph(420, 500, "Vapor Pressure vs Temperature", "Temperature (C)",
-				"Vapor Pressure (kPa)", new HorizontalGraduation(0, 100, 20, 10),
+				"Vapor Pressure (kPa)", new HorizontalGraduation(0, 105, 20, 10),
 				new VerticalGraduation(0, 105, 10, 5));
 		vaporPressureTemperatureGraph.setYLabelOffset(70);
 
@@ -218,7 +220,7 @@ public class VaporPressure extends LabFrame {
 				if (inputTemperature.hasInput()) {
 					// calculate point
 					double temperature = inputTemperature.getValue();
-					double vp = 6.122 * Math.exp((17.62 * temperature / (243.12 + temperature))) / 10;
+					double vp = TETEN_CONSTANT[0] * Math.exp((TETEN_CONSTANT[1] * temperature / (TETEN_CONSTANT[2] + temperature))) / 10;
 					if (temperature > 99.3352) {
 						vp = 101.325;
 						temperature = 100;
@@ -436,10 +438,9 @@ public class VaporPressure extends LabFrame {
 		else {
 			// calculate values
 			time += CHANGE_IN_TIME;
-			vaporPressure[0] = (2.333 - 2.333 * Math.exp(-K[0] * time));
-			vaporPressure[1] = (4.234 - 4.234 * Math.exp(-K[1] * time));
-			vaporPressure[2] = (7.367 - 7.367 * Math.exp(-K[2] * time));
-			vaporPressure[3] = (19.993 - 19.993 * Math.exp(-K[3] * time));
+			for(int i = 0; i < vaporPressure.length; i++){
+				vaporPressure[i] = WATER_VP[i] - WATER_VP[i] * Math.exp(-K[i] * time);
+			}
 			// display values in table
 			if (time % 10 == 0) {
 				vaporPressureTimeTable.setCell(0, time / 10, (double) time);
