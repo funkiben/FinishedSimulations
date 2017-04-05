@@ -41,7 +41,6 @@ public class IsolationMethod extends LabFrame {
 
 	private double time = 0;
 	private double O2Molarity = 0;
-	private double initialO2Molarity = 0;
 	private double NOMolarity = 0;
 	private double initialNOMolarity = 0;
 	private double totalVolume = 2.0;
@@ -179,7 +178,6 @@ public class IsolationMethod extends LabFrame {
 		O2Molarity = O2AmountField.getValue() * O2PistonMolarity / totalVolume;
 		
 		initialNOMolarity = NOMolarity;
-		initialO2Molarity = O2Molarity;
 		
 		getAnimator().addAnimation("NOPiston", new DoubleLinearAnimation(10 - NOAmountField.getValue(), 0.1) {
 			@Override
