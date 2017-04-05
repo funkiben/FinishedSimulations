@@ -2,6 +2,8 @@ package isolation_method;
 
 import java.awt.Color;
 
+import lab.util.animation.ColorLerpAnimation;
+import lab.util.animation.DoubleLerpAnimation;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
@@ -22,7 +24,7 @@ public class IsolationMethod extends LabFrame {
 	public static void main(String[] args) {
 		new IsolationMethod();
 	}
-
+	
 	private final double NOPistonMolarity = 4.09E-4;
 	private final double O2PistonMolarity = 0.0409;
 	private final double rateConstant = 201.95;
@@ -107,7 +109,7 @@ public class IsolationMethod extends LabFrame {
 		HorizontalGraduation hg;
 		VerticalGraduation vg;
 
-		hg = new HorizontalGraduation(0, 30E3, 2E3, 1E3);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
 		hg.setShowLabels(false);
@@ -122,23 +124,23 @@ public class IsolationMethod extends LabFrame {
 		zeroOrderData = new GraphDataSet("NO2", false, false);
 		zeroOrderGraph.addDataSet(zeroOrderData);
 
-		hg = new HorizontalGraduation(0, 0.0001, 1, 0.1);
-		vg = new VerticalGraduation(0, 0.0001, 1, 0.1);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(-12, -6, 2, 1);
 
 		hg.setShowLabels(false);
 
 		firstOrderGraph = new Graph(200, 200, "ln[NO2] vs. t", "t (s)", "ln([NO2]) mol/L", hg, vg);
 		firstOrderGraph.setOffsetX(60);
 		firstOrderGraph.setYLabelOffset(20);
-		vg.setTextOffset(-26);
+		vg.setTextOffset(-30);
 		vg.setRemovePointZero(false);
 		addComponent(firstOrderGraph);
 
 		firstOrderData = new GraphDataSet("NO2", false, false);
 		firstOrderGraph.addDataSet(firstOrderData);
 
-		hg = new HorizontalGraduation(0, 0.0001, 1, 0.1);
-		vg = new VerticalGraduation(0, 0.0001, 1, 0.1);
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(0, 0.0001, 2, 1);
 
 		hg.setShowLabels(false);
 
@@ -158,10 +160,10 @@ public class IsolationMethod extends LabFrame {
 
 	private void start() {
 
-		totalVolume = (10 - reactionApparatus.getNOPiston().getValue()) + (10 - reactionApparatus.getO2Piston().getValue());
+		totalVolume = NOAmount.getValue() + O2Amount.getValue();
 		
-		NOMolarity = (10 - NOAmount.getValue()) * NOPistonMolarity / totalVolume;
-		O2Molarity = (10 - O2Amount.getValue()) * O2PistonMolarity / totalVolume;
+		NOMolarity = NOAmount.getValue() * NOPistonMolarity / totalVolume;
+		O2Molarity = O2Amount.getValue() * O2PistonMolarity / totalVolume;
 		
 		initialNOMolarity = NOMolarity;
 		initialO2Molarity = O2Molarity;
@@ -187,6 +189,17 @@ public class IsolationMethod extends LabFrame {
 				reactionApparatus.getO2Piston().setValue(v);
 			}
 		});
+		
+		getAnimator().addAnimation("ReactionVesselColor", new DoubleLerpAnimation(128.0, 0.05f, 1.0) {
+			@Override
+			public Double getValue() {
+				return reactionApparatus.getTank().getValue();
+			}
+
+			public void setValue(Double v) {
+				reactionApparatus.getTank().setValue(v);
+			}
+		});
 
 		reactionOccuring = true;
 		
@@ -201,11 +214,15 @@ public class IsolationMethod extends LabFrame {
 		reactionApparatus.getO2Piston().setValue(10);
 		reactionApparatus.getNOPiston().setValue(10);
 		
+		reactionApparatus.getTank().setValue(0);
+		
 		zeroOrderData.clearPoints();
 		firstOrderData.clearPoints();
 		secondOrderData.clearPoints();
 		
 		reactionOccuring = false;
+		
+		getAnimator().cancelAll();
 	}
 	
 	private void stop() {
@@ -214,7 +231,7 @@ public class IsolationMethod extends LabFrame {
 
 	private void step() {
 		if (reactionOccuring) {
-			time += 100;
+			time += 500;
 	
 			// rate = k[NO]^2[O2]
 			
@@ -223,6 +240,17 @@ public class IsolationMethod extends LabFrame {
 			
 			zeroOrderData.addPoint(time, NO2Molarity);
 			
+			if (NO2Molarity > zeroOrderGraph.getvGraduation().getEnd()) {
+				zeroOrderGraph.getvGraduation().setEnd(((int) (NO2Molarity / 25E-6) + 1) * 25E-6);
+			}
+			
+			
+			double lnNO2Molarity = Math.log(NOMolarity);
+			firstOrderData.addPoint(time, lnNO2Molarity);
+			
+			if (lnNO2Molarity < firstOrderGraph.getvGraduation().getStart()) {
+				firstOrderGraph.getvGraduation().setStart((int) (lnNO2Molarity / 2 - 1) * 2);
+			}
 			
 		}
 		

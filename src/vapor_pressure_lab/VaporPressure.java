@@ -1,5 +1,6 @@
 package vapor_pressure_lab;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,8 +28,10 @@ public class VaporPressure extends LabFrame {
 			1.5284E-5 };
 	private static final double[] WATER_VP = { 2.333, 4.234, 7.367, 19.993 };
 	private static final double[] TETEN_CONSTANT = { 6.122, 17.62, 243.12 };
+	private static final double[] MOLARITY = { 55.4082, 55.2661, 55.0728, 54.5686 };
 	private static final int CHANGE_IN_TIME = 1;
 	private static final int SIG_FIGS = 5;
+	private static final Color[] COLOR = { Color.BLUE, Color.RED, Color.MAGENTA, Color.GREEN };
 
 	// windows
 	private final LabFrame vaporPressureTimeTableFrame;
@@ -40,7 +43,6 @@ public class VaporPressure extends LabFrame {
 	// create dynamic variables for calculations
 	private int time;
 	private double[] vaporPressure = new double[4];
-	private double[] molarity = new double[4];
 	private boolean running = false;
 	private GraphDataSet[] molaritySet = new GraphDataSet[4];
 	private GraphDataSet[] vaporPressureSet = new GraphDataSet[4];
@@ -130,6 +132,9 @@ public class VaporPressure extends LabFrame {
 		vaporPressureMolarityTable.setOffset(30, 550);
 		vaporPressureMolarityTable.setRowTitle(0, "Vapor Pressure");
 		vaporPressureMolarityTable.setRowTitle(1, "Molarity H2O");
+		vaporPressureMolarityTable.setRow(1, MOLARITY);
+		for (int i = 0; i < vaporPressureMolarityTable.getColumnNumber(); i++)
+			vaporPressureMolarityTable.setColumnColor(i, COLOR[i]);
 
 		// create tank frame
 		tankFrame = new LabFrame("Tanks", 250, 720, false) {
@@ -227,7 +232,7 @@ public class VaporPressure extends LabFrame {
 						temperature = 100;
 					}
 					// plot point and display vapor pressure
-					vaporPressureTemperature.addPoint(vp, temperature);
+					vaporPressureTemperature.addPoint(temperature, vp);
 					outputVaporPressure.setText("Vapor Pressure: " + SigFig.sigfigalize(vp, 5) + " kPa");
 				}
 			}
@@ -272,6 +277,8 @@ public class VaporPressure extends LabFrame {
 		vaporPressureTimeTable.setColumnTitle(2, "VP (kPa) @ 30C");
 		vaporPressureTimeTable.setColumnTitle(3, "VP (kPa) @ 40C");
 		vaporPressureTimeTable.setColumnTitle(4, "VP (kPa) @ 60C");
+		for (int i = 1; i < vaporPressureTimeTable.getColumnNumber(); i++)
+			vaporPressureTimeTable.setColumnColor(i, COLOR[i - 1]);
 		// add the table to the frame
 		vaporPressureTimeTableFrame.addComponent(vaporPressureTimeTable);
 		vaporPressureTimeTableFrame.start(30);
@@ -382,6 +389,10 @@ public class VaporPressure extends LabFrame {
 		vaporPressureSet[1] = new GraphDataSet("30C", true, true);
 		vaporPressureSet[2] = new GraphDataSet("40C", true, true);
 		vaporPressureSet[3] = new GraphDataSet("60C", true, true);
+		for (int i = 0; i < molaritySet.length; i++) {
+			molaritySet[i].setColor(COLOR[i]);
+			vaporPressureSet[i].setColor(COLOR[i]);
+		}
 		vaporPressureGraph.addDataSet(vaporPressureSet);
 		vaporPressureTemperature = new GraphDataSet("", false, false);
 		vaporPressureTemperatureGraph.addDataSet(vaporPressureTemperature);
@@ -413,14 +424,8 @@ public class VaporPressure extends LabFrame {
 			vaporPressure[i] = 0;
 			vaporPressureTimeTable.setCell(i + 1, 0, vaporPressure[i]);
 		}
-		// reset molarities
-		molarity[0] = 55.4082;
-		molarity[1] = 55.2661;
-		molarity[2] = 55.0728;
-		molarity[3] = 54.5686;
 		// display initial values
 		vaporPressureMolarityTable.setRow(0, vaporPressure);
-		vaporPressureMolarityTable.setRow(1, molarity);
 		// reset the water tanks
 		for (int i = 0; i < waterTank.length; i++) {
 			k = waterTank[i].getLiquidParticleSystem().getActiveParticles();
@@ -456,10 +461,10 @@ public class VaporPressure extends LabFrame {
 				spawnGasParticle(3);
 			// set cells and plot points
 			for (int i = 0; i < molaritySet.length; i++) {
-				molaritySet[i].addPoint(time, molarity[i]);
+				molaritySet[i].addPoint(time, MOLARITY[i]);
 				vaporPressureSet[i].addPoint(time, vaporPressure[i]);
 				vaporPressureMolarityTable.setCell(i, 0, vaporPressure[i]);
-				vaporPressureMolarityTable.setCell(i, 1, molarity[i]);
+				vaporPressureMolarityTable.setCell(i, 1, MOLARITY[i]);
 			}
 		}
 	}
