@@ -28,10 +28,11 @@ public class IsolationMethod extends LabFrame {
 	private final double NOPistonMolarity = 4.09E-4;
 	private final double O2PistonMolarity = 0.0409;
 	private final double rateConstant = 201.95;
+	private final double error = 1E-3;
 	
 	private final ReactionApparatus reactionApparatus;
-	private final Button start, stop, reset;
-	private final DoubleField O2Amount, NOAmount;
+	private final Button startButton, stopButton, resetButton;
+	private final DoubleField O2AmountField, NOAmountField;
 
 	private final Graph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
 	private final GraphDataSet zeroOrderData, firstOrderData, secondOrderData;
@@ -43,9 +44,9 @@ public class IsolationMethod extends LabFrame {
 	private double initialO2Molarity = 0;
 	private double NOMolarity = 0;
 	private double initialNOMolarity = 0;
-	private double NO2Molarity = 0;
 	private double totalVolume = 2.0;
 	private boolean reactionOccuring = false;
+	private boolean stopped = false;
 
 	public IsolationMethod() {
 		super("Isolation Method", 1000, 650);
@@ -71,36 +72,37 @@ public class IsolationMethod extends LabFrame {
 
 		controlArea.addChild(O2MLabel, NOMLabel, volumeLabel);
 
-		start = new Button(55, 20, "Start") {
+		startButton = new Button(55, 20, "Start") {
 			@Override
 			public void doSomething() {
 				start();
 			}
 		};
-		start.setOffset(5, 5);
+		startButton.setOffset(5, 5);
 
-		stop = new Button(55, 20, "Stop") {
+		stopButton = new Button(55, 20, "Stop") {
 			@Override
 			public void doSomething() {
 				stop();
 			}
 		};
-		stop.setOffset(5, 5);
+		stopButton.setOffset(5, 5);
+		stopButton.setEnabled(false);
 
-		reset = new Button(55, 20, "Reset") {
+		resetButton = new Button(55, 20, "Reset") {
 			@Override
 			public void doSomething() {
 				reset();
 			}
 		};
-		reset.setOffset(5, 5);
+		resetButton.setOffset(5, 5);
 
-		O2Amount = new DoubleField(100, 1.0, 10.0, 3);
-		NOAmount = new DoubleField(100, 1.0, 10.0, 3);
+		O2AmountField = new DoubleField(100, 1.0, 10.0, 3);
+		NOAmountField = new DoubleField(100, 1.0, 10.0, 3);
 
-		controlArea.addChild(new EmptyComponent(5, 0), new Label(60, 20, "O2 (mL): "), O2Amount,
-				new EmptyComponent(10000, 0), new EmptyComponent(5, 0), new Label(60, 20, "NO (mL): "), NOAmount,
-				new EmptyComponent(1000, 5), start, stop, reset);
+		controlArea.addChild(new EmptyComponent(5, 0), new Label(60, 20, "O2 (mL): "), O2AmountField,
+				new EmptyComponent(10000, 0), new EmptyComponent(5, 0), new Label(60, 20, "NO (mL): "), NOAmountField,
+				new EmptyComponent(1000, 5), startButton, stopButton, resetButton);
 
 		controlArea.setOffset(-10, 380);
 
@@ -114,14 +116,14 @@ public class IsolationMethod extends LabFrame {
 
 		hg.setShowLabels(false);
 
-		zeroOrderGraph = new Graph(200, 200, "[NO2] vs. t", "t (s)", "[NO2] mol/L", hg, vg);
+		zeroOrderGraph = new Graph(200, 200, "[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
 		zeroOrderGraph.setOffsetX(60);
 		zeroOrderGraph.setYLabelOffset(15);
 		vg.setTextOffset(-45);
 		vg.setRemovePointZero(false);
 		addComponent(zeroOrderGraph);
 
-		zeroOrderData = new GraphDataSet("NO2", false, false);
+		zeroOrderData = new GraphDataSet("NO", false, false);
 		zeroOrderGraph.addDataSet(zeroOrderData);
 
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
@@ -129,25 +131,27 @@ public class IsolationMethod extends LabFrame {
 
 		hg.setShowLabels(false);
 
-		firstOrderGraph = new Graph(200, 200, "ln[NO2] vs. t", "t (s)", "ln([NO2]) mol/L", hg, vg);
+		firstOrderGraph = new Graph(200, 200, "ln[NO] vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
 		firstOrderGraph.setOffsetX(60);
 		firstOrderGraph.setYLabelOffset(20);
 		vg.setTextOffset(-30);
 		vg.setRemovePointZero(false);
 		addComponent(firstOrderGraph);
 
-		firstOrderData = new GraphDataSet("NO2", false, false);
+		firstOrderData = new GraphDataSet("NO", false, false);
 		firstOrderGraph.addDataSet(firstOrderData);
 
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
-		vg = new VerticalGraduation(0, 0.0001, 2, 1);
-
+		vg = new VerticalGraduation(0, 100E3, 100E3, 25E3);
+			
+		vg.setSigfigs(2);
+		
 		hg.setShowLabels(false);
 
-		secondOrderGraph = new Graph(200, 200, "1/[NO2] vs. t", "t (s)", "1/[NO2] mol/L", hg, vg);
+		secondOrderGraph = new Graph(200, 200, "1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
 		secondOrderGraph.setOffsetX(60);
 		secondOrderGraph.setYLabelOffset(15);
-		vg.setTextOffset(-26);
+		vg.setTextOffset(-35);
 		vg.setRemovePointZero(false);
 		addComponent(secondOrderGraph);
 
@@ -159,16 +163,25 @@ public class IsolationMethod extends LabFrame {
 	}
 
 	private void start() {
-
-		totalVolume = NOAmount.getValue() + O2Amount.getValue();
 		
-		NOMolarity = NOAmount.getValue() * NOPistonMolarity / totalVolume;
-		O2Molarity = O2Amount.getValue() * O2PistonMolarity / totalVolume;
+		startButton.setEnabled(false);
+		stopButton.setEnabled(true);
+		
+		if (stopped) {
+			reactionOccuring = true;
+			return;
+		}
+		
+		
+		totalVolume = NOAmountField.getValue() + O2AmountField.getValue();
+		
+		NOMolarity = NOAmountField.getValue() * NOPistonMolarity / totalVolume;
+		O2Molarity = O2AmountField.getValue() * O2PistonMolarity / totalVolume;
 		
 		initialNOMolarity = NOMolarity;
 		initialO2Molarity = O2Molarity;
 		
-		getAnimator().addAnimation("NOPiston", new DoubleLinearAnimation(10 - NOAmount.getValue(), 0.1) {
+		getAnimator().addAnimation("NOPiston", new DoubleLinearAnimation(10 - NOAmountField.getValue(), 0.1) {
 			@Override
 			public Double getValue() {
 				return reactionApparatus.getNOPiston().getValue();
@@ -179,7 +192,7 @@ public class IsolationMethod extends LabFrame {
 			}
 		});
 
-		getAnimator().addAnimation("O2Piston", new DoubleLinearAnimation(10 - O2Amount.getValue(), 0.1) {
+		getAnimator().addAnimation("O2Piston", new DoubleLinearAnimation(10 - O2AmountField.getValue(), 0.1) {
 			@Override
 			public Double getValue() {
 				return reactionApparatus.getO2Piston().getValue();
@@ -203,13 +216,18 @@ public class IsolationMethod extends LabFrame {
 
 		reactionOccuring = true;
 		
+		zeroOrderGraph.getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
+		firstOrderGraph.getvGraduation().setStart(-12);
+		secondOrderGraph.getvGraduation().setEnd(100E3);
 	}
 	
 	private void reset() {
+		
+		startButton.setEnabled(true);
+		
 		time = 0;
 		O2Molarity = 0;
 		NOMolarity = 0;
-		NO2Molarity = 0;
 		
 		reactionApparatus.getO2Piston().setValue(10);
 		reactionApparatus.getNOPiston().setValue(10);
@@ -222,34 +240,72 @@ public class IsolationMethod extends LabFrame {
 		
 		reactionOccuring = false;
 		
+		stopped = false;
+		
 		getAnimator().cancelAll();
 	}
 	
 	private void stop() {
 		reactionOccuring = false;
+		stopped = true;
+		
+		startButton.setEnabled(true);
+		stopButton.setEnabled(false);
+		
 	}
 
 	private void step() {
 		if (reactionOccuring) {
-			time += 500;
+			time += 250;
+			
+			if (time % 1000 == 0) {
 	
-			// rate = k[NO]^2[O2]
-			
-			NOMolarity = 1.0 / (1.0 / initialNOMolarity + rateConstant * O2Molarity * time);
-			NO2Molarity = initialNOMolarity - NOMolarity;
-			
-			zeroOrderData.addPoint(time, NO2Molarity);
-			
-			if (NO2Molarity > zeroOrderGraph.getvGraduation().getEnd()) {
-				zeroOrderGraph.getvGraduation().setEnd(((int) (NO2Molarity / 25E-6) + 1) * 25E-6);
-			}
-			
-			
-			double lnNO2Molarity = Math.log(NOMolarity);
-			firstOrderData.addPoint(time, lnNO2Molarity);
-			
-			if (lnNO2Molarity < firstOrderGraph.getvGraduation().getStart()) {
-				firstOrderGraph.getvGraduation().setStart((int) (lnNO2Molarity / 2 - 1) * 2);
+				// rate = k[NO]^2[O2]
+				
+				// calculate actual NO molarity using integrated rate law
+				// 1/[NO] = 1/[NOi] + kt;
+				NOMolarity = 1.0 / (1.0 / initialNOMolarity + rateConstant * O2Molarity * time);
+				
+				
+				// put in some error that would be a result of using real spectrophotemetry
+				NOMolarity += (Math.random() * 2 - 1) * error * (initialNOMolarity - NOMolarity);
+				
+				// plot the concentration
+				zeroOrderData.addPoint(time, NOMolarity);
+				
+				// make sure the graph y-axis can fit the newly plotted numbers
+				if (NOMolarity > zeroOrderGraph.getvGraduation().getEnd()) {
+					zeroOrderGraph.getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
+				}
+				
+				
+				
+				// take natural log of NO molarity and plot
+				double lnNOMolarity = Math.log(NOMolarity);
+				firstOrderData.addPoint(time, lnNOMolarity);
+				
+				// make sure the graph y-axis can fit the newly plotted numbers
+				if (lnNOMolarity < firstOrderGraph.getvGraduation().getStart()) {
+					firstOrderGraph.getvGraduation().setStart((int) (lnNOMolarity / 2 - 1) * 2);
+				}
+				
+				
+				
+				// inverse NO molarity and plot
+				double oneOverNOMolarity = 1.0 / NOMolarity;
+				secondOrderData.addPoint(time, oneOverNOMolarity);
+				
+				// make sure the graph y-axis can fit the newly plotted numbers
+				if (oneOverNOMolarity > secondOrderGraph.getvGraduation().getEnd()) {
+					secondOrderGraph.getvGraduation().setEnd(((int) (oneOverNOMolarity / 25E3) + 1) * 25E3);
+				}
+				
+				
+				
+				// stop the reaction once time reaches end of graph
+				if (time >= zeroOrderGraph.gethGraduation().getEnd()) {
+					reactionOccuring = false;
+				}
 			}
 			
 		}
@@ -262,8 +318,10 @@ public class IsolationMethod extends LabFrame {
 		
 		step();
 
-		if (O2Amount.hasInput() && NOAmount.hasInput()) {
-			volumeLabel.setText("Total Volume: " + SigFig.sigfigalize(NOAmount.getValue() + O2Amount.getValue(), 3) + "mL");
+		if (O2AmountField.hasInput() && NOAmountField.hasInput()) {
+			volumeLabel.setText("Total Volume: " + SigFig.sigfigalize(NOAmountField.getValue() + O2AmountField.getValue(), 3) + "mL");
+		} else {
+			startButton.setEnabled(false);
 		}
 
 	}
