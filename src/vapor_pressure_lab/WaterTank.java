@@ -12,8 +12,7 @@ import lab.component.fx.Vector2DistributionType;
 public class WaterTank extends Tank {
 
 	// particle systems to contain particles
-	private final ParticleSystem liquidParticles;
-	private final ParticleSystem gasParticles;
+	private final ParticleSystem liquidParticles, gasParticles;
 
 	// constructor
 	public WaterTank(int width, int height, int liquidParticleAmount, int gasParticleAmount, double liquidParticleSpeed,
@@ -65,9 +64,8 @@ public class WaterTank extends Tank {
 		liquidParticles.start();
 
 		// spawn liquid particles immediately
-		for (int i = 0; i < liquidParticleAmount; i++) {
+		for (int i = 0; i < liquidParticleAmount; i++)
 			liquidParticles.spawnParticle();
-		}
 		
 		addChild(gasParticles, liquidParticles);
 		setContentState(ContentState.LIQUID);
