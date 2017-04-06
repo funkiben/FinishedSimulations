@@ -2,13 +2,13 @@ package isolation_method;
 
 import java.awt.Color;
 
-import lab.util.animation.ColorLerpAnimation;
 import lab.util.animation.DoubleLerpAnimation;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
 import lab.component.data.Graph;
 import lab.component.data.GraphDataSet;
+import lab.component.data.GraphUtil;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
@@ -35,9 +35,9 @@ public class IsolationMethod extends LabFrame {
 	private final DoubleField O2AmountField, NOAmountField;
 
 	private final Graph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
-	private final GraphDataSet zeroOrderData, firstOrderData, secondOrderData;
+	private final GraphDataSet zeroOrderData, firstOrderData, secondOrderData, zeroOrderLOBF, firstOrderLOBF, secondOrderLOBF;
 
-	private final Label volumeLabel;
+	private final Label volumeLabel, zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel, firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel, secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel;
 
 	private double time = 0;
 	private double O2Molarity = 0;
@@ -46,14 +46,20 @@ public class IsolationMethod extends LabFrame {
 	private double totalVolume = 2.0;
 	private boolean reactionOccuring = false;
 	private boolean stopped = false;
-
+	
 	public IsolationMethod() {
 		super("Isolation Method", 1000, 650);
-
+		
 		reactionApparatus = new ReactionApparatus();
 		reactionApparatus.setOffset(15, 30);
 		addComponent(reactionApparatus);
 
+		
+		
+		
+		
+		
+		// create control area for starting and stopping simulation, and changing NO and O2 mL
 		Rectangle controlArea = new Rectangle(190, 140);
 		controlArea.setFill(false);
 		controlArea.setStrokeColor(Color.LIGHT_GRAY);
@@ -107,6 +113,11 @@ public class IsolationMethod extends LabFrame {
 
 		reactionApparatus.addChild(controlArea);
 
+		
+		
+		
+		
+		// create zero order graph
 		HorizontalGraduation hg;
 		VerticalGraduation vg;
 
@@ -123,8 +134,21 @@ public class IsolationMethod extends LabFrame {
 		addComponent(zeroOrderGraph);
 
 		zeroOrderData = new GraphDataSet("NO", false, false);
-		zeroOrderGraph.addDataSet(zeroOrderData);
+		zeroOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
+		zeroOrderGraph.addDataSet(zeroOrderData, zeroOrderLOBF);
 
+		
+		zeroOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
+		zeroOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
+		
+		zeroOrderLOBFSlopeLabel.setOffsetY(210);
+		
+		zeroOrderGraph.addChild(zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel);
+		
+		
+		
+		
+		// create first order graph
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(-12, -6, 2, 1);
 
@@ -138,8 +162,22 @@ public class IsolationMethod extends LabFrame {
 		addComponent(firstOrderGraph);
 
 		firstOrderData = new GraphDataSet("NO", false, false);
-		firstOrderGraph.addDataSet(firstOrderData);
+		firstOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
+		firstOrderGraph.addDataSet(firstOrderData, firstOrderLOBF);
+		
 
+		firstOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
+		firstOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
+		
+		firstOrderLOBFSlopeLabel.setOffsetY(210);
+		
+		firstOrderGraph.addChild(firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel);
+		
+		
+		
+		
+		
+		// create second order graph
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 100E3, 100E3, 25E3);
 			
@@ -155,8 +193,22 @@ public class IsolationMethod extends LabFrame {
 		addComponent(secondOrderGraph);
 
 		secondOrderData = new GraphDataSet("NO2", false, false);
-		secondOrderGraph.addDataSet(secondOrderData);
-
+		secondOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
+		secondOrderGraph.addDataSet(secondOrderData, secondOrderLOBF);
+		
+		
+		secondOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
+		secondOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
+		
+		secondOrderLOBFSlopeLabel.setOffsetY(210);
+		
+		secondOrderGraph.addChild(secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel);
+		
+		
+		
+		
+		
+		
 		start(30);
 
 	}
@@ -201,7 +253,7 @@ public class IsolationMethod extends LabFrame {
 			}
 		});
 		
-		getAnimator().addAnimation("ReactionVesselColor", new DoubleLerpAnimation(128.0, 0.05f, 1.0) {
+		getAnimator().addAnimation("ReactionVesselColor", new DoubleLerpAnimation(128.0, 0.02f, 1.0) {
 			@Override
 			public Double getValue() {
 				return reactionApparatus.getTank().getValue();
@@ -235,6 +287,10 @@ public class IsolationMethod extends LabFrame {
 		zeroOrderData.clearPoints();
 		firstOrderData.clearPoints();
 		secondOrderData.clearPoints();
+		
+		zeroOrderLOBF.clearPoints();
+		firstOrderLOBF.clearPoints();
+		secondOrderLOBF.clearPoints();
 		
 		reactionOccuring = false;
 		
@@ -303,6 +359,12 @@ public class IsolationMethod extends LabFrame {
 				// stop the reaction once time reaches end of graph
 				if (time >= zeroOrderGraph.gethGraduation().getEnd()) {
 					reactionOccuring = false;
+					
+					
+					plotLineOfBestFit(zeroOrderGraph, zeroOrderData, zeroOrderLOBF, zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel);
+					plotLineOfBestFit(firstOrderGraph, firstOrderData, firstOrderLOBF, firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel);
+					plotLineOfBestFit(secondOrderGraph, secondOrderData, secondOrderLOBF, secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel);
+					
 				}
 			}
 			
@@ -311,6 +373,18 @@ public class IsolationMethod extends LabFrame {
 		
 	}
 
+	public void plotLineOfBestFit(Graph graph, GraphDataSet data, GraphDataSet lobfData, Label slopeLabel, Label interceptLabel) {
+		double[] lobf = GraphUtil.getLineOfBestFit(data.getPoints());
+		
+		slopeLabel.setText("Slope: " + SigFig.sigfigalize(lobf[0], 4));
+		interceptLabel.setText("Intercept: " + SigFig.sigfigalize(lobf[1], 4));
+		
+		double end = graph.gethGraduation().getEnd();
+		
+		lobfData.addPoint(0, lobf[1]);
+		lobfData.addPoint(end, end * lobf[0] + lobf[1]);
+	}
+	
 	@Override
 	public void update() {
 		
