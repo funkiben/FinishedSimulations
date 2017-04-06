@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 import lab.component.LabComponent;
 import lab.component.Tube;
+import lab.component.container.ContentState;
 import lab.component.container.Tank;
 import lab.component.geo.Rectangle;
 import lab.component.Piston;
@@ -12,6 +13,8 @@ import lab.util.VerticalGraduation;
 
 public class ReactionApparatus extends LabComponent {
 
+	private final Color NO2Color = new Color(206, 59, 4);
+	
 	private final Piston O2Piston;
 	private final Piston NOPiston;
 	private final Tank tank;
@@ -53,6 +56,8 @@ public class ReactionApparatus extends LabComponent {
 		
 		
 		tank = new Tank(66, 80);
+		tank.setContentState(ContentState.GAS);
+		tank.setContentColor(NO2Color);
 		tank.setOffset(47, 270);
 		
 		Rectangle spectrometerLaser = new Rectangle(0, 60, 66, 5);
