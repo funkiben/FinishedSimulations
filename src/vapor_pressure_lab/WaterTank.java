@@ -12,8 +12,7 @@ import lab.component.fx.Vector2DistributionType;
 public class WaterTank extends Tank {
 
 	// particle systems to contain particles
-	private final ParticleSystem liquidParticles;
-	private final ParticleSystem gasParticles;
+	private final ParticleSystem liquidParticles, gasParticles;
 
 	// constructor
 	public WaterTank(int width, int height, int liquidParticleAmount, int gasParticleAmount, double liquidParticleSpeed,
