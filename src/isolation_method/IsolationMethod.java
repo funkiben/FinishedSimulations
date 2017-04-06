@@ -2,13 +2,9 @@ package isolation_method;
 
 import java.awt.Color;
 
-import lab.util.animation.DoubleLerpAnimation;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
-import lab.component.data.Graph;
-import lab.component.data.GraphDataSet;
-import lab.component.data.GraphUtil;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
@@ -30,15 +26,16 @@ public class IsolationMethod extends LabFrame {
 	private final double rateConstant = 201.95;
 	private final double error = 1E-3;
 	
+	
 	private final ReactionApparatus reactionApparatus;
 	private final Button startButton, stopButton, resetButton;
 	private final DoubleField O2AmountField, NOAmountField;
 
-	private final Graph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
-	private final GraphDataSet zeroOrderData, firstOrderData, secondOrderData, zeroOrderLOBF, firstOrderLOBF, secondOrderLOBF;
-
-	private final Label volumeLabel, zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel, firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel, secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel;
-
+	private final ReactionOrderGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
+	
+	private final Label volumeLabel;
+	
+	
 	private double time = 0;
 	private double O2Molarity = 0;
 	private double NOMolarity = 0;
@@ -46,6 +43,7 @@ public class IsolationMethod extends LabFrame {
 	private double totalVolume = 2.0;
 	private boolean reactionOccuring = false;
 	private boolean stopped = false;
+	
 	
 	public IsolationMethod() {
 		super("Isolation Method", 1000, 650);
@@ -117,95 +115,50 @@ public class IsolationMethod extends LabFrame {
 		
 		
 		
-		// create zero order graph
+		
 		HorizontalGraduation hg;
 		VerticalGraduation vg;
 
+		
+		// create zero order graph
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
-		hg.setShowLabels(false);
-
-		zeroOrderGraph = new Graph(200, 200, "[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
-		zeroOrderGraph.setOffsetX(60);
-		zeroOrderGraph.setYLabelOffset(15);
+		zeroOrderGraph = new ReactionOrderGraph("[NO] vs. t", "[NO] mol/L", hg, vg);
+		
 		vg.setTextOffset(-45);
-		vg.setRemovePointZero(false);
+		
 		addComponent(zeroOrderGraph);
 
-		zeroOrderData = new GraphDataSet("NO", false, false);
-		zeroOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
-		zeroOrderGraph.addDataSet(zeroOrderData, zeroOrderLOBF);
-
-		
-		zeroOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
-		zeroOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
-		
-		zeroOrderLOBFSlopeLabel.setOffsetY(210);
-		
-		zeroOrderGraph.addChild(zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel);
-		
 		
 		
 		
 		// create first order graph
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
-		vg = new VerticalGraduation(-12, -6, 2, 1);
+		vg = new VerticalGraduation(-12, -8, 2, 1);
 
-		hg.setShowLabels(false);
+		firstOrderGraph = new ReactionOrderGraph("ln[NO] vs. t", "ln([NO]) mol/L", hg, vg);
+		firstOrderGraph.getGraph().setYLabelOffset(20);
+		
+		vg.setTextOffset(-37);
 
-		firstOrderGraph = new Graph(200, 200, "ln[NO] vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
-		firstOrderGraph.setOffsetX(60);
-		firstOrderGraph.setYLabelOffset(20);
-		vg.setTextOffset(-30);
-		vg.setRemovePointZero(false);
 		addComponent(firstOrderGraph);
 
-		firstOrderData = new GraphDataSet("NO", false, false);
-		firstOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
-		firstOrderGraph.addDataSet(firstOrderData, firstOrderLOBF);
-		
 
-		firstOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
-		firstOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
-		
-		firstOrderLOBFSlopeLabel.setOffsetY(210);
-		
-		firstOrderGraph.addChild(firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel);
-		
-		
 		
 		
 		
 		// create second order graph
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
-		vg = new VerticalGraduation(0, 100E3, 100E3, 25E3);
+		vg = new VerticalGraduation(0, 50E3, 50E3, 10E3);
 			
 		vg.setSigfigs(2);
 		
-		hg.setShowLabels(false);
+		secondOrderGraph = new ReactionOrderGraph("1/[NO] vs. t","1/[NO] mol/L", hg, vg);
 
-		secondOrderGraph = new Graph(200, 200, "1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
-		secondOrderGraph.setOffsetX(60);
-		secondOrderGraph.setYLabelOffset(15);
 		vg.setTextOffset(-35);
-		vg.setRemovePointZero(false);
-		addComponent(secondOrderGraph);
 
-		secondOrderData = new GraphDataSet("NO2", false, false);
-		secondOrderLOBF = new GraphDataSet("LOBF", true, false, Color.blue);
-		secondOrderGraph.addDataSet(secondOrderData, secondOrderLOBF);
-		
-		
-		secondOrderLOBFSlopeLabel = new Label(200, 20, "Slope: ");
-		secondOrderLOBFInterceptLabel = new Label(200, 20, "Intercept: ");
-		
-		secondOrderLOBFSlopeLabel.setOffsetY(210);
-		
-		secondOrderGraph.addChild(secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel);
-		
-		
-		
+		addComponent(secondOrderGraph);
 		
 		
 		
@@ -253,7 +206,7 @@ public class IsolationMethod extends LabFrame {
 			}
 		});
 		
-		getAnimator().addAnimation("ReactionVesselColor", new DoubleLerpAnimation(128.0, 0.02f, 1.0) {
+		getAnimator().addAnimation("ReactionVesselColor", new DoubleLinearAnimation(128.0, 0.5) {
 			@Override
 			public Double getValue() {
 				return reactionApparatus.getTank().getValue();
@@ -266,9 +219,9 @@ public class IsolationMethod extends LabFrame {
 
 		reactionOccuring = true;
 		
-		zeroOrderGraph.getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
-		firstOrderGraph.getvGraduation().setStart(-12);
-		secondOrderGraph.getvGraduation().setEnd(100E3);
+		zeroOrderGraph.getGraph().getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
+		firstOrderGraph.getGraph().getvGraduation().setStart(-12);
+		secondOrderGraph.getGraph().getvGraduation().setEnd(50E3);
 	}
 	
 	private void reset() {
@@ -284,13 +237,10 @@ public class IsolationMethod extends LabFrame {
 		
 		reactionApparatus.getTank().setValue(0);
 		
-		zeroOrderData.clearPoints();
-		firstOrderData.clearPoints();
-		secondOrderData.clearPoints();
+		zeroOrderGraph.clear();
+		firstOrderGraph.clear();
+		secondOrderGraph.clear();
 		
-		zeroOrderLOBF.clearPoints();
-		firstOrderLOBF.clearPoints();
-		secondOrderLOBF.clearPoints();
 		
 		reactionOccuring = false;
 		
@@ -325,45 +275,45 @@ public class IsolationMethod extends LabFrame {
 				NOMolarity += (Math.random() * 2 - 1) * error * (initialNOMolarity - NOMolarity);
 				
 				// plot the concentration
-				zeroOrderData.addPoint(time, NOMolarity);
+				zeroOrderGraph.getData().addPoint(time, NOMolarity);
 				
 				// make sure the graph y-axis can fit the newly plotted numbers
-				if (NOMolarity > zeroOrderGraph.getvGraduation().getEnd()) {
-					zeroOrderGraph.getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
+				if (NOMolarity > zeroOrderGraph.getGraph().getvGraduation().getEnd()) {
+					zeroOrderGraph.getGraph().getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
 				}
 				
 				
 				
 				// take natural log of NO molarity and plot
 				double lnNOMolarity = Math.log(NOMolarity);
-				firstOrderData.addPoint(time, lnNOMolarity);
+				firstOrderGraph.getData().addPoint(time, lnNOMolarity);
 				
 				// make sure the graph y-axis can fit the newly plotted numbers
-				if (lnNOMolarity < firstOrderGraph.getvGraduation().getStart()) {
-					firstOrderGraph.getvGraduation().setStart((int) (lnNOMolarity / 2 - 1) * 2);
+				if (lnNOMolarity < firstOrderGraph.getGraph().getvGraduation().getStart()) {
+					firstOrderGraph.getGraph().getvGraduation().setStart((int) (lnNOMolarity / 2 - 1) * 2);
 				}
 				
 				
 				
 				// inverse NO molarity and plot
 				double oneOverNOMolarity = 1.0 / NOMolarity;
-				secondOrderData.addPoint(time, oneOverNOMolarity);
+				secondOrderGraph.getData().addPoint(time, oneOverNOMolarity);
 				
 				// make sure the graph y-axis can fit the newly plotted numbers
-				if (oneOverNOMolarity > secondOrderGraph.getvGraduation().getEnd()) {
-					secondOrderGraph.getvGraduation().setEnd(((int) (oneOverNOMolarity / 25E3) + 1) * 25E3);
+				if (oneOverNOMolarity > secondOrderGraph.getGraph().getvGraduation().getEnd()) {
+					secondOrderGraph.getGraph().getvGraduation().setEnd(((int) (oneOverNOMolarity / 50E3) + 1) * 50E3);
 				}
 				
 				
 				
 				// stop the reaction once time reaches end of graph
-				if (time >= zeroOrderGraph.gethGraduation().getEnd()) {
+				if (time >= zeroOrderGraph.getGraph().gethGraduation().getEnd()) {
 					reactionOccuring = false;
 					
 					
-					plotLineOfBestFit(zeroOrderGraph, zeroOrderData, zeroOrderLOBF, zeroOrderLOBFSlopeLabel, zeroOrderLOBFInterceptLabel);
-					plotLineOfBestFit(firstOrderGraph, firstOrderData, firstOrderLOBF, firstOrderLOBFSlopeLabel, firstOrderLOBFInterceptLabel);
-					plotLineOfBestFit(secondOrderGraph, secondOrderData, secondOrderLOBF, secondOrderLOBFSlopeLabel, secondOrderLOBFInterceptLabel);
+					zeroOrderGraph.plotLineOfBestFit();
+					firstOrderGraph.plotLineOfBestFit();
+					secondOrderGraph.plotLineOfBestFit();
 					
 				}
 			}
@@ -371,18 +321,6 @@ public class IsolationMethod extends LabFrame {
 		}
 		
 		
-	}
-
-	public void plotLineOfBestFit(Graph graph, GraphDataSet data, GraphDataSet lobfData, Label slopeLabel, Label interceptLabel) {
-		double[] lobf = GraphUtil.getLineOfBestFit(data.getPoints());
-		
-		slopeLabel.setText("Slope: " + SigFig.sigfigalize(lobf[0], 4));
-		interceptLabel.setText("Intercept: " + SigFig.sigfigalize(lobf[1], 4));
-		
-		double end = graph.gethGraduation().getEnd();
-		
-		lobfData.addPoint(0, lobf[1]);
-		lobfData.addPoint(end, end * lobf[0] + lobf[1]);
 	}
 	
 	@Override
