@@ -20,6 +20,7 @@ public class LeChatelierConcentration extends LabFrame {
 	private static final long serialVersionUID = 2402023506629915960L;
 
 	private Bulb bulb;
+	private boolean isRunning;
 	
 	private LabeledDoubleSlider cSlider;
 	private LabeledDoubleSlider h2oSlider;
@@ -46,6 +47,7 @@ public class LeChatelierConcentration extends LabFrame {
 	private GraphDataSet h2DataSet;
 	
 	private Button resetButton;
+	private Button stopButton;
 	
 	private int pointIndex = 0;
 	
@@ -61,6 +63,7 @@ public class LeChatelierConcentration extends LabFrame {
 	public LeChatelierConcentration(String name, int width, int height) {
 		super(name, width, height);
 
+		isRunning = true;
 		globalTime = 0;
 		bulb = new Bulb(250, 250);
 		addComponent(bulb);
@@ -154,6 +157,11 @@ public class LeChatelierConcentration extends LabFrame {
 		coDataSet = new GraphDataSet("           Moles CO", true, true);
 		h2DataSet = new GraphDataSet("Moles H2", true, true);
 
+		cDataSet.setColor(Color.black);
+		h2oDataSet.setColor(Color.blue);
+		coDataSet.setColor(Color.darkGray);
+		h2DataSet.setColor(Color.red);
+		
 		cDataSet.addPoint(0, 0);
 		h2oDataSet.addPoint(0, 0);
 		coDataSet.addPoint(0, 0);
@@ -191,9 +199,25 @@ public class LeChatelierConcentration extends LabFrame {
 
 		resetButton.setOffset(-800, 600);
 		
+		stopButton = new Button(400, 100, "Stop Simulation") {
+
+			@Override
+			public void doSomething() {
+				isRunning=!isRunning;
+				if(isRunning) {
+					stopButton.setText("Stop Simulation");
+				} else {
+					stopButton.setText("Start Simulation");
+				}
+			}
+		};
+
+		stopButton.setOffset(0, 600);
+		
 		graph.gethGraduation().setEnd(1);
 		
 		addComponent(resetButton);
+		addComponent(stopButton);
 
 		start(60);
 
@@ -223,41 +247,41 @@ public class LeChatelierConcentration extends LabFrame {
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-
-		double zero = findZeros(EQUILIBRIUM_CONSTANT - 1,
-				(EQUILIBRIUM_CONSTANT * h2oSlider.getValue()) + (EQUILIBRIUM_CONSTANT * cSlider.getValue())
-						+ coSlider.getValue() + h2Slider.getValue(),
-				(EQUILIBRIUM_CONSTANT * cSlider.getValue() * h2oSlider.getValue())
-						- (coSlider.getValue() * h2Slider.getValue()))[0];
-
-		cMolesEquilibrium = cSlider.getValue() + zero;
-		h2oMolesEquilibrium = h2oSlider.getValue() + zero;
-		coMolesEquilibrium = coSlider.getValue() - zero;
-		h2MolesEquilibrium = h2Slider.getValue() - zero;
-
-		cLabel.setText("C: " + (float) cMolesEquilibrium + " moles");
-		h2oLabel.setText("H2O: " + (float) h2oMolesEquilibrium + " moles");
-		coLabel.setText("CO: " + (float) coMolesEquilibrium + " moles");
-		h2Label.setText("H2: " + (float) h2MolesEquilibrium + " moles");
-
-		pointIndex++;
-		globalTime += TIME_INCREMENT;
-
-		cDataSet.addPoint(globalTime, lerp(cDataSet.getPoints().get(pointIndex - 1).getY(), cMolesEquilibrium, .04f));
-		h2oDataSet.addPoint(globalTime,
-				lerp(h2oDataSet.getPoints().get(pointIndex - 1).getY(), h2oMolesEquilibrium, .04f));
-		coDataSet.addPoint(globalTime,
-				lerp(coDataSet.getPoints().get(pointIndex - 1).getY(), coMolesEquilibrium, .04f));
-		h2DataSet.addPoint(globalTime,
-				lerp(h2DataSet.getPoints().get(pointIndex - 1).getY(), h2MolesEquilibrium, .04f));
-
-		graph.gethGraduation().setEnd((int) ((globalTime/ graph.gethGraduation().getSubLineIntervals()) + 1)
-				* graph.gethGraduation().getSubLineIntervals());
-
-		bulb.setContentState(ContentState.SOLID);
-		bulb.setContentColor(Color.black);;
-		bulb.setValue(50*((cDataSet.getPoints().get(cDataSet.size()-1).getY())));
-
+		if(isRunning) {
+			double zero = findZeros(EQUILIBRIUM_CONSTANT - 1,
+					(EQUILIBRIUM_CONSTANT * h2oSlider.getValue()) + (EQUILIBRIUM_CONSTANT * cSlider.getValue())
+							+ coSlider.getValue() + h2Slider.getValue(),
+					(EQUILIBRIUM_CONSTANT * cSlider.getValue() * h2oSlider.getValue())
+							- (coSlider.getValue() * h2Slider.getValue()))[0];
+	
+			cMolesEquilibrium = cSlider.getValue() + zero;
+			h2oMolesEquilibrium = h2oSlider.getValue() + zero;
+			coMolesEquilibrium = coSlider.getValue() - zero;
+			h2MolesEquilibrium = h2Slider.getValue() - zero;
+	
+			cLabel.setText("C: " + (float) cMolesEquilibrium + " moles");
+			h2oLabel.setText("H2O: " + (float) h2oMolesEquilibrium + " moles");
+			coLabel.setText("CO: " + (float) coMolesEquilibrium + " moles");
+			h2Label.setText("H2: " + (float) h2MolesEquilibrium + " moles");
+	
+			pointIndex++;
+			globalTime += TIME_INCREMENT;
+	
+			cDataSet.addPoint(globalTime, lerp(cDataSet.getPoints().get(pointIndex - 1).getY(), cMolesEquilibrium, .04f));
+			h2oDataSet.addPoint(globalTime,
+					lerp(h2oDataSet.getPoints().get(pointIndex - 1).getY(), h2oMolesEquilibrium, .04f));
+			coDataSet.addPoint(globalTime,
+					lerp(coDataSet.getPoints().get(pointIndex - 1).getY(), coMolesEquilibrium, .04f));
+			h2DataSet.addPoint(globalTime,
+					lerp(h2DataSet.getPoints().get(pointIndex - 1).getY(), h2MolesEquilibrium, .04f));
+	
+			graph.gethGraduation().setEnd((int) ((globalTime/ graph.gethGraduation().getSubLineIntervals()) + 1)
+					* graph.gethGraduation().getSubLineIntervals());
+	
+			bulb.setContentState(ContentState.SOLID);
+			bulb.setContentColor(Color.black);;
+			bulb.setValue(50*((cDataSet.getPoints().get(cDataSet.size()-1).getY())));
+		}
 	}
 
 }
