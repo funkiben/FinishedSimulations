@@ -34,11 +34,7 @@ public class VaporPressure extends LabFrame {
 	private static final Color[] COLOR = { Color.BLUE, Color.RED, Color.MAGENTA, Color.GREEN };
 
 	// windows
-	private final LabFrame vaporPressureTimeTableFrame;
-	private final LabFrame vaporPressureTemperatureGraphFrame;
-	private final LabFrame tankFrame;
-	private final LabFrame equipmentFrame;
-	private final LabFrame instructionsFrame;
+	private final LabFrame vaporPressureTimeTableFrame, vaporPressureTemperatureGraphFrame, tankFrame, equipmentFrame, instructionsFrame;
 
 	// create dynamic variables for calculations
 	private int time;
@@ -51,12 +47,9 @@ public class VaporPressure extends LabFrame {
 
 	// components that are used in multiple methods
 	private final Button play;
-	private final DataTable<Double> vaporPressureMolarityTable;
-	private final DataTable<Double> vaporPressureTimeTable;
+	private final DataTable<Double> vaporPressureMolarityTable, vaporPressureTimeTable;
 	private final DoubleField inputTemperature;
-	private final Graph molarityGraph;
-	private final Graph vaporPressureGraph;
-	private final Graph vaporPressureTemperatureGraph;
+	private final Graph molarityGraph, vaporPressureGraph, vaporPressureTemperatureGraph;
 	private final Label outputVaporPressure;
 	private final MenuComponent menu;
 	private final WaterTank[] waterTank = new WaterTank[4];
