@@ -2,6 +2,7 @@ package isolation_method;
 
 import java.awt.Color;
 
+import HI_equilibrium.CoordinateList;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
@@ -33,6 +34,8 @@ public class IsolationMethod extends LabFrame {
 
 	private final ReactionOrderGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
 	
+	private final CoordinateList lnKvslnO2List;
+	
 	private final Label volumeLabel;
 	
 	
@@ -51,10 +54,6 @@ public class IsolationMethod extends LabFrame {
 		reactionApparatus = new ReactionApparatus();
 		reactionApparatus.setOffset(15, 30);
 		addComponent(reactionApparatus);
-
-		
-		
-		
 		
 		
 		// create control area for starting and stopping simulation, and changing NO and O2 mL
@@ -159,6 +158,14 @@ public class IsolationMethod extends LabFrame {
 		vg.setTextOffset(-35);
 
 		addComponent(secondOrderGraph);
+		
+		
+		addComponent(new EmptyComponent(300, 0));
+		
+		
+		lnKvslnO2List = new CoordinateList(200, 200, "k", "O2");
+		lnKvslnO2List.setOffsetY(-50);
+		addComponent(lnKvslnO2List);
 		
 		
 		
@@ -330,6 +337,8 @@ public class IsolationMethod extends LabFrame {
 
 		if (O2AmountField.hasInput() && NOAmountField.hasInput()) {
 			volumeLabel.setText("Total Volume: " + SigFig.sigfigalize(NOAmountField.getValue() + O2AmountField.getValue(), 3) + "mL");
+			
+			startButton.setEnabled(true);
 		} else {
 			startButton.setEnabled(false);
 		}

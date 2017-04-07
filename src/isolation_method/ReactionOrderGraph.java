@@ -19,7 +19,7 @@ public class ReactionOrderGraph extends LabComponent {
 	private final Label slopeLabel, interceptLabel;
 
 	public ReactionOrderGraph(String title, String yLabel, HorizontalGraduation hg, VerticalGraduation vg) {
-		super(260, 250);
+		super(260, 280);
 
 		hg.setShowLabels(false);
 		vg.setRemovePointZero(false);

@@ -27,6 +27,8 @@ public class ReactionApparatus extends LabComponent {
 		O2Piston = new Piston(50, 240);
 		O2Piston.setGraduation(new VerticalGraduation(0, 10, 1, 1));
 		O2Piston.getGraduation().setSuffix("mL");
+		O2Piston.getGraduation().setSigfigs(2);
+		O2Piston.getGraduation().setRemovePointZero(false);
 		O2Piston.setOffset(10, 10);
 		O2Piston.setGasColor(null);
 		O2Piston.setCanDrag(false);
@@ -35,6 +37,8 @@ public class ReactionApparatus extends LabComponent {
 		NOPiston = new Piston(50, 240);
 		NOPiston.setGraduation(new VerticalGraduation(0, 10, 1, 1));
 		NOPiston.getGraduation().setSuffix("mL");
+		NOPiston.getGraduation().setSigfigs(2);
+		NOPiston.getGraduation().setRemovePointZero(false);
 		NOPiston.setOffset(100, 10);
 		NOPiston.setGasColor(null);
 		NOPiston.setCanDrag(false);
