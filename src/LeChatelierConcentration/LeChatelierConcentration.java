@@ -57,7 +57,7 @@ public class LeChatelierConcentration extends LabFrame {
 	private Graph graph;
 
 	public static void main(String[] args) {
-		new LeChatelierConcentration("LeChatelier Lab", 1550, 750);
+		new LeChatelierConcentration("LeChatelier Lab", 1050, 800);
 	}
 
 	public LeChatelierConcentration(String name, int width, int height) {
@@ -76,6 +76,7 @@ public class LeChatelierConcentration extends LabFrame {
 				cSlider.getLabel().setText(SigFig.sigfigalize(getValue(), cSlider.getSigFigs()) + " Moles C");
 			}
 		};
+		cSlider.getLabel().setOffsetX(cSlider.getLabel().getOffsetX()+10);
 		cSlider.getLabel().setWidth(cSlider.getLabel().getWidth() + 100);
 		sliderHolder.addChild(cSlider);
 
@@ -85,6 +86,7 @@ public class LeChatelierConcentration extends LabFrame {
 				h2oSlider.getLabel().setText(SigFig.sigfigalize(getValue(), h2oSlider.getSigFigs()) + " Moles H2O");
 			}
 		};
+		h2oSlider.getLabel().setOffsetX(h2oSlider.getLabel().getOffsetX()+10);
 		h2oSlider.getLabel().setWidth(h2oSlider.getLabel().getWidth() + 100);
 		h2oSlider.setOffsetY(10);
 		sliderHolder.addChild(h2oSlider);
@@ -95,6 +97,7 @@ public class LeChatelierConcentration extends LabFrame {
 				coSlider.getLabel().setText(SigFig.sigfigalize(getValue(), coSlider.getSigFigs()) + " Moles CO");
 			}
 		};
+		coSlider.getLabel().setOffsetX(coSlider.getLabel().getOffsetX()+10);
 		coSlider.getLabel().setWidth(coSlider.getLabel().getWidth() + 100);
 		coSlider.setOffsetY(10);
 		sliderHolder.addChild(coSlider);
@@ -105,6 +108,7 @@ public class LeChatelierConcentration extends LabFrame {
 				h2Slider.getLabel().setText(SigFig.sigfigalize(getValue(), h2Slider.getSigFigs()) + " Moles H2");
 			}
 		};
+		h2Slider.getLabel().setOffsetX(h2Slider.getLabel().getOffsetX()+10);
 		h2Slider.getLabel().setWidth(h2Slider.getLabel().getWidth() + 100);
 		h2Slider.setOffsetY(10);
 		sliderHolder.addChild(h2Slider);
@@ -117,7 +121,7 @@ public class LeChatelierConcentration extends LabFrame {
 		hGrad = new HorizontalGraduation(0, 1, 250, 50);
 		vGrad = new VerticalGraduation(0, 2.5, .5, .25);
 
-		graph = new Graph(1000, 500, "Moles of Substances", "time (s)", "moles", hGrad, vGrad);
+		graph = new Graph(500, 500, "Moles of Substances", "time (s)", "moles", hGrad, vGrad);
 		graph.setOffsetX(100);
 		vGrad.setTextOffset(-40);
 		addComponent(graph);
@@ -148,7 +152,7 @@ public class LeChatelierConcentration extends LabFrame {
 		h2Label = new Label(200, 100, "H2: " + h2MolesEquilibrium + " moles");
 		labelHolder.addChild(h2Label);
 
-		labelHolder.setOffsetX(-1450);
+		labelHolder.setOffsetX(-950);
 		labelHolder.setOffsetY(450);
 		addComponent(labelHolder);
 
@@ -172,7 +176,7 @@ public class LeChatelierConcentration extends LabFrame {
 
 		graph.addDataSet(cDataSet, h2oDataSet, coDataSet, h2DataSet);
 
-		resetButton = new Button(400, 100, "Reset Simulation") {
+		resetButton = new Button(200, 50, "Reset Simulation") {
 
 			@Override
 			public void doSomething() {
@@ -197,9 +201,9 @@ public class LeChatelierConcentration extends LabFrame {
 			}
 		};
 
-		resetButton.setOffset(-800, 600);
+		resetButton.setOffset(-300, 550);
 		
-		stopButton = new Button(400, 100, "Stop Simulation") {
+		stopButton = new Button(200, 50, "Stop Simulation") {
 
 			@Override
 			public void doSomething() {
@@ -212,7 +216,7 @@ public class LeChatelierConcentration extends LabFrame {
 			}
 		};
 
-		stopButton.setOffset(0, 600);
+		stopButton.setOffset(0, 550);
 		
 		graph.gethGraduation().setEnd(1);
 		
@@ -281,6 +285,8 @@ public class LeChatelierConcentration extends LabFrame {
 			bulb.setContentState(ContentState.SOLID);
 			bulb.setContentColor(Color.black);;
 			bulb.setValue(50*((cDataSet.getPoints().get(cDataSet.size()-1).getY())));
+			
+			System.out.println("Calculated Kp: " + ((float)coMolesEquilibrium*(float)h2MolesEquilibrium)/((float)cMolesEquilibrium*(float)h2oMolesEquilibrium));
 		}
 	}
 
