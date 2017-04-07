@@ -156,11 +156,21 @@ public class LeChatelierConcentration extends LabFrame {
 		labelHolder.setOffsetY(450);
 		addComponent(labelHolder);
 
-		cDataSet = new GraphDataSet("              Moles C", true, true);
+		cDataSet = new GraphDataSet("Moles C", true, true);
 		h2oDataSet = new GraphDataSet("Moles H2O", true, true);
-		coDataSet = new GraphDataSet("           Moles CO", true, true);
+		coDataSet = new GraphDataSet("Moles CO", true, true);
 		h2DataSet = new GraphDataSet("Moles H2", true, true);
 
+		cDataSet.setNameOffsetX(-40);
+		cDataSet.setNameOffsetY(10);
+		h2oDataSet.setNameOffsetX(-45);
+		h2oDataSet.setNameOffsetY(-10);
+		
+		coDataSet.setNameOffsetX(-42);
+		coDataSet.setNameOffsetY(10);
+		h2DataSet.setNameOffsetX(-40);
+		h2DataSet.setNameOffsetY(-10);
+		
 		cDataSet.setColor(Color.black);
 		h2oDataSet.setColor(Color.blue);
 		coDataSet.setColor(Color.darkGray);
