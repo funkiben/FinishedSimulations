@@ -55,7 +55,7 @@ public class LeChatelierConcentration extends LabFrame {
 	private Graph graph;
 
 	public static void main(String[] args) {
-		new LeChatelierConcentration("LeChatelier", 1920, 1000);
+		new LeChatelierConcentration("LeChatelier Lab", 1550, 750);
 	}
 
 	public LeChatelierConcentration(String name, int width, int height) {
@@ -130,7 +130,7 @@ public class LeChatelierConcentration extends LabFrame {
 		h2MolesEquilibrium = h2Slider.getValue();
 
 		EmptyComponent labelHolder = new EmptyComponent(800, 200);
-		Label titleLabel = new Label(800, 100, "Measured Amounts of Material in the Glass Bulb");
+		Label titleLabel = new Label(800, 100, "Equilibrium Amounts of Material in the Glass Bulb");
 		titleLabel.setFontSize(14f);
 		labelHolder.addChild(titleLabel);
 		cLabel = new Label(200, 100, "C: " + cMolesEquilibrium + " moles");
@@ -257,7 +257,6 @@ public class LeChatelierConcentration extends LabFrame {
 		bulb.setContentState(ContentState.SOLID);
 		bulb.setContentColor(Color.black);;
 		bulb.setValue(50*((cDataSet.getPoints().get(cDataSet.size()-1).getY())));
-		
 
 	}
 
