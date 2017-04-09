@@ -31,7 +31,7 @@ public class IsolationMethod extends LabFrame {
 	private final Button startButton, stopButton, resetButton;
 	private final DoubleField O2AmountField, NOAmountField;
 
-	private final LineOfBestFitGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
+	private final LineOfBestFitGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph, O2OrderGraph;
 	
 	private final CoordinateList lnKvslnO2List;
 	
@@ -163,9 +163,11 @@ public class IsolationMethod extends LabFrame {
 		
 		
 		
+		// create graph for finding order of O2
+		// TODO
 		
 		
-		lnKvslnO2List = new CoordinateList(200, 200, "k", "O2");
+		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "[O2]=%x% mol/L, k=%y%");
 		lnKvslnO2List.setOffsetY(-50);
 		addComponent(lnKvslnO2List);
 		
