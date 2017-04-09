@@ -2,7 +2,6 @@ package isolation_method;
 
 import java.awt.Color;
 
-import HI_equilibrium.CoordinateList;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
@@ -32,7 +31,7 @@ public class IsolationMethod extends LabFrame {
 	private final Button startButton, stopButton, resetButton;
 	private final DoubleField O2AmountField, NOAmountField;
 
-	private final ReactionOrderGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
+	private final LineOfBestFitGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
 	
 	private final CoordinateList lnKvslnO2List;
 	
@@ -123,7 +122,7 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
-		zeroOrderGraph = new ReactionOrderGraph("[NO] vs. t", "[NO] mol/L", hg, vg);
+		zeroOrderGraph = new LineOfBestFitGraph("[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
 		
 		vg.setTextOffset(-45);
 		
@@ -136,7 +135,7 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(-12, -8, 2, 1);
 
-		firstOrderGraph = new ReactionOrderGraph("ln[NO] vs. t", "ln([NO]) mol/L", hg, vg);
+		firstOrderGraph = new LineOfBestFitGraph("ln[NO] vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
 		firstOrderGraph.getGraph().setYLabelOffset(20);
 		
 		vg.setTextOffset(-37);
@@ -153,7 +152,7 @@ public class IsolationMethod extends LabFrame {
 			
 		vg.setSigfigs(2);
 		
-		secondOrderGraph = new ReactionOrderGraph("1/[NO] vs. t","1/[NO] mol/L", hg, vg);
+		secondOrderGraph = new LineOfBestFitGraph("1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
 
 		vg.setTextOffset(-35);
 
@@ -161,6 +160,9 @@ public class IsolationMethod extends LabFrame {
 		
 		
 		addComponent(new EmptyComponent(300, 0));
+		
+		
+		
 		
 		
 		lnKvslnO2List = new CoordinateList(200, 200, "k", "O2");

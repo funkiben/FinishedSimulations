@@ -1,4 +1,4 @@
-package HI_equilibrium;
+package isolation_method;
 
 import lab.component.EmptyComponent;
 import lab.component.swing.Label;

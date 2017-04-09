@@ -12,19 +12,19 @@ import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
 import lab.util.VerticalGraduation;
 
-public class ReactionOrderGraph extends LabComponent {
+public class LineOfBestFitGraph extends LabComponent {
 
 	private final Graph graph;
 	private final GraphDataSet data, lineOfBestFit;
 	private final Label slopeLabel, interceptLabel;
 
-	public ReactionOrderGraph(String title, String yLabel, HorizontalGraduation hg, VerticalGraduation vg) {
+	public LineOfBestFitGraph(String title, String xLabel, String yLabel, HorizontalGraduation hg, VerticalGraduation vg) {
 		super(260, 280);
 
 		hg.setShowLabels(false);
 		vg.setRemovePointZero(false);
 
-		graph = new Graph(200, 200, title, "t (s)", yLabel, hg, vg);
+		graph = new Graph(200, 200, title, xLabel, yLabel, hg, vg);
 
 		graph.setOffsetX(60);
 		graph.setYLabelOffset(15);
