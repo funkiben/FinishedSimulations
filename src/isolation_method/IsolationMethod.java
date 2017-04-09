@@ -135,7 +135,7 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(-12, -8, 2, 1);
 
-		firstOrderGraph = new LineOfBestFitGraph("ln[NO] vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
+		firstOrderGraph = new LineOfBestFitGraph("ln([NO]) vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
 		firstOrderGraph.getGraph().setYLabelOffset(20);
 		
 		vg.setTextOffset(-37);
@@ -162,16 +162,29 @@ public class IsolationMethod extends LabFrame {
 		addComponent(new EmptyComponent(300, 0));
 		
 		
-		
-		// create graph for finding order of O2
-		// TODO
-		
-		
+		// create list for plotting ln(k) vs ln[O2]
 		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "[O2]=%x% mol/L, k=%y%");
 		lnKvslnO2List.setOffsetY(-50);
 		addComponent(lnKvslnO2List);
 		
 		
+		// create graph for finding order of O2
+		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
+		vg = new VerticalGraduation(-12, -8, 2, 1);
+			
+		O2OrderGraph = new LineOfBestFitGraph("ln(k) vs. ln[O2]", "ln([O2]) mol/L", "ln(k)", hg, vg);
+		O2OrderGraph.getGraph().setYLabelOffset(5);
+				
+		O2OrderGraph.getSlopeLabel().setOffsetY(230);
+		
+		vg.setTextOffset(-37);
+		hg.setShowLabels(true);
+		
+		O2OrderGraph.setOffsetY(-90);
+		
+		addComponent(O2OrderGraph);
+				
+				
 		
 		start(30);
 
