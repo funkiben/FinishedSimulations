@@ -163,22 +163,29 @@ public class IsolationMethod extends LabFrame {
 		addComponent(new EmptyComponent(300, 0));
 		
 		Rectangle border = new Rectangle(640, 350);
-		border.setFill(false);
-		border.setStrokeColor(Color.lightGray);
+		border.setFillColor(new Color(240, 240, 240));
+		border.setStrokeColor(Color.gray);
 		border.setOffset(-30, -140);
 		
 		// create list for plotting ln(k) vs ln[O2]
-		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "[O2]=%x% mol/L, k=%y%") {
+		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "ln([O2])=%x% mol/L, ln(k)=%y%") {
 			
 			@Override
 			public void onAddValue(Vector2 v) {
+				v.setX(Math.log(v.getX()));
+				v.setY(Math.log(v.getY()));
+				
 				O2OrderGraph.getData().addPoint(v);
 				
-				O2OrderGraph.getGraph().gethGraduation().setStart(Math.min(v.getX(), O2OrderGraph.getGraph().gethGraduation().getStart()));
-				O2OrderGraph.getGraph().gethGraduation().setEnd(Math.max(v.getX(), O2OrderGraph.getGraph().gethGraduation().getEnd()));
+				O2OrderGraph.getGraph().gethGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxXSubTicks(2.0));
+				O2OrderGraph.getGraph().getvGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxYSubTicks(2.0));
 				
-				O2OrderGraph.getGraph().getvGraduation().setStart(Math.min(v.getY(), O2OrderGraph.getGraph().getvGraduation().getStart()));
-				O2OrderGraph.getGraph().getvGraduation().setEnd(Math.max(v.getY(), O2OrderGraph.getGraph().getvGraduation().getEnd()));
+				double start = (int) ((v.getX() - 1) / O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals();
+				double end = (int) ((v.getY() + 1) / O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals();
+				
+				O2OrderGraph.getGraph().gethGraduation().setStart(Math.min(start, O2OrderGraph.getGraph().gethGraduation().getStart()));
+				O2OrderGraph.getGraph().getvGraduation().setEnd(Math.max(end, O2OrderGraph.getGraph().getvGraduation().getEnd()));
+				
 				
 				O2OrderGraph.plotLineOfBestFit();
 				
@@ -187,7 +194,6 @@ public class IsolationMethod extends LabFrame {
 			@Override
 			public void onRemoveValue(Vector2 v) {
 				O2OrderGraph.getData().removePoint(v);
-				
 				O2OrderGraph.plotLineOfBestFit();
 
 			}
@@ -200,19 +206,20 @@ public class IsolationMethod extends LabFrame {
 		
 		
 		// create graph for finding order of O2
-		hg = new HorizontalGraduation(-6, -2, 1, 0.5);
+		hg = new HorizontalGraduation(-6, 0, 1, 0.5);
 		vg = new VerticalGraduation(0, 1, 1, 0.5);
 			
-		hg.setSigfigs(2);
-		vg.setSigfigs(2);
+		hg.setSigfigs(-1);
+		vg.setSigfigs(-1);
 		
 		O2OrderGraph = new LineOfBestFitGraph(300, 290, "ln(k) vs. ln[O2]", "ln([O2]) mol/L", "ln(k)", hg, vg);
 		O2OrderGraph.getGraph().setYLabelOffset(5);
-				
+		
 		O2OrderGraph.getSlopeLabel().setOffset(-250, 240);
 		O2OrderGraph.getInterceptLabel().setOffset(-300, 260);
 		
-		vg.setTextOffset(-37);
+		vg.setTextOffset(-33);
+		hg.setTextOffset(0);
 		hg.setShowLabels(true);
 		
 		
@@ -232,6 +239,8 @@ public class IsolationMethod extends LabFrame {
 		if (stopped) {
 			reactionOccuring = true;
 			return;
+		} else {
+			reset();
 		}
 		
 		
@@ -328,6 +337,7 @@ public class IsolationMethod extends LabFrame {
 				// 1/[NO] = 1/[NOi] + kt;
 				NOMolarity = 1.0 / (1.0 / initialNOMolarity + rateConstant * O2Molarity * time);
 				
+				O2Molarity -= 0.5 * NOMolarity;
 				
 				// put in some error that would be a result of using real spectrophotemetry
 				NOMolarity += (Math.random() * 2 - 1) * error * (initialNOMolarity - NOMolarity);

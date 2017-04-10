@@ -5,6 +5,7 @@ import lab.component.LabComponent;
 import lab.component.swing.Label;
 import lab.component.swing.input.field.DoubleField;
 import lab.component.swing.input.list.MutableList;
+import lab.util.SigFig;
 import lab.util.Vector2;
 
 public class CoordinateList extends MutableList<Vector2> {
@@ -49,7 +50,7 @@ public class CoordinateList extends MutableList<Vector2> {
 			return new Vector2(xField.getValue(), yField.getValue()) {
 				@Override
 				public String toString() {
-					return toString.replace("%x%", Double.toString(getX())).replace("%y%", Double.toString(getY()));
+					return toString.replace("%x%", SigFig.sigfigalize(getX(), 4, 5)).replace("%y%", SigFig.sigfigalize(getY(), 4, 5));
 				}
 			};
 		}
