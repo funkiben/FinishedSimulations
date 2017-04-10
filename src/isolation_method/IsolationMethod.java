@@ -11,6 +11,7 @@ import lab.component.swing.input.Button;
 import lab.component.swing.input.field.DoubleField;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
+import lab.util.Vector2;
 import lab.util.VerticalGraduation;
 
 public class IsolationMethod extends LabFrame {
@@ -122,7 +123,7 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
-		zeroOrderGraph = new LineOfBestFitGraph("[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
+		zeroOrderGraph = new LineOfBestFitGraph(200, 200, "[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
 		
 		vg.setTextOffset(-45);
 		
@@ -135,7 +136,7 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(-12, -8, 2, 1);
 
-		firstOrderGraph = new LineOfBestFitGraph("ln([NO]) vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
+		firstOrderGraph = new LineOfBestFitGraph(200, 200, "ln([NO]) vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
 		firstOrderGraph.getGraph().setYLabelOffset(20);
 		
 		vg.setTextOffset(-37);
@@ -152,7 +153,7 @@ public class IsolationMethod extends LabFrame {
 			
 		vg.setSigfigs(2);
 		
-		secondOrderGraph = new LineOfBestFitGraph("1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
+		secondOrderGraph = new LineOfBestFitGraph(200, 200, "1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
 
 		vg.setTextOffset(-35);
 
@@ -161,30 +162,63 @@ public class IsolationMethod extends LabFrame {
 		
 		addComponent(new EmptyComponent(300, 0));
 		
+		Rectangle border = new Rectangle(640, 350);
+		border.setFill(false);
+		border.setStrokeColor(Color.lightGray);
+		border.setOffset(-30, -140);
 		
 		// create list for plotting ln(k) vs ln[O2]
-		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "[O2]=%x% mol/L, k=%y%");
-		lnKvslnO2List.setOffsetY(-50);
-		addComponent(lnKvslnO2List);
+		lnKvslnO2List = new CoordinateList(200, 200, "O2 Molarity", "Pseudo k", "[O2]=%x% mol/L, k=%y%") {
+			
+			@Override
+			public void onAddValue(Vector2 v) {
+				O2OrderGraph.getData().addPoint(v);
+				
+				O2OrderGraph.getGraph().gethGraduation().setStart(Math.min(v.getX(), O2OrderGraph.getGraph().gethGraduation().getStart()));
+				O2OrderGraph.getGraph().gethGraduation().setEnd(Math.max(v.getX(), O2OrderGraph.getGraph().gethGraduation().getEnd()));
+				
+				O2OrderGraph.getGraph().getvGraduation().setStart(Math.min(v.getY(), O2OrderGraph.getGraph().getvGraduation().getStart()));
+				O2OrderGraph.getGraph().getvGraduation().setEnd(Math.max(v.getY(), O2OrderGraph.getGraph().getvGraduation().getEnd()));
+				
+				O2OrderGraph.plotLineOfBestFit();
+				
+			}
+			
+			@Override
+			public void onRemoveValue(Vector2 v) {
+				O2OrderGraph.getData().removePoint(v);
+				
+				O2OrderGraph.plotLineOfBestFit();
+
+			}
+			
+		};
+		
+		lnKvslnO2List.setOffset(10, 10);
+		
+		border.addChild(lnKvslnO2List);
 		
 		
 		// create graph for finding order of O2
-		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
-		vg = new VerticalGraduation(-12, -8, 2, 1);
+		hg = new HorizontalGraduation(-6, -2, 1, 0.5);
+		vg = new VerticalGraduation(0, 1, 1, 0.5);
 			
-		O2OrderGraph = new LineOfBestFitGraph("ln(k) vs. ln[O2]", "ln([O2]) mol/L", "ln(k)", hg, vg);
+		hg.setSigfigs(2);
+		vg.setSigfigs(2);
+		
+		O2OrderGraph = new LineOfBestFitGraph(300, 290, "ln(k) vs. ln[O2]", "ln([O2]) mol/L", "ln(k)", hg, vg);
 		O2OrderGraph.getGraph().setYLabelOffset(5);
 				
-		O2OrderGraph.getSlopeLabel().setOffsetY(230);
+		O2OrderGraph.getSlopeLabel().setOffset(-250, 240);
+		O2OrderGraph.getInterceptLabel().setOffset(-300, 260);
 		
 		vg.setTextOffset(-37);
 		hg.setShowLabels(true);
 		
-		O2OrderGraph.setOffsetY(-90);
 		
-		addComponent(O2OrderGraph);
+		border.addChild(O2OrderGraph);
 				
-				
+		addComponent(border);
 		
 		start(30);
 
