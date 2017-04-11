@@ -26,7 +26,6 @@ public class LineOfBestFitGraph extends LabComponent {
 
 		graph = new Graph(width, height, title, xLabel, yLabel, hg, vg);
 
-		graph.setOffsetX(60);
 		graph.setYLabelOffset(15);
 
 		data = new GraphDataSet("data", false, false);
@@ -38,7 +37,7 @@ public class LineOfBestFitGraph extends LabComponent {
 		interceptLabel = new Label(width, 20, "Intercept: ");
 
 		slopeLabel.setOffsetY(height + 10);
-
+		
 		graph.addChild(slopeLabel, interceptLabel);
 
 		addChild(graph);
@@ -85,9 +84,10 @@ public class LineOfBestFitGraph extends LabComponent {
 		slopeLabel.setText("Slope: " + SigFig.sigfigalize(lobf[0], 4));
 		interceptLabel.setText("Intercept: " + SigFig.sigfigalize(lobf[1], 4));
 		
-		double start = graph.gethGraduation().getStart(), end = graph.gethGraduation().getEnd();
+		double start = graph.gethGraduation().getStart(), end = graph.gethGraduation().getEnd(), mid = (end - start) / 2.0 + start;
 		
 		lineOfBestFit.addPoint(start, start * lobf[0] + lobf[1]);
+		lineOfBestFit.addPoint(mid, mid * lobf[0] + lobf[1]);
 		lineOfBestFit.addPoint(end, end * lobf[0] + lobf[1]);
 	}
 	
