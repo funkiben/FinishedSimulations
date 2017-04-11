@@ -128,6 +128,7 @@ public class IsolationMethod extends LabFrame {
 		
 		Rectangle checkBoxes = new Rectangle(120, 80);
 		checkBoxes.setFill(false);
+		checkBoxes.setStrokeColor(Color.lightGray);
 		checkBoxes.setOffset(10, 10);
 		
 		zeroOrderCheckBox = new CheckBox(130, 25, "[NO] vs. t") {
