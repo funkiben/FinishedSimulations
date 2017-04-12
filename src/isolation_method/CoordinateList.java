@@ -38,7 +38,7 @@ public class CoordinateList extends MutableList<Vector2> {
 		LabComponent button = getChild(1);
 		removeChild(1);
 		
-		addChild(button);
+		addChild(new EmptyComponent(100, 5), button);
 		
 	}
 	
