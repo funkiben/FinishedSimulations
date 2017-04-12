@@ -5,12 +5,15 @@ import java.awt.Color;
 import lab.util.animation.DoubleLinearAnimation;
 import lab.LabFrame;
 import lab.component.EmptyComponent;
+import lab.component.LabComponent;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
 import lab.component.swing.input.Button;
+import lab.component.swing.input.CheckBox;
 import lab.component.swing.input.field.DoubleField;
 import lab.util.HorizontalGraduation;
 import lab.util.SigFig;
+import lab.util.Vector2;
 import lab.util.VerticalGraduation;
 
 public class IsolationMethod extends LabFrame {
@@ -30,8 +33,11 @@ public class IsolationMethod extends LabFrame {
 	private final ReactionApparatus reactionApparatus;
 	private final Button startButton, stopButton, resetButton;
 	private final DoubleField O2AmountField, NOAmountField;
+	private final CheckBox zeroOrderCheckBox, firstOrderCheckBox, secondOrderCheckBox;
 
-	private final ReactionOrderGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph;
+	private final LineOfBestFitGraph zeroOrderGraph, firstOrderGraph, secondOrderGraph, O2OrderGraph;
+	
+	private final CoordinateList lnKvslnO2List;
 	
 	private final Label volumeLabel;
 	
@@ -46,22 +52,18 @@ public class IsolationMethod extends LabFrame {
 	
 	
 	public IsolationMethod() {
-		super("Isolation Method", 1000, 650);
+		super("Isolation Method", 750, 650);
 		
 		reactionApparatus = new ReactionApparatus();
 		reactionApparatus.setOffset(15, 30);
 		addComponent(reactionApparatus);
-
-		
-		
-		
 		
 		
 		// create control area for starting and stopping simulation, and changing NO and O2 mL
 		Rectangle controlArea = new Rectangle(190, 140);
-		controlArea.setFill(false);
-		controlArea.setStrokeColor(Color.LIGHT_GRAY);
-
+		controlArea.setFillColor(new Color(245, 245, 245));
+		controlArea.setStrokeColor(Color.lightGray);
+		
 		Label O2MLabel, NOMLabel;
 
 		O2MLabel = new Label(190, 20, "O2 Molarity: " + O2PistonMolarity + "mol/L");
@@ -116,6 +118,77 @@ public class IsolationMethod extends LabFrame {
 		
 		
 		
+		
+		// create NO order graph area
+		Rectangle graphArea = new Rectangle(510, 280);
+		graphArea.setFillColor(new Color(245, 245, 245));
+		graphArea.setStrokeColor(Color.lightGray);
+		graphArea.setOffset(35, 5);
+		graphArea.setLayout(LabComponent.FREE_FORM);
+		
+		Rectangle checkBoxes = new Rectangle(120, 80);
+		checkBoxes.setFill(false);
+		checkBoxes.setStrokeColor(Color.lightGray);
+		checkBoxes.setOffset(10, 10);
+		
+		zeroOrderCheckBox = new CheckBox(130, 25, "[NO] vs. t") {
+			@Override
+			public void onSelect() {
+				zeroOrderCheckBox.setEnabled(false);
+				firstOrderCheckBox.setEnabled(true);
+				secondOrderCheckBox.setEnabled(true);
+				
+				firstOrderCheckBox.setSelected(false);
+				secondOrderCheckBox.setSelected(false);
+				
+				zeroOrderGraph.setVisible(true);
+				firstOrderGraph.setVisible(false);
+				secondOrderGraph.setVisible(false);
+			}
+		};
+		firstOrderCheckBox = new CheckBox(130, 25, "ln([NO]) vs. t") {
+			@Override
+			public void onSelect() {
+				zeroOrderCheckBox.setEnabled(true);
+				firstOrderCheckBox.setEnabled(false);
+				secondOrderCheckBox.setEnabled(true);
+
+				zeroOrderCheckBox.setSelected(false);
+				secondOrderCheckBox.setSelected(false);
+				
+				zeroOrderGraph.setVisible(false);
+				firstOrderGraph.setVisible(true);
+				secondOrderGraph.setVisible(false);
+			}
+		};
+		secondOrderCheckBox = new CheckBox(130, 25, "1/[NO] vs. t") {
+			@Override
+			public void onSelect() {
+				zeroOrderCheckBox.setEnabled(true);
+				firstOrderCheckBox.setEnabled(true);
+				secondOrderCheckBox.setEnabled(false);
+				
+				zeroOrderCheckBox.setSelected(false);
+				firstOrderCheckBox.setSelected(false);
+				
+				zeroOrderGraph.setVisible(false);
+				firstOrderGraph.setVisible(false);
+				secondOrderGraph.setVisible(true);
+			}
+		};
+		
+		checkBoxes.addChild(zeroOrderCheckBox, firstOrderCheckBox, secondOrderCheckBox);
+		
+		graphArea.addChild(checkBoxes);
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		HorizontalGraduation hg;
 		VerticalGraduation vg;
 
@@ -124,11 +197,14 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 200E-6, 50E-6, 25E-6);
 
-		zeroOrderGraph = new ReactionOrderGraph("[NO] vs. t", "[NO] mol/L", hg, vg);
+		zeroOrderGraph = new LineOfBestFitGraph(280, 230, "[NO] vs. t", "t (s)", "[NO] mol/L", hg, vg);
+		zeroOrderGraph.setOffsetX(160);
+		zeroOrderGraph.getSlopeLabel().setOffset(-180, 200);
+		zeroOrderGraph.getInterceptLabel().setOffset(-280, 220);
 		
 		vg.setTextOffset(-45);
 		
-		addComponent(zeroOrderGraph);
+		graphArea.addChild(zeroOrderGraph);
 
 		
 		
@@ -137,12 +213,16 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(-12, -8, 2, 1);
 
-		firstOrderGraph = new ReactionOrderGraph("ln[NO] vs. t", "ln([NO]) mol/L", hg, vg);
+		firstOrderGraph = new LineOfBestFitGraph(280, 230, "ln([NO]) vs. t", "t (s)", "ln([NO]) mol/L", hg, vg);
 		firstOrderGraph.getGraph().setYLabelOffset(20);
+		firstOrderGraph.setOffsetX(160);
+		firstOrderGraph.setVisible(false);
+		firstOrderGraph.getSlopeLabel().setOffset(-180, 200);
+		firstOrderGraph.getInterceptLabel().setOffset(-280, 220);
 		
 		vg.setTextOffset(-37);
 
-		addComponent(firstOrderGraph);
+		graphArea.addChild(firstOrderGraph);
 
 
 		
@@ -152,15 +232,90 @@ public class IsolationMethod extends LabFrame {
 		hg = new HorizontalGraduation(0, 60E3, 10E3, 5E3);
 		vg = new VerticalGraduation(0, 50E3, 50E3, 10E3);
 			
+		secondOrderGraph = new LineOfBestFitGraph(280, 230, "1/[NO] vs. t", "t (s)", "1/[NO] mol/L", hg, vg);
+		secondOrderGraph.setOffsetX(160);
+		secondOrderGraph.setVisible(false);
+		secondOrderGraph.getSlopeLabel().setOffset(-180, 200);
+		secondOrderGraph.getInterceptLabel().setOffset(-280, 220);
+		
+		vg.setTextOffset(-35);
 		vg.setSigfigs(2);
 		
-		secondOrderGraph = new ReactionOrderGraph("1/[NO] vs. t","1/[NO] mol/L", hg, vg);
-
-		vg.setTextOffset(-35);
-
-		addComponent(secondOrderGraph);
+		graphArea.addChild(secondOrderGraph);
 		
 		
+		addComponent(graphArea);
+		
+		
+		
+		addComponent(new EmptyComponent(300, 0));
+		
+		Rectangle border = new Rectangle(510, 350);
+		border.setFillColor(new Color(245, 245, 245));
+		border.setStrokeColor(Color.lightGray);
+		border.setOffset(-80, -140);
+		
+	
+		// create list for plotting ln(k) vs ln[O2]
+		lnKvslnO2List = new CoordinateList(150, 200, "O2 Molarity", "Pseudo k", "ln([O2])=%x% mol/L, ln(k)=%y%") {
+			
+			@Override
+			public void onAddValue(Vector2 v) {
+				v.setX(Math.log(v.getX()));
+				v.setY(Math.log(v.getY()));
+				
+				O2OrderGraph.getData().addPoint(v);
+				
+				O2OrderGraph.getGraph().gethGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxXSubTicks(2.0));
+				O2OrderGraph.getGraph().getvGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxYSubTicks(2.0));
+				
+				double start = (int) ((v.getX() - 1) / O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals();
+				double end = (int) ((v.getY() + 1) / O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals();
+				
+				O2OrderGraph.getGraph().gethGraduation().setStart(Math.min(start, O2OrderGraph.getGraph().gethGraduation().getStart()));
+				O2OrderGraph.getGraph().getvGraduation().setEnd(Math.max(end, O2OrderGraph.getGraph().getvGraduation().getEnd()));
+				
+				
+				O2OrderGraph.plotLineOfBestFit();
+				
+			}
+			
+			@Override
+			public void onRemoveValue(Vector2 v) {
+				O2OrderGraph.getData().removePoint(v);
+				O2OrderGraph.plotLineOfBestFit();
+
+			}
+			
+		};
+		
+		lnKvslnO2List.setOffset(10, 10);
+		
+		border.addChild(lnKvslnO2List);
+		
+		
+		// create graph for finding order of O2
+		hg = new HorizontalGraduation(-6, 0, 1, 0.5);
+		vg = new VerticalGraduation(0, 1, 1, 0.5);
+			
+		hg.setSigfigs(-1);
+		vg.setSigfigs(-1);
+		
+		O2OrderGraph = new LineOfBestFitGraph(280, 290, "ln(k) vs. ln[O2]", "ln([O2])", "ln(k)", hg, vg);
+		O2OrderGraph.getGraph().setYLabelOffset(5);
+		O2OrderGraph.getSlopeLabel().setOffset(-180, 260);
+		O2OrderGraph.getInterceptLabel().setOffset(-280, 280);
+		
+		vg.setTextOffset(-33);
+		hg.setTextOffset(0);
+		hg.setShowLabels(true);
+		
+		
+		border.addChild(O2OrderGraph);
+				
+		addComponent(border);
+		
+		zeroOrderCheckBox.setSelected(true);
 		
 		start(30);
 
@@ -174,6 +329,8 @@ public class IsolationMethod extends LabFrame {
 		if (stopped) {
 			reactionOccuring = true;
 			return;
+		} else {
+			reset();
 		}
 		
 		
@@ -222,9 +379,12 @@ public class IsolationMethod extends LabFrame {
 		zeroOrderGraph.getGraph().getvGraduation().setEnd(((int) (NOMolarity / 25E-6) + 1) * 25E-6);
 		firstOrderGraph.getGraph().getvGraduation().setStart(-12);
 		secondOrderGraph.getGraph().getvGraduation().setEnd(50E3);
+		
 	}
 	
 	private void reset() {
+		
+		zeroOrderCheckBox.setSelected(true);
 		
 		startButton.setEnabled(true);
 		
@@ -245,6 +405,7 @@ public class IsolationMethod extends LabFrame {
 		reactionOccuring = false;
 		
 		stopped = false;
+		
 		
 		getAnimator().cancelAll();
 	}
@@ -270,6 +431,7 @@ public class IsolationMethod extends LabFrame {
 				// 1/[NO] = 1/[NOi] + kt;
 				NOMolarity = 1.0 / (1.0 / initialNOMolarity + rateConstant * O2Molarity * time);
 				
+				O2Molarity -= 0.5 * NOMolarity;
 				
 				// put in some error that would be a result of using real spectrophotemetry
 				NOMolarity += (Math.random() * 2 - 1) * error * (initialNOMolarity - NOMolarity);
@@ -330,6 +492,8 @@ public class IsolationMethod extends LabFrame {
 
 		if (O2AmountField.hasInput() && NOAmountField.hasInput()) {
 			volumeLabel.setText("Total Volume: " + SigFig.sigfigalize(NOAmountField.getValue() + O2AmountField.getValue(), 3) + "mL");
+			
+			startButton.setEnabled(true);
 		} else {
 			startButton.setEnabled(false);
 		}
