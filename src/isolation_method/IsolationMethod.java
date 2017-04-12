@@ -8,6 +8,7 @@ import lab.component.EmptyComponent;
 import lab.component.LabComponent;
 import lab.component.geo.Rectangle;
 import lab.component.swing.Label;
+import lab.component.swing.ScrollLabel;
 import lab.component.swing.input.Button;
 import lab.component.swing.input.CheckBox;
 import lab.component.swing.input.field.DoubleField;
@@ -41,6 +42,8 @@ public class IsolationMethod extends LabFrame {
 	
 	private final Label volumeLabel;
 	
+	private final Button showInstructionsButton;
+	private final LabFrame instructionsFrame;
 	
 	private double time = 0;
 	private double O2Molarity = 0;
@@ -131,7 +134,7 @@ public class IsolationMethod extends LabFrame {
 		checkBoxes.setStrokeColor(Color.lightGray);
 		checkBoxes.setOffset(10, 10);
 		
-		zeroOrderCheckBox = new CheckBox(130, 25, "[NO] vs. t") {
+		zeroOrderCheckBox = new CheckBox(110, 25, "[NO] vs. t") {
 			@Override
 			public void onSelect() {
 				zeroOrderCheckBox.setEnabled(false);
@@ -146,7 +149,7 @@ public class IsolationMethod extends LabFrame {
 				secondOrderGraph.setVisible(false);
 			}
 		};
-		firstOrderCheckBox = new CheckBox(130, 25, "ln([NO]) vs. t") {
+		firstOrderCheckBox = new CheckBox(110, 25, "ln([NO]) vs. t") {
 			@Override
 			public void onSelect() {
 				zeroOrderCheckBox.setEnabled(true);
@@ -161,7 +164,7 @@ public class IsolationMethod extends LabFrame {
 				secondOrderGraph.setVisible(false);
 			}
 		};
-		secondOrderCheckBox = new CheckBox(130, 25, "1/[NO] vs. t") {
+		secondOrderCheckBox = new CheckBox(110, 25, "1/[NO] vs. t") {
 			@Override
 			public void onSelect() {
 				zeroOrderCheckBox.setEnabled(true);
@@ -176,6 +179,10 @@ public class IsolationMethod extends LabFrame {
 				secondOrderGraph.setVisible(true);
 			}
 		};
+		
+		zeroOrderCheckBox.setOffset(2, 2);
+		firstOrderCheckBox.setOffsetX(2);
+		secondOrderCheckBox.setOffsetX(2);
 		
 		checkBoxes.addChild(zeroOrderCheckBox, firstOrderCheckBox, secondOrderCheckBox);
 		
@@ -266,8 +273,8 @@ public class IsolationMethod extends LabFrame {
 				
 				O2OrderGraph.getData().addPoint(v);
 				
-				O2OrderGraph.getGraph().gethGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxXSubTicks(2.0));
-				O2OrderGraph.getGraph().getvGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxYSubTicks(2.0));
+				O2OrderGraph.getGraph().gethGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxXSubTicks(5.0));
+				O2OrderGraph.getGraph().getvGraduation().setSubLineIntervals(O2OrderGraph.getGraph().getMaxYSubTicks(5.0));
 				
 				double start = (int) ((v.getX() - 1) / O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().gethGraduation().getSubLineIntervals();
 				double end = (int) ((v.getY() + 1) / O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals()) * O2OrderGraph.getGraph().getvGraduation().getSubLineIntervals();
@@ -316,6 +323,39 @@ public class IsolationMethod extends LabFrame {
 		addComponent(border);
 		
 		zeroOrderCheckBox.setSelected(true);
+		
+		
+		showInstructionsButton = new Button(140, 30, "Show Instructions") {
+			@Override
+			public void doSomething() {
+				instructionsFrame.setVisible(true);
+			}
+		};
+		
+		showInstructionsButton.setOffset(20, 550);
+		
+		reactionApparatus.addChild(showInstructionsButton);
+		
+		instructionsFrame = new LabFrame("Instructions", 700, 500, true) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void update() {
+
+			}
+		};
+		instructionsFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		instructionsFrame.setResizable(false);
+
+		ScrollLabel instructions = new ScrollLabel(700, 500, "/isolation_method/instructions.txt");
+		instructions.setHoriztonalScrollBarPolicy(ScrollLabel.HORIZONTAL_SCROLLBAR_NEVER);
+		instructions.setFontSize(13);
+		
+		instructionsFrame.addComponent(instructions);
+		instructionsFrame.start(0);
+		
+		
+		
 		
 		start(30);
 

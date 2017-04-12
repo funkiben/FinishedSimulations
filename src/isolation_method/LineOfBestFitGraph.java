@@ -84,10 +84,9 @@ public class LineOfBestFitGraph extends LabComponent {
 		slopeLabel.setText("Slope: " + SigFig.sigfigalize(lobf[0], 4));
 		interceptLabel.setText("Intercept: " + SigFig.sigfigalize(lobf[1], 4));
 		
-		double start = graph.gethGraduation().getStart(), end = graph.gethGraduation().getEnd(), mid = (end - start) / 2.0 + start;
+		double start = graph.gethGraduation().getStart(), end = graph.gethGraduation().getEnd();
 		
 		lineOfBestFit.addPoint(start, start * lobf[0] + lobf[1]);
-		lineOfBestFit.addPoint(mid, mid * lobf[0] + lobf[1]);
 		lineOfBestFit.addPoint(end, end * lobf[0] + lobf[1]);
 	}
 	
