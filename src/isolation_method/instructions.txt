@@ -1,0 +1,56 @@
+<HTML>
+<BODY style='width:500px;'><p style='text-align: center; font-size: 14pt'>
+<P><B>Objectives</B></p>
+<blockquote>
+<UL>
+<LI>Determine the rate law for a chemical reaction.</LI>
+<LI>Determine the rate constant for a chemical reaction.</LI>
+</UL>
+</blockquote>
+
+<P>An important reaction that occurs in the atmosphere is</P>
+
+<P align="center">
+2 NO <I>(g)</I>  + O<SUB>2</SUB> <I>(g)</I>  &nbsp; &rarr; &nbsp;  2 NO<SUB>2</SUB> <I>(g)</I>
+</P>
+
+<P>Nitrogen oxides (NO<SUB>x</SUB>) are produced by automobile engines, and the fate of these oxides in the environment is of considerable 
+concern.  Modeling reactions involving nitric oxide (NO) and nitrogen dioxide (NO<SUB>2</SUB>) are important in understanding the 
+behavior of air pollution and in developing effective regulations.  Nitric oxide is a very reactive, colorless gas;  nitrogen dioxide 
+is an orange-brown gas that is responsible for the characteristic color of Los Angeles smog.</P>
+
+&nbsp;
+&nbsp;
+
+<P>In this experiment, the stopped-flow apparatus has been adapted to handle gases.  Both syringes are charged with gas mixtures at 1 atm 
+pressure.  The syringe on the right contains 99% N<SUB>2</SUB> and 1% NO, which at 25<SUP>o</SUP> C corresponds with 
+4.09 x 10<SUP>-4</SUP> mole/L NO.  The syringe on the left contains pure oxygen, which corresponds to 0.0409 mole/L O<SUB>2</SUB>.  
+Both syringes are loaded with 10 mL of gas and at least 1 mL must be discharged during an experiment.</P>
+
+&nbsp;
+&nbsp;
+
+<P>The reactants in the reaction are colorless;  the NO<SUB>2</SUB> product has an orange-brown color, and it is thus the NO<SUB>2</SUB> 
+concentration that is measured experimentally. Stoichiometry can then be used to determine the concentration of NO. The graph at the right 
+shows how the concentration of NO varies with time (the characteristic zero-order kinetic plot).  By clicking the appropriate button, 
+characteristic first-order and second-order kinetic plots can also be prepared. </P>
+&nbsp;
+&nbsp;
+
+<P>Perform this reaction several times, taking care to make sure that oxygen is always present in large excess.  Use the characteristic 
+kinetic plot to determine the order of the reaction with respect to NO and the pseudo-rate constant for the chosen oxygen concentration.  
+(Remember to take into account the reaction stoichiometry when calculating the rate constant.)</P>
+
+&nbsp;
+&nbsp;
+
+<P>The points in the table 
+are used to construct a ln <I>k<SUB>obs</SUB></I> vs ln [O<SUB>2</SUB>] plot in the graph at the lower right.  Use the slope and intercept of this 
+plot to determine the order of the reaction with respect to oxygen and the reaction rate constant.</P>
+
+&nbsp;
+&nbsp;
+
+</BODY>
+
+</HTML>

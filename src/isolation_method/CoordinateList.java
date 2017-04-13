@@ -30,7 +30,7 @@ public class CoordinateList extends MutableList<Vector2> {
 		Label xFieldLabel = new Label(0, 20, xLabel);
 		Label yFieldLabel = new Label(0, 20, yLabel);
 		
-		xFieldLabel.setWidth(Math.max(xFieldLabel.getTextWidth(), yFieldLabel.getTextWidth()) + 1);
+		xFieldLabel.setWidth(Math.max(xFieldLabel.getTextWidth(), yFieldLabel.getTextWidth()) + 5);
 		yFieldLabel.setWidth(xFieldLabel.getWidth());
 		
 		addChild(xFieldLabel, xField, yFieldLabel, yField, new EmptyComponent(width - xField.getWidth() - yFieldLabel.getWidth(), 0));
@@ -38,7 +38,7 @@ public class CoordinateList extends MutableList<Vector2> {
 		LabComponent button = getChild(1);
 		removeChild(1);
 		
-		addChild(button);
+		addChild(new EmptyComponent(100, 5), button);
 		
 	}
 	

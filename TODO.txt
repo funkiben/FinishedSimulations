@@ -12,6 +12,6 @@ http://www.chm.davidson.edu/vce/Kinetics/Half-life.html
 
 http://www.chm.davidson.edu/vce/kinetics/reactionrates.html
 
-http://www.chm.davidson.edu/vce/Kinetics/IsolationMethod.html - wip by ben
+http://www.chm.davidson.edu/vce/Kinetics/IsolationMethod.html - done by ben
 
 HI reaction equilibrium - done by ben
